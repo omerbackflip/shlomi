@@ -14,14 +14,20 @@
 					show-expand
 					:single-expand="true"
 					mobile-breakpoint="0"
+					:search = "search"
 				>
 					<template v-slot:top>
 						<v-toolbar flat>
-							<v-toolbar-title>Tickets - {{tickets.length}}</v-toolbar-title>
+							<v-toolbar-title>Total Tickets - {{tickets.length}}</v-toolbar-title>
+							<v-text-field
+								v-model="search"
+								class="mx-4"
+								label="Search"
+							></v-text-field>
 							<v-spacer></v-spacer>
 							<v-btn @click="updateTicket()" small class="mt-3">
 								<v-icon class="nav-icon" small >mdi-plus</v-icon>
-								Add Ticket
+								New Ticket
 							</v-btn>
 						</v-toolbar>
 					</template>
@@ -32,11 +38,17 @@
 							</ul>
 						</td>
 					</template>
+					<template v-slot:[`item.item`]="{ }">
+						<v-select > 
+							v-model="item.item"
+							:items="listOfItems"
+						</v-select>
+					</template>					
 					<template v-slot:[`item.entryDate`]="{ item }">
-						<span>{{ new Date(item.entryDate).toDateString() }}</span>
+						<span>{{ new Date(item.entryDate).toLocaleDateString('he-EG') }}</span>
 					</template>
 					<template v-slot:[`item.fixDate`]="{ item }">
-						<span>{{ new Date(item.fixDate).toDateString() }}</span>
+						<span>{{ new Date(item.fixDate).toLocaleDateString('he-EG') }}</span>
 					</template>
 					<template v-slot:[`item.controls`]="{ item }">
 						<v-btn @click="updateTicket(item)" x-small>
@@ -57,7 +69,7 @@
 
 
 <script>
-import { ALL_TICKET_HEADERS, TICKET_HEADERS, TICKET_MODEL } from "../constants/constants";
+import { ALL_TICKET_HEADERS, TICKET_HEADERS, TICKET_MODEL, TABLE_MODEL } from "../constants/constants";
 import apiService from "../services/apiService";
 import TicketForm from './TicketForm.vue';
 import ConfirmDialog from './Common/ConfirmDialog.vue';
@@ -72,7 +84,9 @@ export default {
 			showMessage: false,
 			message: '',
 			headers: TICKET_HEADERS,
-			allTicketHeaders: ALL_TICKET_HEADERS
+			allTicketHeaders: ALL_TICKET_HEADERS,
+			listOfItems: [],
+			search: '',
 		}
 	},
 
@@ -82,6 +96,19 @@ export default {
 				const response = await apiService.get({model: TICKET_MODEL, limit:500});
 				if(response.data && response.data) {
 					this.tickets = response.data;
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		},
+
+		async getItemList () {
+			try {
+				const response = await apiService.get({model: TABLE_MODEL, table_id : 1});
+				if(response.data && response.data) {
+					this.listOfItems = response.data.map ((item) => {
+						return (item.description)
+					});
 				}
 			} catch (error) {
 				console.log(error);
@@ -117,6 +144,7 @@ export default {
 
 	mounted() {
 		this.getTickets();
+		this.getItemList();
 	},
 };
 </script>
