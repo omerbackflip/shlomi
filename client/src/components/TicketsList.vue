@@ -29,6 +29,7 @@
 								<v-icon class="nav-icon" small >mdi-plus</v-icon>
 								New Ticket
 							</v-btn>
+							<v-btn @click="margeCustomerName()" small class="mt-3">Merge</v-btn>
 						</v-toolbar>
 					</template>
 					<template v-slot:expanded-item="{headers,item}">
@@ -69,7 +70,7 @@
 
 
 <script>
-import { ALL_TICKET_HEADERS, TICKET_HEADERS, TICKET_MODEL, TABLE_MODEL } from "../constants/constants";
+import { ALL_TICKET_HEADERS, TICKET_HEADERS, TICKET_MODEL, TABLE_MODEL, CUSTOMER_MODEL } from "../constants/constants";
 import apiService from "../services/apiService";
 import TicketForm from './TicketForm.vue';
 import ConfirmDialog from './Common/ConfirmDialog.vue';
@@ -93,7 +94,7 @@ export default {
 	methods: {
 		async getTickets() {
 			try {
-				const response = await apiService.get({model: TICKET_MODEL, limit:500});
+				const response = await apiService.get({model: TICKET_MODEL, limit:70});
 				if(response.data && response.data) {
 					this.tickets = response.data;
 				}
@@ -110,6 +111,27 @@ export default {
 						return (item.description)
 					});
 				}
+			} catch (error) {
+				console.log(error);
+			}
+		},
+
+		margeCustomerName () {
+			try {
+				this.tickets.map (async (item) =>  {
+					const response = await apiService.get({model: CUSTOMER_MODEL, customerId : item.customerId});
+					if(response.data) {
+						// console.log(response.data)
+						item.customerName = response.data[0].name + response.data[0].family;
+					}
+				})
+				// console.log(this.tickets)
+				// window.location.reload();
+				this.tickets.map (async (item) =>  {
+					console.log(item)
+					const response = await apiService.update(item._id, {...item},{model: TICKET_MODEL});
+					return (response)
+				})
 			} catch (error) {
 				console.log(error);
 			}
