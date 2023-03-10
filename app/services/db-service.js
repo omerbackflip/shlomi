@@ -8,9 +8,17 @@ exports.getSingleItem = async (model,query) => {
 },
 exports.getMultipleItems = async (model,query) => {
     try {
-        let limit = query.limit;
+        let limit = query.limit || 999;
+        let sort;
         delete query.limit;
-        return await model.find(query).limit(limit);
+        delete query.model;
+        if(query.sort) {
+            sort = query.sort;
+            delete query.sort;
+        }
+        return await sort ? 
+            model.find(query).sort(JSON.parse(sort)).limit(+limit) : 
+            model.find(query).limit(limit);
     } catch (error) {
         console.log(error)
         throw error;

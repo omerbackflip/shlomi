@@ -38,10 +38,13 @@
 							</ul>
 						</td>
 					</template>
-					<template v-slot:[`item.item`]="{ }">
-						<v-select > 
+					<template v-slot:[`item.item`]="{ item }">
+						<v-select  
+							label="Item"
 							v-model="item.item"
+							@change="(e) => onItemSelect(e,item)"
 							:items="listOfItems"
+						>
 						</v-select>
 					</template>					
 					<template v-slot:[`item.entryDate`]="{ item }">
@@ -120,7 +123,9 @@ export default {
 			await this.$refs.ticketForm.open(item, newTicket);
 			this.getTickets();
 		},
-
+		async onItemSelect(value,data) {
+			await apiService.update( data._id, {...data , item: value}, {model: TICKET_MODEL});
+		},
 		async deleteTicket(id) {
 			try {
 				if(id) {
@@ -134,7 +139,6 @@ export default {
 				console.log(error);		
 			}
 		},
-
 		toTitleCase(text) {
 			const result = text.replace(/([A-Z])/g, " $1");
 			return result.charAt(0).toUpperCase() + result.slice(1);

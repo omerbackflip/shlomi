@@ -7,16 +7,13 @@
     >
         <v-card class="overflow-hidden">
             <v-card-title class="text-h5 grey lighten-2">
-                {{!ticket ? 'New' : 'Update'}} Ticket
+                {{!(ticket.ticketId) ? 'New' : 'Update'}} Ticket
             </v-card-title>
             <div class="field-margin" v-show="showMessage">
                 {{message}}
             </div>
 
                    <v-row class="p-4">
-                        <v-col cols="4" sm="6" md="4">
-                            <v-text-field type="number" v-model="ticket.ticketId" label="Ticket ID"></v-text-field>
-                        </v-col>
                         <v-col cols="4">
                             <v-text-field type="number" v-model="ticket.customerId" label="Customer ID"></v-text-field>
                         </v-col>
@@ -68,7 +65,7 @@
                 <v-spacer></v-spacer>
                 <v-btn color="primary" text @click="dialog = false"> Cancel</v-btn>
                 <v-btn color="success" text @click="dialog = false"> Close Ticket</v-btn>
-                <v-btn :disabled = "!ticket.ticketId" color="primary" text @click="submitTicket()"> Submit </v-btn>
+                <v-btn :disabled = "!ticket.customerId" color="primary" text @click="submitTicket()"> Submit </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -101,7 +98,9 @@ export default {
 			try {
 				let response;
 				if(this.newTicket) {
-					response = await apiService.create({...this.ticket} , {model:TICKET_MODEL});
+                    let lastTicket = await apiService.get({model: TICKET_MODEL , sort: {ticketId: -1 } , limit: 1});
+                    const { ticketId } = lastTicket.data[0];
+                    response = await apiService.create({...this.ticket, ticketId: ticketId+1} , {model:TICKET_MODEL});
 				} else {
 					response = await apiService.update(this.ticket._id , { ...this.ticket } , {model:TICKET_MODEL});
 				}
@@ -120,8 +119,7 @@ export default {
 				console.log(error);
 			}
 		},
-        open(ticket, newTicket) {
-            console.log(ticket)
+        async open(ticket, newTicket) {
             this.newTicket = newTicket;
             this.ticket = newTicket ? {} : {...ticket};
             this.dialog = true;
