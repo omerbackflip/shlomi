@@ -12,55 +12,56 @@
             <div class="field-margin" v-show="showMessage">
                 {{message}}
             </div>
-
-                   <v-row class="p-4">
-                        <v-col cols="4">
-                            <v-text-field type="number" v-model="ticket.customerId" label="Customer ID"></v-text-field>
-                        </v-col>
-                        <v-col cols="4">
-                            <v-text-field type="number" v-model="ticket.itemCode" label="Item code"></v-text-field>
-                        </v-col>          
-                        <v-col cols="4">
-                            <v-dialog ref="dialog" v-model="dateModal" :return-value.sync="ticket.entryDate" persistent width="290px">
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-text-field 
-                                    v-model="ticket.entryDate"
-                                    label="Entry date"
-                                    readonly
-                                    v-bind="attrs"
-                                    v-on="on" >
-                                    </v-text-field>
-                                </template> 
-                                <v-date-picker v-model="ticket.entryDate" scrollable>
-                                    <v-spacer></v-spacer>
-                                    <v-btn text color="primary" @click="dateModal = false">Cancel</v-btn>
-                                    <v-btn text color="primary" @click="$refs.dialog.save(ticket.entryDate)">OK</v-btn>
-                                </v-date-picker>
-                            </v-dialog>
-                        </v-col>
-                        <v-col cols="4">
-                            <v-text-field v-model="ticket.item" label="Item"></v-text-field>
-                        </v-col>
-                        <v-col cols="4">
-                            <v-text-field v-model="ticket.defectDescription" label="Defect description"></v-text-field>
-                        </v-col>
-                        <v-col cols="4">
-                            <v-text-field type="number" v-model="ticket.checkPrice" label="Check price"></v-text-field>
-                        </v-col>
-                        <v-col cols="4"> 
-                            <v-text-field type="number" v-model="ticket.prepaid" label="Pre-paid"></v-text-field>
-                        </v-col>
-                        <v-col cols="4">
-                            <v-text-field type="number" v-model="ticket.discountPrice" label="Discount price"></v-text-field>
-                        </v-col>
-                        <v-col cols="12">
-                            <v-text-field v-model="ticket.remarks" label="Remark"></v-text-field>
-                        </v-col>                           
-                    </v-row>
-
-
+                <v-row class="p-4">
+                    <v-col cols="4">
+                        <v-text-field 
+                            v-model="ticket.customerName" 
+                            label="Customer Name"
+                            append-icon="mdi-account"
+                            @click:append="getCustomer"
+                            ></v-text-field>
+                    </v-col>
+                    <v-col cols="4">
+                        <v-text-field type="number" v-model="ticket.itemCode" label="Item code"></v-text-field>
+                    </v-col>          
+                    <v-col cols="4">
+                        <v-dialog ref="dialog" v-model="dateModal" :return-value.sync="ticket.entryDate" persistent width="290px">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-text-field 
+                                v-model="ticket.entryDate"
+                                label="Entry date"
+                                readonly
+                                v-bind="attrs"
+                                v-on="on" >
+                                </v-text-field>
+                            </template> 
+                            <v-date-picker v-model="ticket.entryDate" scrollable>
+                                <v-spacer></v-spacer>
+                                <v-btn text color="primary" @click="dateModal = false">Cancel</v-btn>
+                                <v-btn text color="primary" @click="$refs.dialog.save(ticket.entryDate)">OK</v-btn>
+                            </v-date-picker>
+                        </v-dialog>
+                    </v-col>
+                    <v-col cols="4">
+                        <v-text-field v-model="ticket.item" label="Item"></v-text-field>
+                    </v-col>
+                    <v-col cols="4">
+                        <v-text-field v-model="ticket.defectDescription" label="Defect description"></v-text-field>
+                    </v-col>
+                    <v-col cols="4">
+                        <v-text-field type="number" v-model="ticket.checkPrice" label="Check price"></v-text-field>
+                    </v-col>
+                    <v-col cols="4"> 
+                        <v-text-field type="number" v-model="ticket.prepaid" label="Pre-paid"></v-text-field>
+                    </v-col>
+                    <v-col cols="4">
+                        <v-text-field type="number" v-model="ticket.discountPrice" label="Discount price"></v-text-field>
+                    </v-col>
+                    <v-col cols="12">
+                        <v-text-field v-model="ticket.remarks" label="Remark"></v-text-field>
+                    </v-col>                           
+                </v-row>
             <v-divider></v-divider>
-
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="primary" text @click="dialog = false"> Cancel</v-btn>
@@ -98,7 +99,7 @@ export default {
 			try {
 				let response;
 				if(this.newTicket) {
-                    let lastTicket = await apiService.get({model: TICKET_MODEL , sort: {ticketId: -1 } , limit: 1});
+                    let lastTicket = await apiService.getMany({model: TICKET_MODEL , sort: {ticketId: -1 } , limit: 1});
                     const { ticketId } = lastTicket.data[0];
                     response = await apiService.create({...this.ticket, ticketId: ticketId+1} , {model:TICKET_MODEL});
 				} else {
@@ -127,6 +128,9 @@ export default {
                 this.resolve = resolve;
             });
         },
+        getCustomer(){
+            window.alert("here need to fetch a customer")
+        }
     },
 };
 </script>

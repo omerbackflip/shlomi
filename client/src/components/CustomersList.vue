@@ -64,7 +64,7 @@ export default {
 	methods: {
 		async getCustomers() {
 			try {
-				const response = await apiService.get({model: CUSTOMER_MODEL, limit:500});
+				const response = await apiService.getMany({model: CUSTOMER_MODEL});
 				if(response.data) {
 					this.customers = response.data;
 				}

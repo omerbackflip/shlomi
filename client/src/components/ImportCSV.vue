@@ -3,27 +3,21 @@
 
 		<v-container class="bg-surface-variant">
 			<v-row no-gutters>
-				<v-col
-					v-for="item in imports"
-					:key="item.type"
-					cols="12"
-					sm="4"
-				>
+				<v-col v-for="item in imports" :key="item.type" cols="12" sm="4">
 					<v-card class="ml-3">
 						<v-card-title class="text-h5 color-primary">
 							{{ item.title }}
 						</v-card-title>
-
 						<v-card-text> Year data will be overwritten </v-card-text>
 						<v-file-input truncate-length="50" @change="setFile"></v-file-input>
 						<v-divider></v-divider>
-
 						<v-card-actions>
 							<v-spacer></v-spacer>
 							<v-btn :disabled = "!file" class="bordered-button" color="primary" text @click="submitFile(item.type)"> Submit </v-btn>
 						</v-card-actions>
 					</v-card>
 				</v-col>
+				<v-progress-circular color="error" indeterminate v-show="loading" :size="76" :width="6"></v-progress-circular>
 			</v-row>
 		</v-container>
 
@@ -46,7 +40,7 @@ export default {
 	data() {
 		return {
 			file: null,
-			message: "asdasdsad",
+			message: "this is snackbar message",
 			imports: [{
 				type: 'ticket',
 				title: 'Import Tickets',
@@ -56,7 +50,8 @@ export default {
 			},{
 				type: 'table',
 				title: 'Import Tables',
-			},]
+			},],
+			loading: false,
 		};
 	},
 	methods: {
@@ -67,6 +62,7 @@ export default {
 				alert("file type MUST be csv or excel")
 		},
 		async submitFile(type) {
+			this.loading = true;
 			try {
 				let response = '';
 				switch (type){
@@ -93,6 +89,7 @@ export default {
 				console.log(error);
 				this.message = "Something went wrong! Please try again later!";
 			}
+			this.loading = false;
 		},
 	},
 };

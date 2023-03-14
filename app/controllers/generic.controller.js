@@ -21,9 +21,7 @@ exports.create = async (req, res) => {
 
 exports.findAll = async (req, res) => {
 	try {
-		const query = {... req.query};
 		const model = req.query.model;
-		// delete query.model; dont need this line
 		let data = await dbService.getMultipleItems(db[model], req.query);
 		return res.send(data);
 	} catch (error) {
@@ -43,9 +41,21 @@ exports.findOne = async (req, res) => {
 };
 
 
+//Find a single entity with an any other field:
+exports.findSingle = async (req, res) => {
+	try {
+		let data = await dbService.getSingleItem(db[req.query.model], req.query);
+		// console.log(data)
+		return res.send(data);
+	} catch (error) {
+		res.status(500).send({ message: "Error retrieving entity!"});		
+	}
+};
+
 //Update a entity identified by the id in the request:
 exports.update = async (req, res) => {
 	try {
+		console.log(req.body)
 		const id = req.params.id;
 		const data = await dbService.updateItem(db[req.query.model], {_id: id}, req.body);
 		if(data) {

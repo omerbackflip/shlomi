@@ -15,10 +15,12 @@
 					:single-expand="true"
 					mobile-breakpoint="0"
 					:search = "search"
+					:loading = "loading"
+					loader-height = "30"
 				>
 					<template v-slot:top>
 						<v-toolbar flat>
-							<v-toolbar-title>Total Tickets - {{tickets.length}}</v-toolbar-title>
+							<v-toolbar-title>{{selectedFilter}} Tickets - {{tickets.length}}</v-toolbar-title>
 							<v-text-field
 								v-model="search"
 								class="mx-4"
@@ -39,7 +41,7 @@
 							</ul>
 						</td>
 					</template>
-					<template v-slot:[`item.item`]="{ item }">
+					<!-- <template v-slot:[`item.item`]="{ item }">
 						<v-select  
 							label="Item"
 							v-model="item.item"
@@ -47,13 +49,16 @@
 							:items="listOfItems"
 						>
 						</v-select>
-					</template>					
+					</template>					 -->
 					<template v-slot:[`item.entryDate`]="{ item }">
 						<span>{{ new Date(item.entryDate).toLocaleDateString('he-EG') }}</span>
 					</template>
 					<template v-slot:[`item.fixDate`]="{ item }">
 						<span>{{ new Date(item.fixDate).toLocaleDateString('he-EG') }}</span>
 					</template>
+					<template v-slot:[`item.exitDate`]="{ item }">
+						<span>{{ new Date(item.exitDate).toLocaleDateString('he-EG') }}</span>
+					</template>					
 					<template v-slot:[`item.controls`]="{ item }">
 						<v-btn @click="updateTicket(item)" x-small>
 							<v-icon small>mdi-pencil</v-icon>
@@ -91,25 +96,29 @@ export default {
 			allTicketHeaders: ALL_TICKET_HEADERS,
 			listOfItems: [],
 			search: '',
+			selectedFilter: 'Open',
+			loading: '',
 		}
 	},
 
 	methods: {
 		async getTickets() {
+			this.loading = true
 			try {
-				const response = await apiService.get({model: TICKET_MODEL, limit:70});
-				if(response.data && response.data) {
+				const response = await apiService.getMany({model: TICKET_MODEL, ticketStatus: this.selectedFilter });
+				if(response.data) {
 					this.tickets = response.data;
 				}
 			} catch (error) {
 				console.log(error);
 			}
+			this.loading = false
 		},
 
 		async getItemList () {
 			try {
-				const response = await apiService.get({model: TABLE_MODEL, table_id : 1});
-				if(response.data && response.data) {
+				const response = await apiService.getMany({model: TABLE_MODEL, table_id : 1});
+				if(response.data) {
 					this.listOfItems = response.data.map ((item) => {
 						return (item.description)
 					});
@@ -122,18 +131,14 @@ export default {
 		margeCustomerName () {
 			try {
 				this.tickets.map (async (item) =>  {
-					const response = await apiService.get({model: CUSTOMER_MODEL, customerId : item.customerId});
+					// const response = await apiService.getMany({model: CUSTOMER_MODEL, customerId : item.customerId});
+					const response = await apiService.getOne({model: CUSTOMER_MODEL, customerId : item.customerId});
 					if(response.data) {
-						// console.log(response.data)
-						item.customerName = response.data[0].name + response.data[0].family;
+						item.customerName = response.data.name + ' ' + response.data.family;
 					}
 				})
-				// console.log(this.tickets)
-				// window.location.reload();
 				this.tickets.map (async (item) =>  {
-					console.log(item)
-					const response = await apiService.update(item._id, {...item},{model: TICKET_MODEL});
-					return (response)
+					await apiService.update(item._id, {...item},{model: TICKET_MODEL});
 				})
 			} catch (error) {
 				console.log(error);
@@ -171,6 +176,15 @@ export default {
 	mounted() {
 		this.getTickets();
 		this.getItemList();
+		this.$root.$on("filterChange", (filter) => {
+			this.selectedFilter = filter;
+		});
+	},
+
+	watch: {
+		selectedFilter() {
+			this.getTickets();
+		},
 	},
 };
 </script>

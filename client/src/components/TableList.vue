@@ -3,13 +3,6 @@
 		<v-container class="bg-surface-variant">
 			<v-row no-gutters>
         <v-col>
-        <!-- <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="חיפוש"
-          single-line
-          hide-details
-        ></v-text-field> -->
         <v-data-table
           :headers="headers"
           :items="tableID"
@@ -27,6 +20,7 @@
         >
           <template v-slot:top>
               <v-toolbar flat>
+							<v-toolbar-title>DATA - {{tables.length}}</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-btn @click="updateTable()" small class="mt-3">
                   <v-icon class="nav-icon" small >mdi-plus</v-icon>
@@ -56,7 +50,7 @@
               />
             </div>
             <!-- <div v-else @click="setEdit(item)"> -->
-            <div v-else @click="setEdit(item)">
+            <div v-else>
               <span> {{ item.description }}</span>
             </div>
           </template>
@@ -68,7 +62,7 @@
               />
               <!-- @blur="updateOne(item)"/> -->
             </div>
-            <div v-else @click="setEdit(item)">
+            <div v-else>
               <span> {{ item.table_id }}</span>
             </div>
           </template>
@@ -79,7 +73,7 @@
                 :id="`itemEdit-${item._id}`"
               />
             </div>
-            <div v-else @click="setEdit(item)">
+            <div v-else>
               <span> {{ item.table_code }}</span>
             </div>
           </template>
@@ -122,7 +116,7 @@
               />
             </div>
             <!-- <div v-else @click="setEdit(item)"> -->
-            <div v-else @click="setEdit(item)">
+            <div v-else>
               <span> {{ item.description }}</span>
             </div>
           </template>
@@ -134,7 +128,7 @@
               />
               <!-- @blur="updateOne(item)"/> -->
             </div>
-            <div v-else @click="setEdit(item)">
+            <div v-else>
               <span> {{ item.table_id }}</span>
             </div>
           </template>
@@ -145,7 +139,7 @@
                 :id="`itemEdit-${item._id}`"
               />
             </div>
-            <div v-else @click="setEdit(item)">
+            <div v-else>
               <span> {{ item.table_code }}</span>
             </div>
           </template>
@@ -219,9 +213,9 @@ export default {
       }
     },
 
-    retrieveTables() {
-      apiService
-        .get({ model: TABLE_MODEL, limit:9999 })
+    async retrieveTables() {
+      await apiService
+        .getMany({ model: TABLE_MODEL, limit:9999 })
         .then((response) => {
           this.tables = response.data;
           this.tableID = response.data.filter((item) => item.table_id === 99);

@@ -9,6 +9,9 @@ module.exports = app => {
 	// Retrieve all entity
 	router.get("/get-list", generic.findAll);
 
+	// Retrieve one entity
+	router.get("/get-one", generic.findSingle);
+
 	// Retrieve a single entity with id
 	router.get("/get-by-id/:id", generic.findOne);
 

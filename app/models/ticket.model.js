@@ -1,16 +1,17 @@
 module.exports = mongoose => {
 	var schema = mongoose.Schema(
 		{
-			ticketId: String,
+			ticketId: Number,
+			ticketStatus: String,
 			customerId: String,
 			customerName: String,
 			itemCode: Number,
 			item: String,
 			accessories: String,
 			defectDescription: String,
+			entryCondition: String,
 			entryDate: Date,
-			eta: Date,
-			checkPrice: String,
+			checkPrice: Number,
 			defaultFixPrice: Number,
 			prepaid: Number,
 			prepaidInvoice: String,

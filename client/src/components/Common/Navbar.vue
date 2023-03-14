@@ -4,6 +4,11 @@
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
             <v-toolbar-title>-Shlomi-</v-toolbar-title>
             <v-spacer></v-spacer>
+            <v-btn-toggle v-if="isTicketsList" v-model="ticketFilter" group mandatory @change="onFilterChange">
+                <v-btn text value="Open"     elevation='3' small> Open   </v-btn>
+                <v-btn text value="Fixed"    elevation='3' small> Fixed  </v-btn>
+                <v-btn text value="Closed"   elevation='3' small> Closed </v-btn>
+            </v-btn-toggle>
         </v-app-bar>
 
         <v-navigation-drawer app v-model="drawer" class="primary text-left ">
@@ -36,6 +41,7 @@ export default {
                 {icon: 'mdi-cash-multiple', text: 'Import Data', route: '/import'},
             ],
             dialog: false,
+            ticketFilter: 'Open',
         }
     },
     methods:{
@@ -48,8 +54,14 @@ export default {
                 link.onClick();
             }
         },
+        onFilterChange() {
+            this.$root.$emit('filterChange',this.ticketFilter);
+        },
     },
     computed: {
+        isTicketsList() {
+            return this.$route.name === 'ticket-list';
+        },
     }
 }
 </script>
