@@ -1,7 +1,7 @@
 <template>
     <v-dialog
         v-model="dialog"
-        width="500"
+        width="1600"
         :style="{ zIndex: options.zIndex }"
         @keydown.esc="cancel"
     >
@@ -22,9 +22,6 @@
                             ></v-text-field>
                     </v-col>
                     <v-col cols="4">
-                        <v-text-field type="number" v-model="ticket.itemCode" label="Item code"></v-text-field>
-                    </v-col>          
-                    <v-col cols="4">
                         <v-dialog ref="dialog" v-model="dateModal" :return-value.sync="ticket.entryDate" persistent width="290px">
                             <template v-slot:activator="{ on, attrs }">
                                 <v-text-field 
@@ -43,19 +40,44 @@
                         </v-dialog>
                     </v-col>
                     <v-col cols="4">
-                        <v-text-field v-model="ticket.item" label="Item"></v-text-field>
+                        <v-combobox
+                            v-model="ticket.item"
+                            :items="itemList"
+                            label="Item"
+                        ></v-combobox>
                     </v-col>
                     <v-col cols="4">
-                        <v-text-field v-model="ticket.defectDescription" label="Defect description"></v-text-field>
+                        <v-combobox
+                            v-model="ticket.defectDescription"
+                            :items="defectList"
+                            label="Defect description"
+                            multiple
+                        ></v-combobox>
                     </v-col>
                     <v-col cols="4">
-                        <v-text-field type="number" v-model="ticket.checkPrice" label="Check price"></v-text-field>
+                        <v-combobox
+                            v-model="ticket.accessories"
+                            :items="accessoriesList"
+                            label="Accessories"
+                            multiple
+                        ></v-combobox>
+                    </v-col>
+                    <v-col cols="4">
+                        <v-combobox
+                            v-model="ticket.entryCondition"
+                            :items="entryConditionList"
+                            label="Entry Condition"
+                            multiple
+                        ></v-combobox>
+                    </v-col>
+                    <v-col cols="4">
+                        <v-text-field v-model="ticket.checkPrice" label="Check price"></v-text-field>
                     </v-col>
                     <v-col cols="4"> 
-                        <v-text-field type="number" v-model="ticket.prepaid" label="Pre-paid"></v-text-field>
+                        <v-text-field v-model="ticket.prepaid" label="Pre-paid"></v-text-field>
                     </v-col>
                     <v-col cols="4">
-                        <v-text-field type="number" v-model="ticket.discountPrice" label="Discount price"></v-text-field>
+                        <v-text-field v-model="ticket.discountPrice" label="Discount price"></v-text-field>
                     </v-col>
                     <v-col cols="12">
                         <v-text-field v-model="ticket.remarks" label="Remark"></v-text-field>
@@ -73,7 +95,7 @@
 </template>
 
 <script>
-import { TICKET_MODEL } from "../constants/constants";
+import { TICKET_MODEL, TABLE_MODEL } from "../constants/constants";
 import apiService from "../services/apiService";
 
 export default {
@@ -89,11 +111,16 @@ export default {
 			message: '',
             options: {
                 color: "grey lighten-3",
-                width: 500,
-                zIndex: 200,
+                width: 1500,
+                zIndex: 1200,
             },
+            defectList: [],
+            itemList: [],
+            accessoriesList: [],
+            entryConditionList: [],
         };
     },
+
     methods: {
         async submitTicket() {
 			try {
@@ -123,6 +150,7 @@ export default {
         async open(ticket, newTicket) {
             this.newTicket = newTicket;
             this.ticket = newTicket ? {} : {...ticket};
+            console.log(this.ticket)
             this.dialog = true;
             return new Promise((resolve) => {
                 this.resolve = resolve;
@@ -130,8 +158,39 @@ export default {
         },
         getCustomer(){
             window.alert("here need to fetch a customer")
+        },
+        async getDefectList() {
+            let response = await apiService.getMany({model: TABLE_MODEL , table_id: 4} );
+            this.defectList = response.data.map((item) => {
+                return (item.description)
+            });
+        },
+        async getItemsList() {
+            let response = await apiService.getMany({model: TABLE_MODEL , table_id: 1} );
+            this.itemList = response.data.map((item) => {
+                return (item.description)
+            });
+        },
+        async getAccessoriesList() {
+            let response = await apiService.getMany({model: TABLE_MODEL , table_id: 11} );
+            this.accessoriesList = response.data.map((item) => {
+                return (item.description)
+            });
+        },
+        async getEntryConditionList() {
+            let response = await apiService.getMany({model: TABLE_MODEL , table_id: 12} );
+            this.entryConditionList = response.data.map((item) => {
+                return (item.description)
+            });
         }
     },
+
+    mounted() {
+		this.getDefectList();
+		this.getItemsList();
+		this.getAccessoriesList();
+		this.getEntryConditionList();
+	},
 };
 </script>
 

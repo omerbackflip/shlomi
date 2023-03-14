@@ -80,7 +80,7 @@
         </v-data-table>
         </v-col>
         <v-col>
-        <div class="title">{{ tableTitle ? tableTitle : "Title" }}</div>
+        <div class="title">{{ tableTitle ? tableTitle + ' - ' + tableCode.length: "Title" }}</div>
         <v-data-table
           :headers="headers"
           :items="tableCode"

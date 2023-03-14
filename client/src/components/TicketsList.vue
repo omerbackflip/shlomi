@@ -17,6 +17,7 @@
 					:search = "search"
 					:loading = "loading"
 					loader-height = "30"
+					dense
 				>
 					<template v-slot:top>
 						<v-toolbar flat>
