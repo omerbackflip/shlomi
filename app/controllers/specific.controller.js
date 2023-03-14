@@ -24,7 +24,7 @@ exports.saveCustomersBulk = async (req, res) => {
 
 	} catch (error) {
 		console.log(error)
-		res.status(500).send({ message: "Error saving payments", error });
+		res.status(500).send({ message: "Error saving customers", error });
 	}
 };
 
@@ -44,7 +44,7 @@ exports.saveTicketsBulk = async (req, res) => {
 
 	} catch (error) {
 		console.log(error)
-		res.status(500).send({ message: "Error saving payments", error });
+		res.status(500).send({ message: "Error saving tickets", error });
 	}
 };
 
@@ -64,7 +64,31 @@ exports.saveTablesBulk = async (req, res) => {
 
 	} catch (error) {
 		console.log(error)
-		res.status(500).send({ message: "Error saving payments", error });
+		res.status(500).send({ message: "Error saving tables", error });
+	}
+};
+
+exports.searchCustomer = async (req, res) => {
+	try {
+		const { customer } = req.query;
+		if(customer) {
+			const data = await Customer.aggregate([
+				{
+					$match: {
+						$or: [
+						   {"name":{ $regex:'.*' + customer + '.*',$options: 'i' } },
+						]
+					}
+				},
+			]);
+			res.send({success: true, customers: data});
+
+		} else {
+			res.send({success: false, message: "Search string is empty!"});
+		}
+	} catch (error) {
+		console.log(error)
+		res.status(500).send({ message: "Error searching customers", error });
 	}
 };
 

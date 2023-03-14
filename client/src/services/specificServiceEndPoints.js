@@ -31,6 +31,11 @@ class SpecificServiceEndPoints {
 			}
 		});
 	}
+
+
+	async searchCustomers(params) {
+		return await axios.get(`${baseUrl}/specific/search-customers`,{params});
+	}
 }
 
 export default new SpecificServiceEndPoints();

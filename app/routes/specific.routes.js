@@ -12,6 +12,8 @@ module.exports = app => {
   router.post("/save-customers",upload.single('file'), specific.saveCustomersBulk);
   router.post("/save-tables",upload.single('file'), specific.saveTablesBulk);
   router.post("/save-tickets",upload.single('file'), specific.saveTicketsBulk);
+
+  router.get("/search-customers", specific.searchCustomer);
   
   app.use('/api/specific', router);
 };

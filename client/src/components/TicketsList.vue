@@ -28,7 +28,7 @@
 								label="Search"
 							></v-text-field>
 							<v-spacer></v-spacer>
-							<v-btn @click="updateTicket()" small class="mt-3">
+							<v-btn @click="updateTicket()" small class="mt-3 mr-2">
 								<v-icon class="nav-icon" small >mdi-plus</v-icon>
 								New Ticket
 							</v-btn>

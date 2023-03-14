@@ -15,7 +15,7 @@
 
                    <v-row class="p-3 overflow-hidden">
                         <v-col cols="4" sm="6" md="4">
-                            <v-text-field v-model="customer.customerId" label="Customer ID"></v-text-field>
+                            <v-text-field type="number" v-model="customer.customerId" label="Customer ID"></v-text-field>
                         </v-col>
                         <v-col cols="4">
                             <v-text-field v-model="customer.name" label="Name"></v-text-field>

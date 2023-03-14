@@ -14,12 +14,16 @@
             </div>
                 <v-row class="p-4">
                     <v-col cols="4">
-                        <v-text-field 
-                            v-model="ticket.customerName" 
-                            label="Customer Name"
-                            append-icon="mdi-account"
-                            @click:append="getCustomer"
-                            ></v-text-field>
+
+                            <v-autocomplete
+                                v-model="ticket.customerName" 
+                                label="Customer Name"
+                                :search-input.sync="search"
+                                append-icon="mdi-account"
+                                @click:append="getCustomer"
+                                :items="customers"
+                            ></v-autocomplete>
+
                     </v-col>
                     <v-col cols="4">
                         <v-dialog ref="dialog" v-model="dateModal" :return-value.sync="ticket.entryDate" persistent width="290px">
@@ -88,7 +92,7 @@
                 <v-spacer></v-spacer>
                 <v-btn color="primary" text @click="dialog = false"> Cancel</v-btn>
                 <v-btn color="success" text @click="dialog = false"> Close Ticket</v-btn>
-                <v-btn :disabled = "!ticket.customerId" color="primary" text @click="submitTicket()"> Submit </v-btn>
+                <v-btn :disabled = "!ticket.customerName" color="primary" text @click="submitTicket()"> Submit </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -97,6 +101,8 @@
 <script>
 import { TICKET_MODEL, TABLE_MODEL } from "../constants/constants";
 import apiService from "../services/apiService";
+import specificServiceEndPoints from '../services/specificServiceEndPoints';
+import debounce from 'debounce';
 
 export default {
     name: "ticket-form",
@@ -107,6 +113,7 @@ export default {
             dateModal : false,
             resolve: null,  
 			showMessage: false,
+            search: '',
             newTicket: false,
 			message: '',
             options: {
@@ -118,6 +125,7 @@ export default {
             itemList: [],
             accessoriesList: [],
             entryConditionList: [],
+            customers: [],
         };
     },
 
@@ -147,6 +155,12 @@ export default {
 				console.log(error);
 			}
 		},
+        debounceInput: debounce(async function (value) {
+            if(value) {
+                let response = await specificServiceEndPoints.searchCustomers({customer: value});
+                this.customers = response.data.customers.map(item => item.name);
+            }
+        }, 200),
         async open(ticket, newTicket) {
             this.newTicket = newTicket;
             this.ticket = newTicket ? {} : {...ticket};
@@ -184,7 +198,15 @@ export default {
             });
         }
     },
+    watch: {
+        search (val) {
+            if (!val) {
+                return
+            }
 
+            this.debounceInput(val)
+        }
+    },
     mounted() {
 		this.getDefectList();
 		this.getItemsList();
