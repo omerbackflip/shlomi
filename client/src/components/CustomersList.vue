@@ -11,10 +11,13 @@
 					:items="customers"
 					item-key="customerId"
 					mobile-breakpoint="0"
+					:search="search"
 				>
 					<template v-slot:top>
 						<v-toolbar flat>
 							<v-toolbar-title>Customers - {{customers.length}}</v-toolbar-title>
+							<v-spacer></v-spacer>
+							<v-text-field v-model="search" class="mx-4"	label="Search" clearable></v-text-field>
 							<v-spacer></v-spacer>
 							<v-btn @click="updateCustomer()" small class="mt-3">
 								<v-icon class="nav-icon" small >mdi-plus</v-icon>
@@ -58,6 +61,7 @@ export default {
 			showMessage: false,
 			message: '',
 			headers: CUSTOMER_HEADERS,
+			search: '',
 		}
 	},
 

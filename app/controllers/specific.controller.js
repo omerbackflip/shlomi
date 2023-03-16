@@ -73,16 +73,9 @@ exports.searchCustomer = async (req, res) => {
 		const { customer } = req.query;
 		if(customer) {
 			const data = await Customer.aggregate([
-				{
-					$match: {
-						$or: [
-						   {"name":{ $regex:'.*' + customer + '.*',$options: 'i' } },
-						]
-					}
-				},
+				{$match:{$or:[{"name":{$regex:'.*' + customer + '.*',$options: 'i'}},]}},
 			]);
 			res.send({success: true, customers: data});
-
 		} else {
 			res.send({success: false, message: "Search string is empty!"});
 		}

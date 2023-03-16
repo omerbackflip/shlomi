@@ -2,6 +2,7 @@ module.exports = mongoose => {
 	const schema = mongoose.Schema(
 		{
 			customerId: Number,
+			fullName: String,
 			name: String,
 			family: String,
 			address: String,

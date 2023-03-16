@@ -18,15 +18,13 @@
 					:loading = "loading"
 					loader-height = "30"
 					dense
+					@click:row="updateTicket"
 				>
 					<template v-slot:top>
 						<v-toolbar flat>
 							<v-toolbar-title>{{selectedFilter}} Tickets - {{tickets.length}}</v-toolbar-title>
-							<v-text-field
-								v-model="search"
-								class="mx-4"
-								label="Search"
-							></v-text-field>
+							<v-spacer></v-spacer>
+							<v-text-field v-model="search" class="mx-4"	label="Search" clearable></v-text-field>
 							<v-spacer></v-spacer>
 							<v-btn @click="updateTicket()" small class="mt-3 mr-2">
 								<v-icon class="nav-icon" small >mdi-plus</v-icon>
@@ -35,35 +33,26 @@
 							<v-btn @click="margeCustomerName()" small class="mt-3">Merge</v-btn>
 						</v-toolbar>
 					</template>
-					<template v-slot:expanded-item="{headers,item}">
+					<!-- <template v-slot:expanded-item="{headers,item}">
 						<td :colspan="headers.length">
 							<ul class="expanded-datatable" :key="element._id" v-for="element in Object.keys(item)">
 								{{toTitleCase(element)}} : {{item[element]}}
 							</ul>
 						</td>
-					</template>
-					<!-- <template v-slot:[`item.item`]="{ item }">
-						<v-select  
-							label="Item"
-							v-model="item.item"
-							@change="(e) => onItemSelect(e,item)"
-							:items="listOfItems"
-						>
-						</v-select>
-					</template>					 -->
+					</template> -->
 					<template v-slot:[`item.entryDate`]="{ item }">
-						<span>{{ new Date(item.entryDate).toLocaleDateString('he-EG') }}</span>
+						<span>{{ new Date(item.entryDate).toLocaleDateString('sv-SE') }}</span>
 					</template>
 					<template v-slot:[`item.fixDate`]="{ item }">
-						<span>{{ new Date(item.fixDate).toLocaleDateString('he-EG') }}</span>
+						<span>{{ new Date(item.fixDate).getFullYear() != 1970 ? new Date(item.fixDate).toLocaleDateString('he-EG') : '-'}}</span>
 					</template>
 					<template v-slot:[`item.exitDate`]="{ item }">
-						<span>{{ new Date(item.exitDate).toLocaleDateString('he-EG') }}</span>
+						<span>{{ new Date(item.exitDate).getFullYear() != 1970 ? new Date(item.exitDate).toLocaleDateString('he-EG') : '-'}}</span>
 					</template>					
 					<template v-slot:[`item.controls`]="{ item }">
-						<v-btn @click="updateTicket(item)" x-small>
+						<!-- <v-btn @click="updateTicket(item)" x-small>
 							<v-icon small>mdi-pencil</v-icon>
-						</v-btn>
+						</v-btn> -->
 						<v-btn @click="deleteTicket(item._id)" x-small>
 							<v-icon small>mdi-delete</v-icon>
 						</v-btn>
@@ -206,6 +195,10 @@ export default {
 
 .v-data-table__expanded{
 	text-align: -webkit-center;
+}
+
+.row {
+	cursor: pointer;
 }
 
 </style>

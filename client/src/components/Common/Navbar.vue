@@ -6,6 +6,7 @@
             <v-spacer></v-spacer>
             <v-btn-toggle v-if="isTicketsList" v-model="ticketFilter" group mandatory @change="onFilterChange">
                 <v-btn text value="Open"     elevation='3' small> Open   </v-btn>
+                <v-btn text value="Checked"  elevation='3' small> Checked</v-btn>
                 <v-btn text value="Fixed"    elevation='3' small> Fixed  </v-btn>
                 <v-btn text value="Closed"   elevation='3' small> Closed </v-btn>
             </v-btn-toggle>

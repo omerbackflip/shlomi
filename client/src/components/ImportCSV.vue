@@ -13,11 +13,10 @@
 						<v-divider></v-divider>
 						<v-card-actions>
 							<v-spacer></v-spacer>
-							<v-btn :disabled = "!file" class="bordered-button" color="primary" text @click="submitFile(item.type)"> Submit </v-btn>
+							<v-btn :disabled = "!file" :loading="loading" class="bordered-button" color="primary" text @click="submitFile(item.type)"> Submit </v-btn>
 						</v-card-actions>
 					</v-card>
 				</v-col>
-				<v-progress-circular color="error" indeterminate v-show="loading" :size="76" :width="6"></v-progress-circular>
 			</v-row>
 		</v-container>
 
