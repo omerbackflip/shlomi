@@ -14,8 +14,8 @@
           @click:row="filterTbl"
           dense
           class="elevation-3 mr-2"
-          loading="isLoading"
-          loading-text="Loading... Please wait"
+					:loading = "loading"
+					loader-height = "30"
 					mobile-breakpoint="0"
         >
           <template v-slot:top>
@@ -90,8 +90,6 @@
           fixed-header
           height="75vh"
           class="elevation-3"
-          loading="isLoading"
-          loading-text="Loading... Please wait"
 					mobile-breakpoint="0"
         >
           <template v-slot:[`item.actions`]="{ item }">
@@ -171,23 +169,12 @@ export default {
       currentIndex: -1,
       search: "",
       headers: [
-        { text: "ID", value: "table_id", class: "" },
-        { text: "CODE", value: "table_code", class: "" },
-        {
-          text: "Description",
-          value: "description",
-          class: "",
-          groupable: false,
-        },
-        {
-          text: "Controls",
-          value: "actions",
-          sortable: false,
-          class: "",
-          groupable: false,
-        },
+        { text: "ID",           value: "table_id"},
+        { text: "CODE",         value: "table_code"},
+        { text: "Description",  value: "description"},
+        { text: "Controls",     value: "actions"},
       ],
-      isLoading: true,
+      loading: '',
       itemToEdit: "",
       tblFields: {
         id: "",
@@ -214,6 +201,7 @@ export default {
     },
 
     async retrieveTables() {
+			this.loading = true
       await apiService
         .getMany({ model: TABLE_MODEL, limit:9999 })
         .then((response) => {
@@ -223,6 +211,7 @@ export default {
         .catch((e) => {
           console.log(e);
         });
+			this.loading = false
     },
 
     refreshList() {

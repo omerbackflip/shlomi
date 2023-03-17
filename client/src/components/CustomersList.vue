@@ -12,6 +12,9 @@
 					item-key="customerId"
 					mobile-breakpoint="0"
 					:search="search"
+					:loading = "loading"
+					loader-height = "30"
+					dense					
 				>
 					<template v-slot:top>
 						<v-toolbar flat>
@@ -62,11 +65,13 @@ export default {
 			message: '',
 			headers: CUSTOMER_HEADERS,
 			search: '',
+			loading: '',
 		}
 	},
 
 	methods: {
 		async getCustomers() {
+			this.loading = true
 			try {
 				const response = await apiService.getMany({model: CUSTOMER_MODEL});
 				if(response.data) {
@@ -75,6 +80,7 @@ export default {
 			} catch (error) {
 				console.log(error);
 			}
+			this.loading = false
 		},
 
 		async updateCustomer(item) {
