@@ -10,6 +10,8 @@ module.exports = mongoose => {
 			accessories: [String],
 			defectDescription: [String],
 			entryCondition: [String],
+			defectsFound: [String],
+			defectFixes: [],
 			entryDate: Date,
 			checkPrice: Number,
 			defaultFixPrice: Number,
