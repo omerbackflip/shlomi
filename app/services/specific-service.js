@@ -42,7 +42,6 @@ exports.getTicketsToSave = (data) => {
                 accessories: item['accessories'],
                 defectDescription: item['Defect Description'],
                 entryCondition: item['Entry Condition'],
-                entryDate: !isNaN(Date.parse(item['Entry Date'])) ? item['Entry Date'] : new Date(),
                 checkPrice: item['Check Price'],
                 defaultFixPrice: item['defulat Fix Price'],
                 prepaid: item['pre-paied'],
@@ -52,15 +51,15 @@ exports.getTicketsToSave = (data) => {
                 vat: item['vat'],
                 total: item['total'],
                 approved: item['approve'],
-                fixDate: !isNaN(Date.parse(item['fix date'])) ? item['fix date'] : new Date(null),
-                exitDate: !isNaN(Date.parse(item['Exit date'])) ? item['Exit date'] : new Date(null),
                 paid: item['payed'],
                 rFinal: item['r final'],
                 receipt: item['recipt'],
                 invoice: item['Invoice'],
                 archive: item['Archive'],
-                partsCost: item['parts cost'],
-                elapseTime: !isNaN(Date.parse(item['Elapse time'])) ? item['Elapse time'] : new Date(),
+                year: item['Year'],
+                entryDate: !isNaN(Date.parse(item['Entry Date'])) ? item['Entry Date'] : new Date(),
+                fixDate: !isNaN(Date.parse(item['fix date'])) ? item['fix date'] : new Date(null),
+                exitDate: !isNaN(Date.parse(item['Exit date'])) ? item['Exit date'] : new Date(null),
             }
 
             tickets.push(ticket);

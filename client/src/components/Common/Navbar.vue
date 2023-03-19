@@ -8,7 +8,17 @@
                 <v-btn text value="Open"     elevation='3' small> Open   </v-btn>
                 <v-btn text value="Checked"  elevation='3' small> Checked</v-btn>
                 <v-btn text value="Fixed"    elevation='3' small> Fixed  </v-btn>
-                <v-btn text value="Closed"   elevation='3' small> Closed </v-btn>
+                <!-- <v-btn text value="Closed"   elevation='3' small> Closed </v-btn> -->
+                <v-menu offset-y>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn v-bind="attrs" v-on="on" elevation='3' small dense> Closed </v-btn>
+                    </template>
+                    <v-list>
+                        <v-list-item v-for="(year, index) in years" :key="index">
+                            <v-list-item-title @click="onFilterChange(year)">{{ year }}</v-list-item-title>
+                        </v-list-item>
+                    </v-list>
+                </v-menu>
             </v-btn-toggle>
         </v-app-bar>
 
@@ -43,6 +53,7 @@ export default {
             ],
             dialog: false,
             ticketFilter: 'Open',
+            years: [2000, 2001, 2002]
         }
     },
     methods:{
@@ -55,8 +66,9 @@ export default {
                 link.onClick();
             }
         },
-        onFilterChange() {
-            this.$root.$emit('filterChange',this.ticketFilter);
+        onFilterChange(year) {
+            // console.log(year)
+            if (year !=3 ) this.$root.$emit('filterChange',this.ticketFilter);
         },
     },
     computed: {

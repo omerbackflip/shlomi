@@ -22,7 +22,7 @@
 				>
 					<template v-slot:top>
 						<v-toolbar flat>
-							<v-toolbar-title>{{selectedFilter}} Tickets - {{tickets.length}}</v-toolbar-title>
+							<v-toolbar-title>{{ticketsFilter}} Tickets - {{tickets.length}}</v-toolbar-title>
 							<v-spacer></v-spacer>
 							<v-text-field v-model="search" class="mx-4"	label="Search" clearable></v-text-field>
 							<v-spacer></v-spacer>
@@ -86,16 +86,22 @@ export default {
 			allTicketHeaders: ALL_TICKET_HEADERS,
 			listOfItems: [],
 			search: '',
-			selectedFilter: 'Open',
+			ticketsFilter: 'Open',
 			loading: '',
 		}
 	},
 
 	methods: {
 		async getTickets() {
-			this.loading = true
+			this.loading = true;
+			let response = '';
 			try {
-				const response = await apiService.getMany({model: TICKET_MODEL, ticketStatus: this.selectedFilter });
+				if (isNaN(this.ticketsFilter)) { // get tickets by status
+					response = await apiService.getMany({model: TICKET_MODEL, ticketStatus: this.ticketsFilter });
+				} else {						// get tickets by year
+					console.log(this.ticketsFilter)
+					response = await apiService.getMany({model: TICKET_MODEL, year: this.ticketsFilter });  // change here NOT ticket FIler
+				}
 				if(response.data) {
 					this.tickets = response.data;
 				}
@@ -167,12 +173,12 @@ export default {
 		this.getTickets();
 		this.getItemList();
 		this.$root.$on("filterChange", (filter) => {
-			this.selectedFilter = filter;
+			this.ticketsFilter = filter;
 		});
 	},
 
 	watch: {
-		selectedFilter() {
+		ticketsFilter() {
 			this.getTickets();
 		},
 	},
