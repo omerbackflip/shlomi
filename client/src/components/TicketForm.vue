@@ -62,15 +62,13 @@
                                 <h4 class="area-header">
                                     Payment Area
                                 </h4>
-                                <v-text-field v-model="ticket.checkPrice" label="Check price"></v-text-field>
+                                <v-text-field type="number" v-model="ticket.checkPrice" label="Check price"></v-text-field>
 
-                                <v-text-field v-model="ticket.prepaid" label="Pre-paid"></v-text-field>
+                                <v-text-field type="number" v-model="ticket.prepaid" label="Pre-paid"></v-text-field>
 
                                 <v-text-field v-model="ticket.invoice" label="Invoice ID"></v-text-field>
 
-                                <v-text-field v-model="ticket.discountPrice" label="Discount price"></v-text-field>
-
-                                <v-text-field v-model="ticket.discountPrice" label="Discount price"></v-text-field>
+                                <v-text-field type="number" v-model="ticket.discountPrice" label="Discount price"></v-text-field>
 
                             </div>
                         <!-- ------------------- End Payment Area  ------------------- -->
@@ -89,8 +87,25 @@
                             <v-dialog ref="dialog" v-model="dateModal" :return-value.sync="ticket.fixDate" persistent width="290px">
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-text-field 
-                                    v-model="ticket.fixDate"
+                                    v-model="ticket.entryDate"
                                     label="Entry date"
+                                    readonly
+                                    v-bind="attrs"
+                                    v-on="on" >
+                                    </v-text-field>
+                                </template> 
+                                <v-date-picker v-model="ticket.entryDate" scrollable>
+                                    <v-spacer></v-spacer>
+                                    <v-btn text color="primary" @click="dateModal = false">Cancel</v-btn>
+                                    <v-btn text color="primary" @click="dateModal = false">OK</v-btn>
+                                </v-date-picker>
+                            </v-dialog>
+
+                            <v-dialog ref="dialog" v-model="dateModal2" :return-value.sync="ticket.fixDate" persistent width="290px">
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-text-field 
+                                    v-model="ticket.fixDate"
+                                    label="Fix date"
                                     readonly
                                     v-bind="attrs"
                                     v-on="on" >
@@ -98,24 +113,7 @@
                                 </template> 
                                 <v-date-picker v-model="ticket.fixDate" scrollable>
                                     <v-spacer></v-spacer>
-                                    <v-btn text color="primary" @click="dateModal = false">Cancel</v-btn>
-                                    <v-btn text color="primary" @click="$refs.dialog.save(ticket.fixDate)">OK</v-btn>
-                                </v-date-picker>
-                            </v-dialog>
-
-                            <v-dialog ref="dialog" v-model="dateModal" :return-value.sync="ticket.exitDate" persistent width="290px">
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-text-field 
-                                    v-model="ticket.exitDate"
-                                    label="Entry date"
-                                    readonly
-                                    v-bind="attrs"
-                                    v-on="on" >
-                                    </v-text-field>
-                                </template> 
-                                <v-date-picker v-model="ticket.exitDate" scrollable>
-                                    <v-spacer></v-spacer>
-                                    <v-btn text color="primary" @click="dateModal = false">Cancel</v-btn>
+                                    <v-btn text color="primary" @click="dateModal2 = false">Cancel</v-btn>
                                     <v-btn text color="primary" @click="$refs.dialog.save(ticket.exitDate)">OK</v-btn>
                                 </v-date-picker>
                             </v-dialog>
@@ -160,6 +158,7 @@ export default {
             ticket: {customerName:'asd'},
 			dialog: false,
             dateModal : false,
+            dateModal2 : false,
             resolve: null,  
 			showMessage: false,
             search: '',

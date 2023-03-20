@@ -40,16 +40,16 @@ export const ALL_TICKET_HEADERS = [
 ]
 
 export const CUSTOMER_HEADERS = [
-    { text: 'Customer ID', value: 'customerId', align:'end' },
-    { text: 'Full Name', value: 'fullName', align:'end' },
-    // { text: 'Name', value: 'name', align:'end' },
-    // { text: 'Family', value: 'family', align:'end' },
-    { text: 'Address', value: 'address', align:'end' },
-    { text: 'City', value: 'city', align:'end' },
-    { text: 'Phone 1', value: 'phone1', align:'end' },
-    { text: 'Phone 2', value: 'phone2', align:'end' },
-    { text: 'Phone 3', value: 'phone3', align:'end' },
-    { text: 'Arrived from', value: 'arrivedFrom', align:'end' },
-    { text: 'Issue Date', value: 'issueDate', align:'end' },
-    { text: '', value: 'controls' },
+    { name: 'Customer ID', prop: 'customerId' },
+    { name: 'Full Name', prop: '_action', actionName:'name' },
+    // { name: 'Name', prop: 'name' },
+    // { name: 'Family', prop: 'family' },
+    { name: 'Address', prop: 'address' },
+    { name: 'City', prop: 'city' },
+    { name: 'Phone 1', prop: 'phone1' },
+    { name: 'Phone 2', prop: 'phone2' },
+    { name: 'Phone 3', prop: 'phone3' },
+    { name: 'Arrived from', prop: 'arrivedFrom' },
+    { name: 'Issue Date', prop: '_action', actionName:'issueDate' },
+    { name: 'Controls', prop: '_action', actionName: 'actionCommon' },
 ]
