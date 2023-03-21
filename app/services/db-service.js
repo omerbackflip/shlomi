@@ -8,7 +8,7 @@ exports.getSingleItem = async (model,query) => {
 },
 exports.getMultipleItems = async (model,query) => {
     try {
-        let limit = query.limit || 999;
+        let limit = query.limit || 99999;
         let sort;
         delete query.limit;
         delete query.model;

@@ -9,9 +9,6 @@
 					fixed-header
 					height="75vh"
 					:items="tickets"
-					:expanded.sync="expanded"
-					item-key="ticketId"
-					show-expand
 					:single-expand="true"
 					mobile-breakpoint="0"
 					:search = "search"
@@ -33,26 +30,16 @@
 							<v-btn @click="margeCustomerName()" small class="mt-3">Merge</v-btn>
 						</v-toolbar>
 					</template>
-					<!-- <template v-slot:expanded-item="{headers,item}">
-						<td :colspan="headers.length">
-							<ul class="expanded-datatable" :key="element._id" v-for="element in Object.keys(item)">
-								{{toTitleCase(element)}} : {{item[element]}}
-							</ul>
-						</td>
-					</template> -->
 					<template v-slot:[`item.entryDate`]="{ item }">
 						<span>{{ new Date(item.entryDate).toLocaleDateString('sv-SE') }}</span>
 					</template>
 					<template v-slot:[`item.fixDate`]="{ item }">
-						<span>{{ new Date(item.fixDate).getFullYear() != 1970 ? new Date(item.fixDate).toLocaleDateString('he-EG') : '-'}}</span>
+						<span>{{ new Date(item.fixDate).getFullYear() != 1970 ? new Date(item.fixDate).toLocaleDateString('sv-SE') : '-'}}</span>
 					</template>
 					<template v-slot:[`item.exitDate`]="{ item }">
-						<span>{{ new Date(item.exitDate).getFullYear() != 1970 ? new Date(item.exitDate).toLocaleDateString('he-EG') : '-'}}</span>
+						<span>{{ new Date(item.exitDate).getFullYear() != 1970 ? new Date(item.exitDate).toLocaleDateString('sv-SE') : '-'}}</span>
 					</template>					
 					<template v-slot:[`item.controls`]="{ item }">
-						<!-- <v-btn @click="updateTicket(item)" x-small>
-							<v-icon small>mdi-pencil</v-icon>
-						</v-btn> -->
 						<v-btn @click="deleteTicket(item._id)" x-small>
 							<v-icon small>mdi-delete</v-icon>
 						</v-btn>
@@ -79,7 +66,6 @@ export default {
 	data() {
 		return {
 			tickets: [],
-			expanded: [],
 			showMessage: false,
 			message: '',
 			headers: TICKET_HEADERS,
@@ -99,9 +85,8 @@ export default {
 				if (isNaN(this.ticketsFilter)) { // get tickets by status
 					response = await apiService.getMany({model: TICKET_MODEL, ticketStatus: this.ticketsFilter });
 				} else {						// get tickets by year
-					console.log(this.ticketsFilter)
 					response = await apiService.getMany({model: TICKET_MODEL, year: this.ticketsFilter });  // change here NOT ticket FIler
-				}
+				}	
 				if(response.data) {
 					this.tickets = response.data;
 				}
@@ -190,13 +175,6 @@ export default {
 
 .field-margin{
 	margin: 12px;
-}
-
-.expanded-datatable{
-	width: 50%;
-    margin: 15px;
-    border: 1px solid #bd7244;
-	cursor: pointer;
 }
 
 .v-data-table__expanded{

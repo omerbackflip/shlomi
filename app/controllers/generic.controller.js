@@ -55,7 +55,6 @@ exports.findSingle = async (req, res) => {
 //Update a entity identified by the id in the request:
 exports.update = async (req, res) => {
 	try {
-		console.log(req.body)
 		const id = req.params.id;
 		const data = await dbService.updateItem(db[req.query.model], {_id: id}, req.body);
 		if(data) {

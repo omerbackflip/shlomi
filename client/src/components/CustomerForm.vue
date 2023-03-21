@@ -7,7 +7,7 @@
     >
         <v-card>
             <v-card-title class="text-h5 grey lighten-2">
-                {{!customer ? 'New' : 'Update'}} Customer
+                {{!(Object.keys(customer).length) ? 'New' : 'Update'}} Customer
             </v-card-title>
             <div class="field-margin" v-show="showMessage">
                 {{message}}
@@ -112,7 +112,7 @@ export default {
                 setTimeout(() => {
                     this.dialog = false;
                     this.showMessage = false;
-                    this.resolve(true);
+                    this.resolve(this.customer.name);
                 }, 2000);
 
 			} catch (error) {

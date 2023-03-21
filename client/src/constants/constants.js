@@ -4,6 +4,7 @@ export const TABLE_MODEL = 'tables';
 
 export const TICKET_HEADERS = [
     { text: 'Ticket ID', value: 'ticketId', align:'end' },
+    { text: 'Year', value: 'year', align:'end' },
     { text: 'Entry date', value: 'entryDate', align:'end' },
     { text: 'Customer Name', value: 'customerName', align:'end' },
     { text: 'Item', value: 'item', align:'end' },

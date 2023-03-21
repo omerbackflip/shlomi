@@ -4,22 +4,12 @@
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
             <v-toolbar-title>-Shlomi-</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn-toggle v-if="isTicketsList" v-model="ticketFilter" group mandatory @change="onFilterChange">
+            <v-btn-toggle v-if="isTicketsList" v-model="ticketStatus" @change="onFilterChange" group mandatory>
                 <v-btn text value="Open"     elevation='3' small> Open   </v-btn>
                 <v-btn text value="Checked"  elevation='3' small> Checked</v-btn>
                 <v-btn text value="Fixed"    elevation='3' small> Fixed  </v-btn>
-                <!-- <v-btn text value="Closed"   elevation='3' small> Closed </v-btn> -->
-                <v-menu offset-y>
-                    <template v-slot:activator="{ on, attrs }">
-                        <v-btn v-bind="attrs" v-on="on" elevation='3' small dense> Closed </v-btn>
-                    </template>
-                    <v-list>
-                        <v-list-item v-for="(year, index) in years" :key="index">
-                            <v-list-item-title @click="onFilterChange(year)">{{ year }}</v-list-item-title>
-                        </v-list-item>
-                    </v-list>
-                </v-menu>
             </v-btn-toggle>
+            <v-select :items="years" v-model="ticketYear" @change="onFilterChange" label = "Select Year"/>
         </v-app-bar>
 
         <v-navigation-drawer app v-model="drawer" class="primary text-left ">
@@ -52,12 +42,16 @@ export default {
                 {icon: 'mdi-cash-multiple', text: 'Import Data', route: '/import'},
             ],
             dialog: false,
-            ticketFilter: 'Open',
-            years: [2000, 2001, 2002]
+            ticketStatus: 'Open',
+            ticketYear: '2022',
+            years: [2023, 2022, 2021, 2020, 2019, 2018, 2017,
+                    2016, 2015, 2014, 2013, 2012, 2011, 2010,
+                    2009, 2008, 2007, 2006]
         }
     },
     methods:{
         navigate(link) {
+            this.drawer = !this.drawer
             if(link && link.route) {
                 if (this.$router.history.current.fullPath != link.route) {
                     this.$router.push({ path: link.route });
@@ -66,9 +60,8 @@ export default {
                 link.onClick();
             }
         },
-        onFilterChange(year) {
-            // console.log(year)
-            if (year !=3 ) this.$root.$emit('filterChange',this.ticketFilter);
+        onFilterChange(filter) {
+            this.$root.$emit('filterChange',filter);
         },
     },
     computed: {
@@ -128,6 +121,11 @@ export default {
         text-align: left !important;
     }
      
+    .v-input {
+        margin-bottom: 20px !important;
+        margin-left: 20px !important;
+        max-width: 6% !important;   
+    }
 
 </style>
 
