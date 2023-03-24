@@ -47,7 +47,24 @@
                                 </h4>
                                 <v-combobox v-model="ticket.item" :items="itemList" label="Item"></v-combobox>
                             
-                                <v-combobox v-model="ticket.accessories" :items="accessoriesList" label="Accessories" multiple></v-combobox>
+                                <v-combobox 
+                                    v-model="ticket.accessories" 
+                                    :items="accessoriesList" 
+                                    label="Accessories" 
+                                    multiple 
+                                    chips
+                                />
+
+                                <div v-if="ticket.accessories" class="items-wrapper">
+                                    <p class="selected-items">Selected accessories</p>
+                                        <ul >
+                                            <v-row > 
+                                                <v-col cols="6" v-for="value in ticket.accessories" :key="value">
+                                                    <li>{{value}}</li>
+                                                </v-col>
+                                            </v-row>
+                                        </ul>
+                                </div>
 
                                 <v-combobox v-model="ticket.entryCondition" :items="entryConditionList" label="Entry Condition" multiple></v-combobox>
                                 <v-combobox v-model="ticket.defectDescription" :items="defectList" label="Defect description" multiple></v-combobox>
@@ -84,39 +101,18 @@
                             <v-combobox v-model="ticket.defectsFound" :items="[]" label="Defects Found" multiple></v-combobox>
                             <v-combobox v-model="ticket.defectFixes" :items="[]" label="Defect Fixes" multiple></v-combobox>
 
-                            <v-dialog ref="dialog" v-model="dateModal" :return-value.sync="ticket.fixDate" persistent width="290px">
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-text-field 
-                                    v-model="ticket.entryDate"
-                                    label="Entry date"
-                                    readonly
-                                    v-bind="attrs"
-                                    v-on="on" >
-                                    </v-text-field>
-                                </template> 
-                                <v-date-picker v-model="ticket.entryDate" scrollable>
-                                    <v-spacer></v-spacer>
-                                    <v-btn text color="primary" @click="dateModal = false">Cancel</v-btn>
-                                    <v-btn text color="primary" @click="dateModal = false">OK</v-btn>
-                                </v-date-picker>
-                            </v-dialog>
-
-                            <v-dialog ref="dialog" v-model="dateModal2" :return-value.sync="ticket.fixDate" persistent width="290px">
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-text-field 
-                                    v-model="ticket.fixDate"
-                                    label="Fix date"
-                                    readonly
-                                    v-bind="attrs"
-                                    v-on="on" >
-                                    </v-text-field>
-                                </template> 
-                                <v-date-picker v-model="ticket.fixDate" scrollable>
-                                    <v-spacer></v-spacer>
-                                    <v-btn text color="primary" @click="dateModal2 = false">Cancel</v-btn>
-                                    <v-btn text color="primary" @click="$refs.dialog.save(ticket.exitDate)">OK</v-btn>
-                                </v-date-picker>
-                            </v-dialog>
+                            <v-menu offset-y>
+                                <template v-slot:activator="{ on }">
+                                    <v-text-field v-on="on" label="Entry Date" v-model="ticket.entryDate" readonly></v-text-field>
+                                </template>
+                                <v-date-picker v-model="ticket.entryDate"></v-date-picker>
+                            </v-menu>
+                            <v-menu offset-y>
+                                <template v-slot:activator="{ on }">
+                                    <v-text-field v-on="on" label="Exit Date" v-model="ticket.exitDate" readonly></v-text-field>
+                                </template>
+                                <v-date-picker v-model="ticket.exitDate"></v-date-picker>
+                            </v-menu>
 
                             <v-text-field v-model="ticket.remarks" label="Remark"></v-text-field>
 
@@ -279,4 +275,20 @@ export default {
         padding: 12px;
         margin: 12px;
     }
+
+    .items-wrapper{
+        text-align: left;
+        font-size: 11px;
+        line-height: 0;
+        border: 1px solid #ececec;
+        padding-top: 8px;
+        max-height: 77px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+
+    /deep/ .v-chip {
+        display: none !important;
+    }
+
 </style>
