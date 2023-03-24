@@ -9,7 +9,11 @@
                 <v-btn text value="Checked"  elevation='3' small> Checked</v-btn>
                 <v-btn text value="Fixed"    elevation='3' small> Fixed  </v-btn>
             </v-btn-toggle>
-            <v-select :items="years" v-model="ticketYear" @change="onFilterChange" label = "Select Year"/>
+            <v-select v-if="isTicketsList" :items="years" v-model="ticketYear" @change="onFilterChange" label = "Select Year"/>
+            <v-btn v-if="isCustomerList" text elevation='3' small @click="onAddCustomer"> 
+                <v-icon>mdi-plus</v-icon>
+                Add Customer 
+            </v-btn>
         </v-app-bar>
 
         <v-navigation-drawer app v-model="drawer" class="primary text-left ">
@@ -63,10 +67,16 @@ export default {
         onFilterChange(filter) {
             this.$root.$emit('filterChange',filter);
         },
+        onAddCustomer() {
+            this.$root.$emit('newCustomer');
+        },
     },
     computed: {
         isTicketsList() {
             return this.$route.name === 'ticket-list';
+        },
+        isCustomerList() {
+            return this.$route.name === 'customers-list';
         },
     }
 }

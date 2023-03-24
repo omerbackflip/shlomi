@@ -72,35 +72,36 @@
                             <h4 class="area-header"> Treatment Area </h4>
                             <v-combobox v-model="ticket.defectsFound" :items="[]" label="Defects Found" multiple></v-combobox>
                             <v-combobox v-model="ticket.defectFixes" :items="[]" label="Defect Fixes" multiple></v-combobox>
-                            <v-dialog ref="dialog" v-model="dateModal" :return-value.sync="ticket.fixDate" persistent width="290px">
+                            <v-dialog ref="dialog" v-model="dateModal" :return-value.sync="ticket.entryDate" persistent width="290px">
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-text-field 
-                                    v-model="ticket.fixDate"
-                                    label="Entry date"
-                                    readonly
-                                    v-bind="attrs"
-                                    v-on="on" >
+                                        v-model="ticket.entryDate"
+                                        label="Entry date"
+                                        readonly
+                                        v-bind="attrs"
+                                        v-on="on" >
+                                    </v-text-field>
+                                </template> 
+                                <v-date-picker v-model="ticket.entryDate" scrollable>
+                                    <v-spacer></v-spacer>
+                                    <v-btn text color="primary" @click="dateModal = false">Cancel</v-btn>
+                                    <v-btn text color="primary" @click="dateModal = false">OK</v-btn>
+                                </v-date-picker>
+                            </v-dialog>
+
+                            <v-dialog ref="dialog" v-model="dateModal2" :return-value.sync="ticket.fixDate" persistent width="290px">
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-text-field 
+                                        v-model="ticket.fixDate"
+                                        label="Fix date"
+                                        readonly
+                                        v-bind="attrs"
+                                        v-on="on" >
                                     </v-text-field>
                                 </template> 
                                 <v-date-picker v-model="ticket.fixDate" scrollable>
                                     <v-spacer></v-spacer>
-                                    <v-btn text color="primary" @click="dateModal = false">Cancel</v-btn>
-                                    <v-btn text color="primary" @click="$refs.dialog.save(ticket.fixDate)">OK</v-btn>
-                                </v-date-picker>
-                            </v-dialog>
-                            <v-dialog ref="dialog" v-model="dateModal" :return-value.sync="ticket.exitDate" persistent width="290px">
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-text-field 
-                                    v-model="ticket.exitDate"
-                                    label="Entry date"
-                                    readonly
-                                    v-bind="attrs"
-                                    v-on="on" >
-                                    </v-text-field>
-                                </template> 
-                                <v-date-picker v-model="ticket.exitDate" scrollable>
-                                    <v-spacer></v-spacer>
-                                    <v-btn text color="primary" @click="dateModal = false">Cancel</v-btn>
+                                    <v-btn text color="primary" @click="dateModal2 = false">Cancel</v-btn>
                                     <v-btn text color="primary" @click="$refs.dialog.save(ticket.exitDate)">OK</v-btn>
                                 </v-date-picker>
                             </v-dialog>
@@ -152,6 +153,7 @@ export default {
             ticket: {customerName:'asd'},
 			dialog: false,
             dateModal : false,
+            dateModal2 : false,
             resolve: null,  
 			showMessage: false,
             search: '',
@@ -180,7 +182,6 @@ export default {
                     const { ticketId } = lastTicket.data[0];
                     await apiService.create({...this.ticket, ticketId: ticketId+1} , {model:TICKET_MODEL});
 				} else {
-                    console.log(this.ticket)
 					await apiService.update(this.ticket._id , { ...this.ticket } , {model:TICKET_MODEL});
 				}
                 this.dialog = false;

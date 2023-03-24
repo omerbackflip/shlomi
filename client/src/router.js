@@ -13,7 +13,7 @@ export default new Router({
     },
     {
       path: "/customers",
-      name: "customerList",
+      name: "customers-list",
       component: () => import("./components/CustomersList")
     },
     {

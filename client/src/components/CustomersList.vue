@@ -2,7 +2,9 @@
 	<div class="list row">
 		<v-layout class="mt-1" row wrap>
 			<v-card class="p-3 m-3">
-				<v-data-table
+
+
+				<!-- <v-data-table
 					:headers="headers"
 					disable-pagination
 					hide-default-footer
@@ -31,6 +33,9 @@
 					<template v-slot:[`item.issueDate`]="{ item }">
 						<span>{{ item.issueDate ? new Date(item.issueDate).toDateString() : ''}}</span>
 					</template>
+					<template v-slot:[`item.fullName`]="{ item }">
+						<span>{{ item.name + ' ' + item.family}}</span>
+					</template>
 					<template v-slot:[`item.controls`]="{ item }">
 						<v-btn @click="updateCustomer(item)" x-small>
 							<v-icon small>mdi-pencil</v-icon>
@@ -39,7 +44,39 @@
 							<v-icon small>mdi-delete</v-icon>
 						</v-btn>
 					</template>
-				</v-data-table>
+				</v-data-table> -->
+
+
+				<vue-virtual-table
+					:config="headers"
+					:data="customers"
+					:height="800"			
+					:itemHeight="55"
+					:minWidth="1000"
+					:enableExport="true"
+					class="mt-2"
+					language = 'en'
+				>
+
+					<template slot-scope="item" slot="issueDate">
+						<span>{{ item.row.issueDate ? new Date(item.row.issueDate).toDateString() : ''}}</span>
+					</template>
+					<template slot-scope="scope" slot="name">
+						<div>{{ scope.row.name + ' ' + scope.row.family}}</div>
+					</template>
+
+					<template slot-scope="scope" slot="actionCommon">
+						<v-btn @click="updateCustomer(scope.row)" x-small>
+							<v-icon small>mdi-pencil</v-icon>
+						</v-btn>
+						<v-btn  @click="deleteCustomer(scope.row._id)" x-small>
+							<v-icon small>mdi-delete</v-icon>
+						</v-btn>
+					</template>
+
+					
+				</vue-virtual-table>
+
 			</v-card>
 		</v-layout>
 		<customer-form ref="customerForm"/>
@@ -54,10 +91,11 @@ import { CUSTOMER_HEADERS, CUSTOMER_MODEL, } from "../constants/constants";
 import apiService from "../services/apiService";
 import CustomerForm from './CustomerForm.vue';
 import ConfirmDialog from './Common/ConfirmDialog.vue';
+import VueVirtualTable from 'vue-virtual-table'
 
 export default {
 	name: "customers-list",
-	components: { CustomerForm, ConfirmDialog },
+	components: { CustomerForm, ConfirmDialog,VueVirtualTable },
 	data() {
 		return {
 			customers: [],
@@ -73,7 +111,7 @@ export default {
 		async getCustomers() {
 			this.loading = true
 			try {
-				const response = await apiService.getMany({model: CUSTOMER_MODEL});
+				const response = await apiService.getMany({model: CUSTOMER_MODEL, limit: 99999});
 				if(response.data) {
 					this.customers = response.data;
 				}
@@ -107,6 +145,9 @@ export default {
 
 	mounted() {
 		this.getCustomers();
+		this.$root.$on("newCustomer", () => {
+			this.updateCustomer();
+		});
 	},
 };
 </script>
