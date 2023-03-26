@@ -62,7 +62,7 @@
                                 </h4>
                                 <v-row no-gutters>
                                     <v-col class="pl-2 pr-2" cols="12" sm="6" lg="6" md="6">
-                                        <v-combobox chips v-model="ticket.item" :items="itemList" multiple label="Item"></v-combobox>
+                                        <v-combobox chips v-model="ticket.item" :items="itemList" label="Item"></v-combobox>
                                     </v-col>
                                     <v-col cols="12" sm="6" lg="6" md="6">
                                         <v-combobox  
@@ -304,7 +304,7 @@ export default {
         margin: 12px;
     }
 
-    .v-chip{
+    /deep/ .v-chip{
         border-radius: 5px !important;
         font-size: 10px !important;
         height: 18px !important;
