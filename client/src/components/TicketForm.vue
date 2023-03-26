@@ -21,20 +21,35 @@
                             <h4 class="area-header">
                                 Customer Area
                             </h4>
-                            <v-autocomplete
-                                v-model="ticket.customerName" 
-                                label="Customer Name"
-                                auto-select-first
-                                :search-input.sync="search"
-                                append-icon="mdi-account-plus"
-                                cache-items
-                                class="mx-3"
-                                flat
-                                hide-no-data
-                                hide-details
-                                @click:append="openNewCustomerForm"
-                                :items="customers"
-                            ></v-autocomplete>
+                            <v-row no-gutters>
+                                <v-col cols="12" sm="6" lg="6" md="6">
+                                    <v-autocomplete
+                                        v-model="ticket.customerName" 
+                                        label="Customer Name"
+                                        auto-select-first
+                                        :search-input.sync="search"
+                                        append-icon="mdi-account-plus"
+                                        cache-items
+                                        class="mx-3"
+                                        flat
+                                        hide-no-data
+                                        hide-details
+                                        @click:append="openNewCustomerForm"
+                                        :items="customers"
+                                    ></v-autocomplete>
+                                </v-col>
+                                <v-col cols="12" sm="6" lg="6" md="6">
+                                    <v-text-field type="text" v-model="ticket.customerAddress" label="Address"></v-text-field>
+                                </v-col>
+                            </v-row>
+                            <v-row no-gutters>
+                                <v-col class="pl-2 pr-2" cols="12" sm="6" lg="6" md="6">
+                                    <v-text-field type="number" v-model="ticket.phone1" label="Phone 1"></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="6" lg="6" md="6">
+                                    <v-text-field type="number" v-model="ticket.phone2" label="Phone 2"></v-text-field>
+                                </v-col>
+                            </v-row>
                         </div>
                         <!-- ------------------- End Customer Area  ------------------- -->
                     </v-col>
@@ -45,30 +60,26 @@
                                 <h4 class="area-header">
                                     Item Area
                                 </h4>
-                                <v-combobox v-model="ticket.item" :items="itemList" label="Item"></v-combobox>
-                            
-                                <v-combobox 
-                                    v-model="ticket.accessories" 
-                                    :items="accessoriesList" 
-                                    label="Accessories" 
-                                    multiple 
-                                    chips
-                                />
-
-                                <div v-if="ticket.accessories" class="items-wrapper">
-                                    <p class="selected-items">Selected accessories</p>
-                                        <ul >
-                                            <v-row > 
-                                                <v-col cols="6" v-for="value in ticket.accessories" :key="value">
-                                                    <li>{{value}}</li>
-                                                </v-col>
-                                            </v-row>
-                                        </ul>
-                                </div>
-
-                                <v-combobox v-model="ticket.entryCondition" :items="entryConditionList" label="Entry Condition" multiple></v-combobox>
-                                <v-combobox v-model="ticket.defectDescription" :items="defectList" label="Defect description" multiple></v-combobox>
-
+                                <v-row no-gutters>
+                                    <v-col class="pl-2 pr-2" cols="12" sm="6" lg="6" md="6">
+                                        <v-combobox chips v-model="ticket.item" :items="itemList" multiple label="Item"></v-combobox>
+                                    </v-col>
+                                    <v-col cols="12" sm="6" lg="6" md="6">
+                                        <v-combobox  
+                                            v-model="ticket.accessories" 
+                                            :items="accessoriesList" 
+                                            label="Accessories" 
+                                            multiple 
+                                            chips
+                                        />
+                                    </v-col>
+                                    <v-col class="pl-2 pr-2" cols="12" sm="6" lg="6" md="6">
+                                        <v-combobox chips v-model="ticket.entryCondition" :items="entryConditionList" label="Entry Condition" multiple></v-combobox>
+                                    </v-col>
+                                    <v-col cols="12" sm="6" lg="6" md="6">
+                                        <v-combobox chips v-model="ticket.defectDescription" :items="defectList" label="Defect description" multiple></v-combobox>
+                                    </v-col>
+                                </v-row>
                             </div>
 
                             <!-- ------------------- End Item Area  ------------------- -->
@@ -79,14 +90,22 @@
                                 <h4 class="area-header">
                                     Payment Area
                                 </h4>
-                                <v-text-field type="number" v-model="ticket.checkPrice" label="Check price"></v-text-field>
+                                <v-row no-gutters>
+                                    <v-col class="pl-2 pr-2" cols="12" sm="6" lg="6" md="6">
+                                        <v-text-field type="number" v-model="ticket.checkPrice" label="Check price"></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="6" lg="6" md="6">
+                                        <v-text-field type="number" v-model="ticket.prepaid" label="Pre-paid"></v-text-field>
+                                    </v-col>
 
-                                <v-text-field type="number" v-model="ticket.prepaid" label="Pre-paid"></v-text-field>
+                                    <v-col class="pl-2 pr-2" cols="12" sm="6" lg="6" md="6">
+                                        <v-text-field v-model="ticket.invoice" label="Invoice ID"></v-text-field>
+                                    </v-col>
 
-                                <v-text-field v-model="ticket.invoice" label="Invoice ID"></v-text-field>
-
-                                <v-text-field type="number" v-model="ticket.discountPrice" label="Discount price"></v-text-field>
-
+                                    <v-col cols="12" sm="6" lg="6" md="6">
+                                        <v-text-field type="number" v-model="ticket.discountPrice" label="Discount price"></v-text-field>
+                                    </v-col>
+                                </v-row>
                             </div>
                         <!-- ------------------- End Payment Area  ------------------- -->
                     </v-col>
@@ -98,24 +117,33 @@
                             <h4 class="area-header">
                                 Treatment Area
                             </h4>
-                            <v-combobox v-model="ticket.defectsFound" :items="[]" label="Defects Found" multiple></v-combobox>
-                            <v-combobox v-model="ticket.defectFixes" :items="[]" label="Defect Fixes" multiple></v-combobox>
-
-                            <v-menu offset-y>
-                                <template v-slot:activator="{ on }">
-                                    <v-text-field v-on="on" label="Entry Date" v-model="ticket.entryDate" readonly></v-text-field>
-                                </template>
-                                <v-date-picker v-model="ticket.entryDate"></v-date-picker>
-                            </v-menu>
-                            <v-menu offset-y>
-                                <template v-slot:activator="{ on }">
-                                    <v-text-field v-on="on" label="Exit Date" v-model="ticket.exitDate" readonly></v-text-field>
-                                </template>
-                                <v-date-picker v-model="ticket.exitDate"></v-date-picker>
-                            </v-menu>
-
-                            <v-text-field v-model="ticket.remarks" label="Remark"></v-text-field>
-
+                            <v-row no-gutters>
+                                <v-col class="pl-2 pr-2" cols="12" sm="6" lg="6" md="6">
+                                    <v-combobox chips v-model="ticket.defectsFound" :items="[]" label="Defects Found" multiple></v-combobox>
+                                </v-col>
+                                <v-col cols="12" sm="6" lg="6" md="6">
+                                    <v-combobox chips v-model="ticket.defectFixes" :items="[]" label="Defect Fixes" multiple></v-combobox>
+                                </v-col>
+                                <v-col class="pl-2 pr-2" cols="12" sm="6" lg="6" md="6">
+                                    <v-menu offset-y>
+                                        <template v-slot:activator="{ on }">
+                                            <v-text-field v-on="on" label="Entry Date" v-model="ticket.entryDate" readonly></v-text-field>
+                                        </template>
+                                        <v-date-picker v-model="ticket.entryDate"></v-date-picker>
+                                    </v-menu>
+                                </v-col>
+                                <v-col cols="12" sm="6" lg="6" md="6">
+                                    <v-menu offset-y>
+                                        <template v-slot:activator="{ on }">
+                                            <v-text-field v-on="on" label="Exit Date" v-model="ticket.exitDate" readonly></v-text-field>
+                                        </template>
+                                        <v-date-picker v-model="ticket.exitDate"></v-date-picker>
+                                    </v-menu>
+                                </v-col>
+                                <v-col class="pl-2 pr-2" cols="12" sm="6" lg="6" md="6">
+                                    <v-text-field v-model="ticket.remarks" label="Remark"></v-text-field>
+                                </v-col>
+                            </v-row>
                         </div>
 
                     <!-- ------------------- End Treatment Area  ------------------- -->
@@ -276,19 +304,9 @@ export default {
         margin: 12px;
     }
 
-    .items-wrapper{
-        text-align: left;
-        font-size: 11px;
-        line-height: 0;
-        border: 1px solid #ececec;
-        padding-top: 8px;
-        max-height: 77px;
-        overflow-y: scroll;
-        overflow-x: hidden;
+    .v-chip{
+        border-radius: 5px !important;
+        font-size: 10px !important;
+        height: 18px !important;
     }
-
-    /deep/ .v-chip {
-        display: none !important;
-    }
-
 </style>
