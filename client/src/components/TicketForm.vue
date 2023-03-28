@@ -110,13 +110,13 @@
                                     <v-text-field v-model="ticket.prepaidInvoice" label="PP-Invoice"></v-text-field>
                                 </v-col>                                
                                 <v-col class="pl-2 pr-2" cols="1">
-                                    <v-text-field type="number" v-model="ticket.amount" label="Amount"></v-text-field>
+                                    <v-text-field @input="onAmountChange" type="number" v-model="ticket.amount" label="Amount"></v-text-field>
                                 </v-col>
                                 <v-col class="pl-2 pr-2" cols="1">
                                     <v-text-field type="vat" v-model="ticket.vat" label="VAT"></v-text-field>
                                 </v-col>
                                 <v-col class="pl-2 pr-2" cols="1">
-                                    <v-text-field type="total" v-model="ticket.total" label="Total"></v-text-field>
+                                    <v-text-field @input="onTotalChange" type="total" v-model="ticket.total" label="Total"></v-text-field>
                                 </v-col>
                                 <v-col class="pl-2 pr-2" cols="1">
                                     <v-text-field v-model="ticket.invoice" label="Invoice ID"></v-text-field>
@@ -154,7 +154,7 @@
 </template>
 
 <script>
-import { TICKET_MODEL, TABLE_MODEL, CUSTOMER_MODEL } from "../constants/constants";
+import { TICKET_MODEL, TABLE_MODEL, CUSTOMER_MODEL, VAT_PERCENTAGE } from "../constants/constants";
 import apiService from "../services/apiService";
 import specificServiceEndPoints from '../services/specificServiceEndPoints';
 import CustomerForm from './CustomerForm.vue';
@@ -283,6 +283,29 @@ export default {
                 return (item.description)
             });
         },
+
+        onAmountChange() {
+            let { amount } = this.ticket;
+            if(amount && amount >= 0) {
+                this.ticket.vat = ((amount * VAT_PERCENTAGE)/100).toFixed(2);
+                this.ticket.total = parseFloat(this.ticket.vat) + +amount;
+            } else {
+                this.ticket.amount = 0;
+                this.ticket.vat = 0;
+                this.ticket.total = 0;
+            }
+        },
+        onTotalChange() {
+            let { total } = this.ticket;
+            if(total && total >= 0) {
+                this.ticket.amount = (total/1.17).toFixed(2);
+                this.ticket.vat = parseFloat(this.ticket.total)- +this.ticket.amount;
+            } else {
+                this.ticket.amount = 0;
+                this.ticket.vat = 0;
+                this.ticket.total = 0;
+            }
+        }
     },
     watch: {
         search (val) {
