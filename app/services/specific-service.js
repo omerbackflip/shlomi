@@ -47,9 +47,11 @@ exports.getTicketsToSave = (data) => {
                 invoice: item['Invoice'],
                 total: item['total'],
                 year: item['Year'],
-                entryDate: !isNaN(Date.parse(item['Entry Date'])) ? item['Entry Date'] : new Date(),
-                fixDate: !isNaN(Date.parse(item['fix date'])) ? item['fix date'] : new Date(null),
-                exitDate: !isNaN(Date.parse(item['Exit date'])) ? item['Exit date'] : new Date(null),
+                entryDate: !isNaN(Date.parse(item['Entry Date'])) ? item['Entry Date'] : null,
+                // fixDate: !isNaN(Date.parse(item['fix date'])) ? item['fix date'] : ('0000-00-00'),
+                fixDate: !isNaN(Date.parse(item['fix date'])) ? item['fix date'] : null,
+                // exitDate: !isNaN(Date.parse(item['Exit date'])) ? item['Exit date'] : ('0000-00-00'),
+                exitDate: !isNaN(Date.parse(item['Exit date'])) ? item['Exit date'] : null,
                 remarks: item['Remarks'],
             }
 

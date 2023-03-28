@@ -27,22 +27,23 @@
 								<v-icon class="nav-icon" small >mdi-plus</v-icon>
 								New Ticket
 							</v-btn>
-							<v-btn @click="margeCustomerName()" small class="mt-3">Merge</v-btn>
 						</v-toolbar>
 					</template>
 					<template v-slot:[`item.entryDate`]="{ item }">
-						<span>{{ new Date(item.entryDate).toLocaleDateString('sv-SE') }}</span>
+						<span>{{ item.entryDate ? new Date(item.entryDate).toLocaleDateString('sv-SE') : '-'}}</span>
 					</template>
 					<template v-slot:[`item.fixDate`]="{ item }">
-						<span>{{ new Date(item.fixDate).getFullYear() != 1970 ? new Date(item.fixDate).toLocaleDateString('sv-SE') : '-'}}</span>
+						<span>{{ item.fixDate ? new Date(item.fixDate).toLocaleDateString('sv-SE') : '-'}}</span>
 					</template>
 					<template v-slot:[`item.exitDate`]="{ item }">
-						<span>{{ new Date(item.exitDate).getFullYear() != 1970 ? new Date(item.exitDate).toLocaleDateString('sv-SE') : '-'}}</span>
+						<span>{{ item.exitDate ? new Date(item.exitDate).toLocaleDateString('sv-SE') : '-'}}</span>
 					</template>					
 					<template v-slot:[`item.controls`]="{ item }">
-						<v-btn @click="deleteTicket(item._id)" x-small>
-							<v-icon small>mdi-delete</v-icon>
-						</v-btn>
+						<td @click.stop>
+							<v-btn @click="deleteTicket(item._id)" x-small>
+								<v-icon small>mdi-delete</v-icon>
+							</v-btn>
+						</td>
 					</template>
 				</v-data-table>
 			</v-card>
@@ -55,7 +56,7 @@
 
 
 <script>
-import { ALL_TICKET_HEADERS, TICKET_HEADERS, TICKET_MODEL, TABLE_MODEL, CUSTOMER_MODEL } from "../constants/constants";
+import { TICKET_HEADERS, TICKET_MODEL, TABLE_MODEL} from "../constants/constants";
 import apiService from "../services/apiService";
 import TicketForm from './TicketForm.vue';
 import ConfirmDialog from './Common/ConfirmDialog.vue';
@@ -69,7 +70,6 @@ export default {
 			showMessage: false,
 			message: '',
 			headers: TICKET_HEADERS,
-			allTicketHeaders: ALL_TICKET_HEADERS,
 			listOfItems: [],
 			search: '',
 			ticketsFilter: 'Open',
@@ -108,32 +108,15 @@ export default {
 				console.log(error);
 			}
 		},
-
-		margeCustomerName () {
-			try {
-				this.tickets.map (async (item) =>  {
-					// const response = await apiService.getMany({model: CUSTOMER_MODEL, customerId : item.customerId});
-					const response = await apiService.getOne({model: CUSTOMER_MODEL, customerId : item.customerId});
-					if(response.data) {
-						item.customerName = response.data.name + ' ' + response.data.family;
-					}
-				})
-				this.tickets.map (async (item) =>  {
-					await apiService.update(item._id, {...item},{model: TICKET_MODEL});
-				})
-			} catch (error) {
-				console.log(error);
-			}
-		},
-
 		async updateTicket(item) {
 			let newTicket = item ? false : true;
 			await this.$refs.ticketForm.open(item, newTicket);
+			console.log("AFTER OPEN FORM TICKET")
 			this.getTickets();
 		},
-		async onItemSelect(value,data) {
-			await apiService.update( data._id, {...data , item: value}, {model: TICKET_MODEL});
-		},
+		// async onItemSelect(value,data) {
+		// 	await apiService.update( data._id, {...data , item: value}, {model: TICKET_MODEL});
+		// },
 		async deleteTicket(id) {
 			try {
 				if(id) {
@@ -147,10 +130,10 @@ export default {
 				console.log(error);		
 			}
 		},
-		toTitleCase(text) {
-			const result = text.replace(/([A-Z])/g, " $1");
-			return result.charAt(0).toUpperCase() + result.slice(1);
-		}
+		// toTitleCase(text) {
+		// 	const result = text.replace(/([A-Z])/g, " $1");
+		// 	return result.charAt(0).toUpperCase() + result.slice(1);
+		// }
 
 	},
 

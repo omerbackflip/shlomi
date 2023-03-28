@@ -17,29 +17,6 @@ export const TICKET_HEADERS = [
     { text: '', value: 'controls' },
 ]
 
-export const ALL_TICKET_HEADERS = [
-    { text: 'Customer ID', value: 'customerId', align:'end' },
-    { text: 'Item code', value: 'itemCode', align:'end' },
-    { text: 'Entry Contition', value: 'entryContition', align:'end' },
-    { text: 'Check price', value: 'checkPrice', align:'end' },
-    { text: 'Pre-paid', value: 'prepaid', align:'end' },
-    { text: 'Discount price', value: 'discountPrice', align:'end' },
-    { text: 'Repair price', value: 'repairPrice', align:'end' },
-    { text: 'Accessories', value: 'accessories', align:'end' },
-    { text: 'Default Fix Price', value: 'defaultFixPrice', align:'end' },
-    { text: 'Prepaid invoice', value: 'prepaidInvoice', align:'end' },
-    { text: 'Discount %', value: 'discount', align:'end' },
-    { text: 'Exit Date', value: 'exitDate', align:'end' },
-    { text: 'Paid', value: 'paid', align:'end' },
-    { text: 'r Final', value: 'rFinal', align:'end' },
-    { text: 'Receipt', value: 'receipt', align:'end' },
-    { text: 'Archive', value: 'archive', align:'end' },
-    { text: 'PartsCost', value: 'partsCost', align:'end' },
-    { text: 'Elapse Time', value: 'elapseTime', align:'end' },
-    { text: 'Prepaid Invoice', value: 'prepaidInvoice', align:'end' },
-    { text: 'Approved', value: 'approved', align:'end' },
-]
-
 export const CUSTOMER_HEADERS = [
     { name: 'Customer ID', prop: 'customerId' },
     { name: 'Full Name', prop: '_action', actionName:'name' },

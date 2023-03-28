@@ -2,122 +2,137 @@
     <v-dialog
         v-model="dialog"
         width="1200"
-        :style="{ zIndex: options.zIndex }"
         @keydown.esc="cancel"
     >
         <v-card class="overflow-hidden">
-            <v-card-title class="text-h5 grey lighten-2">
+            <v-card-title class="text-h6 grey lighten-2">
                 {{!(ticket.ticketId) ? 'New' : 'Update'}} Ticket - {{ticket.ticketId}}
             </v-card-title>
             <v-container>
-                <v-row no-gutters>
+                <v-row >
                     <!-- ------------------- Customer Area  ------------------- -->
                     <v-layout justify-center>
-                    <!-- <v-col cols="12" sm="6" lg="10" md="6"> -->
-                        <div class="customer-area v-area">
-                        <v-row>
-                            <h4 class="area-header"> Customer Area </h4>
-                            <v-col cols="3">
-                                <v-autocomplete
-                                    v-model="ticket.customerName" 
-                                    label="Customer Name"
-                                    auto-select-first
-                                    :search-input.sync="search"
-                                    append-icon="mdi-account-plus"
-                                    cache-items
-                                    class="mx-3"
-                                    flat
-                                    hide-no-data
-                                    hide-details
-                                    @click:append="openNewCustomerForm"
-                                    :items="customers"
-                                ></v-autocomplete>
-                            </v-col>
-                            <v-col cols="3">
-                                <v-text-field label="Address" v-model="customerInfo.address"></v-text-field>
-                            </v-col>
-                            <v-col cols="3">
-                                <v-text-field label="City" v-model="customerInfo.city"></v-text-field>
-                            </v-col>
-                            <v-col cols="3">                            
-                                <v-text-field label="Arrived from" v-model="customerInfo.arrivedFrom"></v-text-field>
-                            </v-col>                            <v-col cols="3">                            
-                                <v-text-field label="Phone1" v-model="customerInfo.phone1"></v-text-field>
-                            </v-col>
-                            <v-col cols="3">                            
-                                <v-text-field label="Phone2" v-model="customerInfo.phone2"></v-text-field>
-                            </v-col>
-                            <v-col cols="3">                            
-                                <v-text-field label="Phone3" v-model="customerInfo.phone3"></v-text-field>
-                            </v-col>
-                        </v-row>
+                        <div class="v-area">
+                            <h6 class="area-header">Customer Area</h6>
+                            <v-row no-gutters>
+                                <v-col cols="3">
+                                    <v-autocomplete
+                                        v-model="ticket.customerName" 
+                                        label="Customer Name"
+                                        auto-select-first
+                                        :search-input.sync="search"
+                                        append-icon="mdi-account-plus"
+                                        cache-items
+                                        class="mx-3"
+                                        flat
+                                        hide-no-data
+                                        hide-details
+                                        @click:append="openNewCustomerForm"
+                                        :items="customers"
+                                    ></v-autocomplete>
+                                </v-col>
+                                <v-col cols="3">
+                                    <v-text-field type="text" v-model="customerInfo.address" label="Address" readonly></v-text-field>
+                                </v-col>
+                                <v-col class="pl-2 pr-2" cols="2">
+                                    <v-text-field type="text" v-model="customerInfo.phone1" label="Phone 1" readonly></v-text-field>
+                                </v-col>
+                                <v-col class="pl-2 pr-2" cols="2">
+                                    <v-text-field type="text" v-model="customerInfo.phone2" label="Phone 2" readonly></v-text-field>
+                                </v-col>
+                                <v-col class="pl-2 pr-2" cols="2">
+                                    <v-text-field type="text" v-model="customerInfo.phone3" label="Phone 3" readonly></v-text-field>
+                                </v-col>                            </v-row>
                         </div>
-                    <!-- </v-col> -->
                     </v-layout>
-
                     <!-- ------------------- Item Area  ------------------- -->
-                    <v-col cols="12" sm="6" lg="6" md="6">
-                        <div class="item-area v-area">
-                            <h4 class="area-header"> Item Area </h4>
-                            <v-combobox v-model="ticket.item" :items="itemList" label="Item"></v-combobox>
-                            <v-combobox v-model="ticket.accessories" :items="accessoriesList" label="Accessories" multiple></v-combobox>
-                            <v-combobox v-model="ticket.entryCondition" :items="entryConditionList" label="Entry Condition" multiple></v-combobox>
-                            <v-combobox v-model="ticket.defectDescription" :items="defectList" label="Defect description" multiple></v-combobox>
-                            </div>
-                    </v-col>
-
-                    <!-- ------------------- Treatment Area  ------------------- -->
-                    <v-col cols="12" sm="6" lg="6" md="6">
-                        <div class="treatment-area v-area">
-                            <h4 class="area-header"> Treatment Area </h4>
-                            <v-combobox v-model="ticket.defectsFound" :items="[]" label="Defects Found" multiple></v-combobox>
-                            <v-combobox v-model="ticket.defectFixes" :items="[]" label="Defect Fixes" multiple></v-combobox>
-                            <v-dialog ref="dialog" v-model="dateModal" :return-value.sync="ticket.entryDate" persistent width="290px">
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-text-field 
-                                        v-model="ticket.entryDate"
-                                        label="Entry date"
-                                        readonly
-                                        v-bind="attrs"
-                                        v-on="on" >
-                                    </v-text-field>
-                                </template> 
-                                <v-date-picker v-model="ticket.entryDate" scrollable>
-                                    <v-spacer></v-spacer>
-                                    <v-btn text color="primary" @click="dateModal = false">Cancel</v-btn>
-                                    <v-btn text color="primary" @click="dateModal = false">OK</v-btn>
-                                </v-date-picker>
-                            </v-dialog>
-
-                            <v-dialog ref="dialog" v-model="dateModal2" :return-value.sync="ticket.fixDate" persistent width="290px">
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-text-field 
-                                        v-model="ticket.fixDate"
-                                        label="Fix date"
-                                        readonly
-                                        v-bind="attrs"
-                                        v-on="on" >
-                                    </v-text-field>
-                                </template> 
-                                <v-date-picker v-model="ticket.fixDate" scrollable>
-                                    <v-spacer></v-spacer>
-                                    <v-btn text color="primary" @click="dateModal2 = false">Cancel</v-btn>
-                                    <v-btn text color="primary" @click="$refs.dialog.save(ticket.exitDate)">OK</v-btn>
-                                </v-date-picker>
-                            </v-dialog>
-                            <v-text-field v-model="ticket.remarks" label="Remark"></v-text-field>
+                    <v-col cols="6">
+                        <div class="payment-area v-area">
+                            <h6 class="area-header">Item Area</h6>
+                            <v-row no-gutters>
+                                <v-col class="pl-2 pr-2" cols="6">
+                                    <v-combobox v-model="ticket.item" :items="itemList" label="Item"/>
+                                </v-col>
+                                <v-col class="pl-2 pr-2" cols="3">
+                                    <v-menu v-model="menu2" :close-on-content-click="false" nudge-right="40" transition="scale-transition" offset-y min-width="auto">
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-text-field v-model="ticket.entryDate" v-bind="attrs" v-on="on" label="Entry Date" readonly></v-text-field>
+                                        </template>
+                                        <v-date-picker v-model="ticket.entryDate" @input="menu2 = false"></v-date-picker>
+                                    </v-menu>
+                                </v-col>
+                                <v-col class="pl-2 pr-2" cols="2">
+                                    <v-text-field type="number" v-model="ticket.checkPrice" label="Check price"></v-text-field>
+                                </v-col>
+                                <v-col class="pl-2 pr-2" cols="12">
+                                    <v-combobox v-model="ticket.accessories" :items="accessoriesList" label="Accessories" multiple chips/>
+                                </v-col>
+                                <v-col class="pl-2 pr-2" cols="12">
+                                    <v-combobox v-model="ticket.entryCondition" :items="entryConditionList" label="Entry Condition" multiple chips/>
+                                </v-col>
+                                <v-col class="pl-2 pr-2" cols="12">
+                                    <v-combobox v-model="ticket.defectDescription" :items="defectList" label="Defect description" multiple chips/>
+                                </v-col>
+                            </v-row>
                         </div>
                     </v-col>
-
+                    <!-- ------------------- Treatment Area  ------------------- -->
+                    <v-col cols="6">
+                        <div class="treatment-area v-area">
+                            <h6 class="area-header">Treatment Area</h6>
+                            <v-row no-gutters>
+                                <v-col class="pl-2 pr-2" cols="12">
+                                    <v-combobox chips v-model="ticket.defectFound" :items="defectFoundList" label="Defects Found" multiple></v-combobox>
+                                </v-col>
+                                <v-col class="pl-2 pr-2" cols="12">
+                                    <v-combobox chips v-model="ticket.defectFixes" :items="defectFixesList" label="Defect Fixes" multiple></v-combobox>
+                                </v-col>
+                                <v-col class="pl-2 pr-2" cols="3">
+                                    <v-menu v-model="menu1" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-text-field v-model="ticket.fixDate" v-bind="attrs" v-on="on" label="Fix Date" readonly></v-text-field>
+                                        </template>
+                                        <v-date-picker v-model="ticket.fixDate" @input="menu1 = false"></v-date-picker>
+                                    </v-menu>
+                                </v-col>
+                            </v-row>
+                        </div>
+                    </v-col>
                     <!-- ------------------- Payment Area  ------------------- -->
-                    <v-col cols="12" sm="6" lg="6" md="6">
+                    <v-col cols="12" >
                         <div class="payment-area v-area">
-                            <h4 class="area-header"> Payment Area </h4>
-                            <v-text-field v-model="ticket.checkPrice" label="Check price"></v-text-field>
-                            <v-text-field v-model="ticket.prepaid" label="Pre-paid"></v-text-field>
-                            <v-text-field v-model="ticket.invoice" label="Invoice ID"></v-text-field>
-                            <v-text-field v-model="ticket.discountPrice" label="Discount price"></v-text-field>
-                            <v-text-field v-model="ticket.discountPrice" label="Discount price"></v-text-field>
+                            <h6 class="area-header">Payment Area</h6>
+                            <v-row no-gutters>
+                                <v-col class="pl-2 pr-2" cols="1">
+                                    <v-text-field type="number" v-model="ticket.prepaid" label="Pre-paid"></v-text-field>
+                                </v-col>
+                                <v-col class="pl-2 pr-2" cols="1">
+                                    <v-text-field v-model="ticket.prepaidInvoice" label="PP-Invoice"></v-text-field>
+                                </v-col>                                
+                                <v-col class="pl-2 pr-2" cols="1">
+                                    <v-text-field type="number" v-model="ticket.amount" label="Amount"></v-text-field>
+                                </v-col>
+                                <v-col class="pl-2 pr-2" cols="1">
+                                    <v-text-field type="vat" v-model="ticket.vat" label="VAT"></v-text-field>
+                                </v-col>
+                                <v-col class="pl-2 pr-2" cols="1">
+                                    <v-text-field type="total" v-model="ticket.total" label="Total"></v-text-field>
+                                </v-col>
+                                <v-col class="pl-2 pr-2" cols="1">
+                                    <v-text-field v-model="ticket.invoice" label="Invoice ID"></v-text-field>
+                                </v-col>
+                                <v-col class="pl-2 pr-2" cols="2">
+                                    <v-menu v-model="menu" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-text-field v-model="ticket.exitDate" v-bind="attrs" v-on="on" label="Exit Date" readonly></v-text-field>
+                                        </template>
+                                        <v-date-picker v-model="ticket.exitDate" @input="menu = false"></v-date-picker>
+                                    </v-menu>
+                                </v-col>
+                                <v-col class="pl-2 pr-2" cols="12">
+                                    <v-text-field v-model="ticket.remarks" label="Remark"></v-text-field>
+                                </v-col>
+                            </v-row>
                         </div>
                     </v-col>
                 </v-row>
@@ -167,9 +182,15 @@ export default {
             itemList: [],
             accessoriesList: [],
             entryConditionList: [],
+            defectFoundList: [],
+            defectFixesList: [],
             customers: [],
             customerInfo: '',
             loading: false,
+            menu: false,
+            menu1: false,
+            menu2: false,
+
         };
     },
 
@@ -178,6 +199,7 @@ export default {
             this.loading = true
 			try {
 				if(this.newTicket) {
+                    this.ticket.year = new Date(this.ticket.entryDate).getFullYear() ;
                     let lastTicket = await apiService.getMany({model: TICKET_MODEL , sort: {ticketId: -1 } , limit: 1});
                     const { ticketId } = lastTicket.data[0];
                     await apiService.create({...this.ticket, ticketId: ticketId+1} , {model:TICKET_MODEL});
@@ -205,6 +227,9 @@ export default {
                 this.customers.push(ticket.customerName);
                 const response = await apiService.getOne({model: CUSTOMER_MODEL, fullName:ticket.customerName})
                 this.customerInfo = response.data
+                this.ticket.exitDate ? this.ticket.exitDate = new Date (this.ticket.exitDate).toISOString().substr(0, 10) : ''
+                this.ticket.entryDate ? this.ticket.entryDate = new Date (this.ticket.entryDate).toISOString().substr(0, 10) : ''
+                this.ticket.fixDate ? this.ticket.fixDate = new Date (this.ticket.fixDate).toISOString().substr(0, 10) : ''
             }
             this.dialog = true;
             return new Promise((resolve) => {
@@ -244,6 +269,20 @@ export default {
                 return (item.description)
             });
         },
+
+        async getDefectFoundList() {
+            let response = await apiService.getMany({model: TABLE_MODEL , table_id: 5} );
+            this.defectFoundList = response.data.map((item) => {
+                return (item.description)
+            });
+        },
+
+        async getDefectFixesList() {
+            let response = await apiService.getMany({model: TABLE_MODEL , table_id: 6} );
+            this.defectFixesList = response.data.map((item) => {
+                return (item.description)
+            });
+        },
     },
     watch: {
         search (val) {
@@ -258,6 +297,8 @@ export default {
 		this.getItemsList();
 		this.getAccessoriesList();
 		this.getEntryConditionList();
+		this.getDefectFoundList();
+		this.getDefectFixesList();
 	},
 };
 </script>
@@ -272,7 +313,13 @@ export default {
     .v-area{
         border: 1px solid black;
         border-radius: 12px;
-        padding: 12px;
-        margin: 12px;
+        padding: 5px;
+        margin: 5px;
+    }
+
+    .v-chip{
+        border-radius: 5px !important;
+        font-size: 10px !important;
+        height: 18px !important;
     }
 </style>
