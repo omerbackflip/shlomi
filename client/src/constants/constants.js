@@ -20,16 +20,16 @@ export const TICKET_HEADERS = [
 ]
 
 export const CUSTOMER_HEADERS = [
-    { name: 'Customer ID', prop: 'customerId' },
-    { name: 'Full Name', prop: '_action', actionName:'name' },
-    // { name: 'Name', prop: 'name' },
-    // { name: 'Family', prop: 'family' },
-    { name: 'Address', prop: 'address' },
-    { name: 'City', prop: 'city' },
-    { name: 'Phone 1', prop: 'phone1' },
-    { name: 'Phone 2', prop: 'phone2' },
-    { name: 'Phone 3', prop: 'phone3' },
-    { name: 'Arrived from', prop: 'arrivedFrom' },
-    { name: 'Issue Date', prop: '_action', actionName:'issueDate' },
-    { name: 'Controls', prop: '_action', actionName: 'actionCommon' },
+    { name: 'Customer ID', prop: 'customerId' ,searchable: true},
+    { name: 'Full Name', prop: '_action', actionName:'name' ,searchable: true},
+    // { name: 'Name', prop: 'name' ,searchable: true},
+    // { name: 'Family', prop: 'family' ,searchable: true},
+    { name: 'Address', prop: 'address',searchable: true },
+    { name: 'City', prop: 'city' ,searchable: true},
+    { name: 'Phone 1', prop: 'phone1' ,searchable: true},
+    { name: 'Phone 2', prop: 'phone2' ,searchable: true},
+    { name: 'Phone 3', prop: 'phone3' ,searchable: true},
+    { name: 'Arrived from', prop: 'arrivedFrom' ,searchable: true},
+    { name: 'Issue Date', prop: '_action', actionName:'issueDate' ,searchable: true},
+    { name: 'Controls', prop: '_action', actionName: 'actionCommon' ,searchable: true},
 ]

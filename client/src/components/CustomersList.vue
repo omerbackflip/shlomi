@@ -46,17 +46,9 @@
 					</template>
 				</v-data-table> -->
 
-				<div class="search-wrapper">
-					<v-text-field
-					append-icon="mdi-magnify"
-					@change="onSearch"
-					label="Search..."
-					single-line                
-					></v-text-field>
-				</div>
 				<vue-virtual-table
 					:config="headers"
-					:data="searchedCustomers.length ? searchedCustomers : customers"
+					:data="customers"
 					:height="800"			
 					:itemHeight="55"
 					:minWidth="1000"
@@ -109,7 +101,6 @@ export default {
 			showMessage: false,
 			message: '',
 			headers: CUSTOMER_HEADERS,
-			searchedCustomers: [],
 			search: '',
 			loading: '',
 		}
@@ -133,19 +124,6 @@ export default {
 			let newCustomer = item ? false : true;
 			await this.$refs.customerForm.open(item, newCustomer);
 			this.getCustomers();
-		},
-		onSearch(search) {
-			if(!search) {
-				this.searchedCustomers = [];
-				return;
-			}
-			this.customers.forEach(customer => {
-				return Object.keys(customer).map(key => {
-					if(customer[key] === search) {
-						this.searchedCustomers.push(customer);
-					} 
-				});
-			});
 		},
 		async deleteCustomer(id) {
 			try {
@@ -189,9 +167,12 @@ export default {
 	text-align: -webkit-center;
 }
 .search-wrapper{
-	width: 20%;
+	/* width: 20%; */
     margin: 0;
     padding: 0;
     height: 40px;
+}
+.header-cell-inner[data-v-55a76cbe] {
+    word-break: normal;
 }
 </style>

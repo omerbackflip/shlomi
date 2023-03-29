@@ -207,6 +207,7 @@ export default {
 					await apiService.update(this.ticket._id , { ...this.ticket } , {model:TICKET_MODEL});
 				}
                 this.dialog = false;
+                this.resolve(true);
 			} catch (error) {
 				console.log(error);
 			}
