@@ -87,3 +87,41 @@ exports.getTablesToSave = (data) => {
         throw error;
     }
 }
+
+exports.getDefectsToSave = (data) => {
+    try {
+        let allList = [];
+        data.forEach(item => {
+            let table = {
+                ticketId: item['ticketId'],
+                type: item['type'],
+                id: item['id'],
+                description: item['description'],
+            }
+
+            allList.push(table);
+        });
+
+        let filteredList = allList;
+        filteredList = filteredList.filter((value, index, self) =>
+            index === self.findIndex((t) => ( t.ticketId === value.ticketId))
+        )
+
+        let aaa = filteredList.map((item) => {
+            let bbb = allList.filter((item1) => {
+                return item.ticketId === item1.ticketId
+            })
+            return (bbb.map((item2) => {return (item2.description)}))
+        })
+
+        console.log(aaa)
+
+
+
+        return allList;
+
+    } catch (error) {
+        console.log(error)
+        throw error;
+    }
+}

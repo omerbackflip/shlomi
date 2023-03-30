@@ -33,6 +33,17 @@ class SpecificServiceEndPoints {
 	}
 
 
+	async saveDefectsImport(file) {
+		var formData = new FormData();
+		formData.append("file", file);
+		return await axios.post(`${baseUrl}/specific/save-defects`, formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			}
+		});
+	}
+
+
 	async searchCustomers(params) {
 		return await axios.get(`${baseUrl}/specific/search-customers`,{params});
 	}

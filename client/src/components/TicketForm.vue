@@ -32,16 +32,16 @@
                                     ></v-autocomplete>
                                 </v-col>
                                 <v-col cols="3">
-                                    <v-text-field type="text" v-model="customerInfo.address" label="Address" readonly></v-text-field>
+                                    <v-text-field type="text" v-model="customerInfo.address" label="Address" readonly single-line></v-text-field>
                                 </v-col>
                                 <v-col class="pl-2 pr-2" cols="2">
-                                    <v-text-field type="text" v-model="customerInfo.phone1" label="Phone 1" readonly></v-text-field>
+                                    <v-text-field type="text" v-model="customerInfo.phone1" label="Phone 1" readonly single-line></v-text-field>
                                 </v-col>
                                 <v-col class="pl-2 pr-2" cols="2">
-                                    <v-text-field type="text" v-model="customerInfo.phone2" label="Phone 2" readonly></v-text-field>
+                                    <v-text-field type="text" v-model="customerInfo.phone2" label="Phone 2" readonly single-line></v-text-field>
                                 </v-col>
                                 <v-col class="pl-2 pr-2" cols="2">
-                                    <v-text-field type="text" v-model="customerInfo.phone3" label="Phone 3" readonly></v-text-field>
+                                    <v-text-field type="text" v-model="customerInfo.phone3" label="Phone 3" readonly single-line></v-text-field>
                                 </v-col>                            </v-row>
                         </div>
                     </v-layout>
@@ -231,7 +231,7 @@ export default {
                 this.ticket.exitDate ? this.ticket.exitDate = new Date (this.ticket.exitDate).toISOString().substr(0, 10) : ''
                 this.ticket.entryDate ? this.ticket.entryDate = new Date (this.ticket.entryDate).toISOString().substr(0, 10) : ''
                 this.ticket.fixDate ? this.ticket.fixDate = new Date (this.ticket.fixDate).toISOString().substr(0, 10) : ''
-            }
+            } else this.customerInfo = '';
             this.dialog = true;
             return new Promise((resolve) => {
                 this.resolve = resolve;
@@ -288,19 +288,20 @@ export default {
         onAmountChange() {
             let { amount } = this.ticket;
             if(amount && amount >= 0) {
-                this.ticket.vat = ((amount * VAT_PERCENTAGE)/100).toFixed(2);
-                this.ticket.total = parseFloat(this.ticket.vat) + +amount;
+                this.ticket.vat = ((parseFloat(amount) * VAT_PERCENTAGE)/100)
+                this.ticket.total = (this.ticket.vat + parseFloat(amount)).toFixed(0);
             } else {
                 this.ticket.amount = 0;
                 this.ticket.vat = 0;
                 this.ticket.total = 0;
             }
         },
+
         onTotalChange() {
             let { total } = this.ticket;
             if(total && total >= 0) {
-                this.ticket.amount = (total/1.17).toFixed(2);
-                this.ticket.vat = parseFloat(this.ticket.total)- +this.ticket.amount;
+                this.ticket.amount = (parseFloat(total)/(1+VAT_PERCENTAGE/100)).toFixed(0);
+                this.ticket.vat = (parseFloat(total)- this.ticket.amount).toFixed(0);
             } else {
                 this.ticket.amount = 0;
                 this.ticket.vat = 0;

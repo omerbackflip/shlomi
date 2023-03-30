@@ -49,7 +49,10 @@ export default {
 			},{
 				type: 'table',
 				title: 'Import Tables',
-			},],
+			},{
+				type: 'defects',	
+				title: 'Import Defects'
+			}],
 			loading: false,
 		};
 	},
@@ -73,6 +76,9 @@ export default {
 						break
 					case "table" :
 						response = await SpecificServiceEndPoints.saveTablesImport(this.file)
+						break
+					case "defects" :
+						response = await SpecificServiceEndPoints.saveDefectsImport(this.file)
 						break
 				}
 

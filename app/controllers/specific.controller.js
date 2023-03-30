@@ -9,7 +9,6 @@ const fs = require('fs');
 const { transformCSVData } = require("../util/util");
 
 exports.saveCustomersBulk = async (req, res) => {
-
 	try {
         await Customer.deleteMany();
 		var workbook = XLSX.readFile(`uploads/${req.file.filename}`);
@@ -29,7 +28,6 @@ exports.saveCustomersBulk = async (req, res) => {
 };
 
 exports.saveTicketsBulk = async (req, res) => {
-
 	try {
         await Ticket.deleteMany();
 		var workbook = XLSX.readFile(`uploads/${req.file.filename}`,{type: 'binary', cellDates: true, dateNF: 'yyyy/mm/dd;@'});
@@ -49,7 +47,6 @@ exports.saveTicketsBulk = async (req, res) => {
 };
 
 exports.saveTablesBulk = async (req, res) => {
-
 	try {
         await Table.deleteMany();
 		var workbook = XLSX.readFile(`uploads/${req.file.filename}`);
@@ -58,6 +55,25 @@ exports.saveTablesBulk = async (req, res) => {
 
         let tables = specificService.getTablesToSave(data[0]);
         await dbService.insertMany(Table,tables);
+
+        unLinkFile(`uploads/${req.file.filename}`);
+        return res.send({ success: true, message: `Total ${tables.length} tables successfully Imported`});
+
+	} catch (error) {
+		console.log(error)
+		res.status(500).send({ message: "Error saving tables", error });
+	}
+};
+
+exports.saveDefectsBulk = async (req, res) => {
+	try {
+		var workbook = XLSX.readFile(`uploads/${req.file.filename}`);
+		var sheet_name_list = workbook.SheetNames;
+		const data = transformCSVData(sheet_name_list , workbook);
+
+        let tables = specificService.getDefectsToSave(data[0]);
+        
+		// await dbService.insertMany(Table,tables);
 
         unLinkFile(`uploads/${req.file.filename}`);
         return res.send({ success: true, message: `Total ${tables.length} tables successfully Imported`});
