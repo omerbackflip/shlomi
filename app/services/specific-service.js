@@ -102,23 +102,27 @@ exports.getDefectsToSave = (data) => {
             allList.push(table);
         });
 
-        let filteredList = allList;
-        filteredList = filteredList.filter((value, index, self) =>
+        let filteredList = allList.filter((value, index, self) =>
             index === self.findIndex((t) => ( t.ticketId === value.ticketId))
         )
 
-        let aaa = filteredList.map((item) => {
-            let bbb = allList.filter((item1) => {
-                return item.ticketId === item1.ticketId
+        filteredList = filteredList.map((item) => {
+            let defectFound = allList.filter((item1) => {
+                return ((item.ticketId === item1.ticketId) && (item1.type ===1))
+            }).map((item2) => {
+                return(item2.description)
             })
-            return (bbb.map((item2) => {return (item2.description)}))
+
+            let defectFixes = allList.filter((item1) => {
+                return ((item.ticketId === item1.ticketId) && (item1.type ===2))
+            }).map((item2) => {
+                return(item2.description)
+            })
+
+            return ({ticketId:item.ticketId, defectFound, defectFixes})
         })
 
-        console.log(aaa)
-
-
-
-        return allList;
+        return filteredList;
 
     } catch (error) {
         console.log(error)

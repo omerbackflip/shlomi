@@ -71,16 +71,18 @@ exports.saveDefectsBulk = async (req, res) => {
 		var sheet_name_list = workbook.SheetNames;
 		const data = transformCSVData(sheet_name_list , workbook);
 
-        let tables = specificService.getDefectsToSave(data[0]);
+        let defectsArray = specificService.getDefectsToSave(data[0]);
         
-		// await dbService.insertMany(Table,tables);
-
+		console.log(defectsArray)
+		// here defectsArray is ready to be pushed for each ticket.
+		// Khalid - please take it from here... 
+		
         unLinkFile(`uploads/${req.file.filename}`);
-        return res.send({ success: true, message: `Total ${tables.length} tables successfully Imported`});
+        return res.send({ success: true, message: `Total ${defectsArray.length} defectsArray successfully Imported`});
 
 	} catch (error) {
 		console.log(error)
-		res.status(500).send({ message: "Error saving tables", error });
+		res.status(500).send({ message: "Error saving defectsArray", error });
 	}
 };
 
