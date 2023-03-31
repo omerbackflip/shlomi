@@ -171,7 +171,7 @@ export default {
       headers: [
         { text: "ID",           value: "table_id"},
         { text: "CODE",         value: "table_code"},
-        { text: "Description",  value: "description"},
+        { text: "Description",  value: "description", align:'end'},
         { text: "Controls",     value: "actions"},
       ],
       loading: '',

@@ -7,6 +7,7 @@ const specificService = require("../services/specific-service");
 const XLSX = require('xlsx');
 const fs = require('fs');
 const { transformCSVData } = require("../util/util");
+const ticketModel = require("../models/ticket.model");
 
 exports.saveCustomersBulk = async (req, res) => {
 	try {
@@ -72,10 +73,12 @@ exports.saveDefectsBulk = async (req, res) => {
 		const data = transformCSVData(sheet_name_list , workbook);
 
         let defectsArray = specificService.getDefectsToSave(data[0]);
-        
-		console.log(defectsArray)
-		// here defectsArray is ready to be pushed for each ticket.
-		// Khalid - please take it from here... 
+		defectsArray.map(async (item) => {
+			let ticket = dbService.getSingleItem(Ticket,{ticketId: item.ticketId})
+			ticket.defectFound = item.defectFound
+			ticket.defectFixes = item.defectFixes
+			await dbService.updateItem(Ticket,{ticketId:item.ticketId}, ticket)
+		})
 		
         unLinkFile(`uploads/${req.file.filename}`);
         return res.send({ success: true, message: `Total ${defectsArray.length} defectsArray successfully Imported`});
