@@ -1,5 +1,5 @@
 <template>
-    <nav>
+    <nav class="no-print">
         <v-app-bar app dark>
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
             <v-toolbar-title>-Shlomi-</v-toolbar-title>

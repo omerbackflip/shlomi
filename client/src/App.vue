@@ -52,4 +52,10 @@ import Navbar from './components/Common/Navbar.vue';
 	margin: 12px;
 }
 
+@media print {
+    .no-print {
+        display: none;
+    }
+}
+
 </style>

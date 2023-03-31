@@ -5,6 +5,10 @@
         @keydown.esc="cancel"
     >
         <v-card class="overflow-hidden">
+            <template v-if="onPrint">
+                <img class="print-logo" src="../../public/logo.png" alt="" srcset="" >
+            </template>
+
             <v-card-title class="text-h6 grey lighten-2">
                 {{!(ticket.ticketId) ? 'New' : 'Update'}} Ticket - {{ticket.ticketId}}
             </v-card-title>
@@ -145,6 +149,7 @@
                     <v-btn text value="Fixed"    elevation='3' small> Fixed  </v-btn>
                     <v-btn text value="Closed"   elevation='3' small> Closed </v-btn>
                 </v-btn-toggle>                <v-spacer></v-spacer>
+                    <v-btn color="primary" text @click="printTicket">Print</v-btn>
                     <v-btn color="primary" text @click="dialog = false"> Cancel</v-btn>
                     <v-btn :disabled = "!ticket.customerName" color="primary" text @click="submitTicket()" :loading="loading"> Save </v-btn>
             </v-card-actions>
@@ -165,7 +170,7 @@ export default {
     components: { CustomerForm },
     data() {
         return {
-            ticket: {customerName:'asd'},
+            ticket: {customerName:''},
 			dialog: false,
             dateModal : false,
             dateModal2 : false,
@@ -173,6 +178,7 @@ export default {
 			showMessage: false,
             search: '',
             newTicket: false,
+            onPrint: false,
             options: {
                 color: "grey lighten-3",
                 width: 1500,
@@ -236,6 +242,13 @@ export default {
             return new Promise((resolve) => {
                 this.resolve = resolve;
             });
+        },
+
+        printTicket() {
+            this.onPrint = true;
+            setTimeout(() => {
+                window.print();                
+            }, 1);
         },
 
         async openNewCustomerForm(){
@@ -347,4 +360,9 @@ export default {
         font-size: 10px !important;
         height: 18px !important;
     }
+
+    .print-logo{
+        width: 8%;
+    }
+
 </style>
