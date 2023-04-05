@@ -4,7 +4,7 @@
         width="1200"
         @keydown.esc="cancel"
     >
-        <v-card class="overflow-hidden">
+        <v-card class="overflow">
             <template v-if="onPrint">
                 <img class="print-logo" src="../../public/logo.png" alt="" srcset="" >
             </template>
@@ -38,13 +38,13 @@
                                 <v-col cols="3">
                                     <v-text-field type="text" v-model="customerInfo.address" label="Address" readonly single-line></v-text-field>
                                 </v-col>
-                                <v-col class="pl-2 pr-2" cols="2">
+                                <v-col class="px-2" cols="2">
                                     <v-text-field type="text" v-model="customerInfo.phone1" label="Phone 1" readonly single-line></v-text-field>
                                 </v-col>
-                                <v-col class="pl-2 pr-2" cols="2">
+                                <v-col class="px-2" cols="2">
                                     <v-text-field type="text" v-model="customerInfo.phone2" label="Phone 2" readonly single-line></v-text-field>
                                 </v-col>
-                                <v-col class="pl-2 pr-2" cols="2">
+                                <v-col class="px-2" cols="2">
                                     <v-text-field type="text" v-model="customerInfo.phone3" label="Phone 3" readonly single-line></v-text-field>
                                 </v-col>                            </v-row>
                         </div>
@@ -54,10 +54,10 @@
                         <div class="payment-area v-area">
                             <h6 class="area-header">Item Area</h6>
                             <v-row no-gutters>
-                                <v-col class="pl-2 pr-2" cols="6">
-                                    <v-combobox v-model="ticket.item" :items="itemList" label="Item"/>
+                                <v-col class="px-2" cols="6">
+                                    <v-combobox v-model="ticket.item" :items="itemList" label="Item" reverse/>
                                 </v-col>
-                                <v-col class="pl-2 pr-2" cols="3">
+                                <v-col class="px-2" cols="3">
                                     <v-menu v-model="menu2" :close-on-content-click="false" nudge-right="40" transition="scale-transition" offset-y min-width="auto">
                                         <template v-slot:activator="{ on, attrs }">
                                             <v-text-field v-model="ticket.entryDate" v-bind="attrs" v-on="on" label="Entry Date" readonly></v-text-field>
@@ -65,33 +65,33 @@
                                         <v-date-picker v-model="ticket.entryDate" @input="menu2 = false"></v-date-picker>
                                     </v-menu>
                                 </v-col>
-                                <v-col class="pl-2 pr-2" cols="2">
+                                <v-col class="px-2" cols="2">
                                     <v-text-field type="number" v-model="ticket.checkPrice" label="Check price"></v-text-field>
                                 </v-col>
-                                <v-col class="pl-2 pr-2" cols="12">
-                                    <v-combobox v-model="ticket.accessories" :items="accessoriesList" label="Accessories" multiple chips/>
+                                <v-col class="px-2" cols="12">
+                                    <v-combobox v-model="ticket.accessories" :items="accessoriesList" label="Accessories" multiple chips reverse/>
                                 </v-col>
-                                <v-col class="pl-2 pr-2" cols="12">
-                                    <v-combobox v-model="ticket.entryCondition" :items="entryConditionList" label="Entry Condition" multiple chips/>
+                                <v-col class="px-2" cols="12">
+                                    <v-combobox v-model="ticket.entryCondition" :items="entryConditionList" label="Entry Condition" multiple chips reverse/>
                                 </v-col>
-                                <v-col class="pl-2 pr-2" cols="12">
-                                    <v-combobox v-model="ticket.defectDescription" :items="defectList" label="Defect description" multiple chips/>
+                                <v-col class="px-2" cols="12">
+                                    <v-combobox v-model="ticket.defectDescription" :items="defectList" label="Defect description" multiple chips reverse/>
                                 </v-col>
                             </v-row>
                         </div>
                     </v-col>
                     <!-- ------------------- Treatment Area  ------------------- -->
                     <v-col cols="6">
-                        <div class="treatment-area v-area">
+                        <div class="treatment-area v-area" :class="{'no-print': noPrintTreatment}">
                             <h6 class="area-header">Treatment Area</h6>
                             <v-row no-gutters>
-                                <v-col class="pl-2 pr-2" cols="12">
-                                    <v-combobox chips v-model="ticket.defectFound" :items="defectFoundList" label="Defects Found" multiple></v-combobox>
+                                <v-col class="px-2" cols="12">
+                                    <v-combobox chips v-model="ticket.defectFound" :items="defectFoundList" label="Defects Found" multiple reverse></v-combobox>
                                 </v-col>
-                                <v-col class="pl-2 pr-2" cols="12">
-                                    <v-combobox chips v-model="ticket.defectFixes" :items="defectFixesList" label="Defect Fixes" multiple></v-combobox>
+                                <v-col class="px-2 " cols="12">
+                                    <v-combobox chips v-model="ticket.defectFixes" :items="defectFixesList" label="Defect Fixes" multiple reverse></v-combobox>
                                 </v-col>
-                                <v-col class="pl-2 pr-2" cols="3">
+                                <v-col class="px-2" cols="3">
                                     <v-menu v-model="menu1" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
                                         <template v-slot:activator="{ on, attrs }">
                                             <v-text-field v-model="ticket.fixDate" v-bind="attrs" v-on="on" label="Fix Date" readonly></v-text-field>
@@ -103,56 +103,59 @@
                         </div>
                     </v-col>
                     <!-- ------------------- Payment Area  ------------------- -->
-                    <v-col cols="12" >
+                    <v-col cols="6">
                         <div class="payment-area v-area">
                             <h6 class="area-header">Payment Area</h6>
                             <v-row no-gutters>
-                                <v-col class="pl-2 pr-2" cols="1">
+                                <v-col class="px-2" cols="2">
                                     <v-text-field type="number" v-model="ticket.prepaid" label="Pre-paid"></v-text-field>
                                 </v-col>
-                                <v-col class="pl-2 pr-2" cols="1">
+                                <v-col class="px-2" cols="2">
                                     <v-text-field v-model="ticket.prepaidInvoice" label="PP-Invoice"></v-text-field>
                                 </v-col>                                
-                                <v-col class="pl-2 pr-2" cols="1">
+                                <v-col class="px-2" cols="2">
                                     <v-text-field @input="onAmountChange" type="number" v-model="ticket.amount" label="Amount"></v-text-field>
                                 </v-col>
-                                <v-col class="pl-2 pr-2" cols="1">
+                                <v-col class="px-2" cols="2">
                                     <v-text-field type="vat" v-model="ticket.vat" label="VAT"></v-text-field>
                                 </v-col>
-                                <v-col class="pl-2 pr-2" cols="1">
+                                <v-col class="px-2" cols="2">
                                     <v-text-field @input="onTotalChange" type="total" v-model="ticket.total" label="Total"></v-text-field>
                                 </v-col>
-                                <v-col class="pl-2 pr-2" cols="1">
+                                <v-col class="px-2" cols="2">
                                     <v-text-field v-model="ticket.invoice" label="Invoice ID"></v-text-field>
                                 </v-col>
-                                <v-col class="pl-2 pr-2" cols="2">
+                                <v-col class="px-2" cols="3">
                                     <v-menu v-model="menu" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
                                         <template v-slot:activator="{ on, attrs }">
-                                            <v-text-field v-model="ticket.exitDate" v-bind="attrs" v-on="on" label="Exit Date" readonly></v-text-field>
+                                            <v-text-field v-model="ticket.exitDate" v-bind="attrs" v-on="on" label="Exit Date" readonly/>
                                         </template>
-                                        <v-date-picker v-model="ticket.exitDate" @input="menu = false"></v-date-picker>
+                                        <v-date-picker v-model="ticket.exitDate" @input="menu = false"/>
                                     </v-menu>
                                 </v-col>
-                                <v-col class="pl-2 pr-2" cols="12">
-                                    <v-text-field v-model="ticket.remarks" label="Remark"></v-text-field>
+                                <v-col class="px-2" cols="9">
+                                    <v-text-field v-model="ticket.remarks" label="Remark" reverse/>
                                 </v-col>
                             </v-row>
                         </div>
                     </v-col>
                 </v-row>
             </v-container>
-
-            <v-card-actions>
-                <v-btn-toggle v-model="ticket.ticketStatus" group mandatory color="error">
-                    <v-btn text value="Open"     elevation='3' small> Open   </v-btn>
-                    <v-btn text value="Checked"  elevation='3' small> Checked</v-btn>
-                    <v-btn text value="Fixed"    elevation='3' small> Fixed  </v-btn>
-                    <v-btn text value="Closed"   elevation='3' small> Closed </v-btn>
-                </v-btn-toggle>                <v-spacer></v-spacer>
-                    <v-btn color="primary" text @click="printTicket">Print</v-btn>
-                    <v-btn color="primary" text @click="dialog = false"> Cancel</v-btn>
-                    <v-btn :disabled = "!ticket.customerName" color="primary" text @click="submitTicket()" :loading="loading"> Save </v-btn>
-            </v-card-actions>
+            <div class="no-print">
+                <v-card-actions>
+                    <v-btn-toggle v-model="ticket.ticketStatus" group mandatory color="error">
+                        <v-btn text value="Open"     elevation='3' small> Open   </v-btn>
+                        <v-btn text value="Checked"  elevation='3' small> Checked</v-btn>
+                        <v-btn text value="Fixed"    elevation='3' small> Fixed  </v-btn>
+                        <v-btn text value="Closed"   elevation='3' small> Closed </v-btn>
+                    </v-btn-toggle>                
+                    <v-spacer></v-spacer>
+                        <v-btn color="primary" text @click="printTicket(noPrintTreatment = true)">PrintEntry</v-btn>
+                        <v-btn color="primary" text @click="printTicket(noPrintTreatment = false)">PrintExit</v-btn>
+                        <v-btn color="primary" text @click="dialog = false"> Cancel</v-btn>
+                        <v-btn :disabled = "!ticket.customerName" color="primary" text @click="submitTicket()" :loading="loading"> Save </v-btn>
+                </v-card-actions>
+            </div>
         </v-card>
         <customer-form ref="customerForm"/>
     </v-dialog>
@@ -196,7 +199,7 @@ export default {
             menu: false,
             menu1: false,
             menu2: false,
-
+            noPrintTreatment: false,
         };
     },
 
@@ -342,11 +345,8 @@ export default {
 </script>
 
 <style scoped>
-    .p-4{
-        padding: 15px
-    }
-    .overflow-hidden{
-        overflow: hidden;
+    .overflow{
+        overflow: scroll;
     }
     .v-area{
         border: 1px solid black;
@@ -355,14 +355,10 @@ export default {
         margin: 5px;
     }
 
-    .v-chip{
-        border-radius: 5px !important;
-        font-size: 10px !important;
-        height: 18px !important;
-    }
-
     .print-logo{
-        width: 8%;
+        width: 15%;
     }
-
+    .fixDefectFontSize {
+        font-variant-caps: all-small-caps !important;
+    }
 </style>
