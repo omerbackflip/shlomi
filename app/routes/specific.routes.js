@@ -15,6 +15,7 @@ module.exports = app => {
   router.post("/save-defects",upload.single('file'), specific.saveDefectsBulk);
 
   router.get("/search-customers", specific.searchCustomer);
+  router.post("/hasTickets-bulk", specific.hasTicketsBulk);
   
   app.use('/api/specific', router);
 };

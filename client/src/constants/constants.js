@@ -22,8 +22,6 @@ export const TICKET_HEADERS = [
 export const CUSTOMER_HEADERS = [
     { name: 'Customer ID', prop: 'customerId' ,searchable: true},
     { name: 'Full Name', prop: '_action', actionName:'name' ,searchable: true},
-    // { name: 'Name', prop: 'name' ,searchable: true},
-    // { name: 'Family', prop: 'family' ,searchable: true},
     { name: 'Address', prop: 'address',searchable: true },
     { name: 'City', prop: 'city' ,searchable: true},
     { name: 'Phone 1', prop: 'phone1' ,searchable: true},
@@ -32,4 +30,17 @@ export const CUSTOMER_HEADERS = [
     { name: 'Arrived from', prop: 'arrivedFrom' ,searchable: true},
     { name: 'Issue Date', prop: '_action', actionName:'issueDate' ,searchable: true},
     { name: 'Controls', prop: '_action', actionName: 'actionCommon' ,searchable: true},
+]
+
+export const CUSTOMER_HEADERS_VD = [
+    { text: 'Customer ID', value: 'customerId' , align:'end'},
+    { text: 'Full Name', value: 'fullName', actionName:'name' , align:'end'},
+    { text: 'Address', value: 'address', align:'end' },
+    // { text: 'City', value: 'city' , align:'end'},
+    { text: 'Phone 1', value: 'phone1' , align:'end'},
+    { text: 'Phone 2', value: 'phone2' , align:'end'},
+    { text: 'Phone 3', value: 'phone3' , align:'end'},
+    // { text: 'Arrived from', value: 'arrivedFrom' , align:'end'},
+    // { text: 'Issue Date', value: 'issueDate', align:'end'},
+    // { text: 'Controls', value: 'controls', align:'end'},
 ]

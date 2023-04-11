@@ -2,27 +2,32 @@
     <v-dialog
         v-model="dialog"
         width="1200"
-        @keydown.esc="cancel"
+        @keydown.esc="dialog = false"
     >
+        <div class="divHeader">
+            <img class="print-logo" src="../../public/logo.jpg" alt="" srcset="" >
+        </div>
+        <div class="divFooter">
+            חתימה : ___________________ 
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+            תאריך : {{ new Date().toISOString().substr(0, 10) }}
+        </div>
         <v-card class="overflow">
-            <template v-if="onPrint">
-                <img class="print-logo" src="../../public/logo.png" alt="" srcset="" >
-            </template>
-
             <v-card-title class="text-h6 grey lighten-2">
-                {{!(ticket.ticketId) ? 'New' : 'Update'}} Ticket - {{ticket.ticketId}}
+                {{!(ticket.ticketId) ? 'חדש' : 'עדכון'}} כרטיס תיקון - {{ticket.ticketId}}
             </v-card-title>
             <v-container>
                 <v-row >
                     <!-- ------------------- Customer Area  ------------------- -->
                     <v-layout justify-center>
                         <div class="v-area">
-                            <h6 class="area-header">Customer Area</h6>
+                            <h6 class="area-header">פרטי לקוח</h6>
                             <v-row no-gutters>
                                 <v-col cols="3">
                                     <v-autocomplete
                                         v-model="ticket.customerName" 
-                                        label="Customer Name"
+                                        label="שם לקוח"
                                         auto-select-first
                                         :search-input.sync="search"
                                         append-icon="mdi-account-plus"
@@ -36,65 +41,35 @@
                                     ></v-autocomplete>
                                 </v-col>
                                 <v-col cols="3">
-                                    <v-text-field type="text" v-model="customerInfo.address" label="Address" readonly single-line></v-text-field>
+                                    <v-text-field type="text" v-model="customerInfo.address" label="כתובת" readonly single-line></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="2">
-                                    <v-text-field type="text" v-model="customerInfo.phone1" label="Phone 1" readonly single-line></v-text-field>
+                                    <v-text-field type="text" v-model="customerInfo.phone1" label="טלפון 1" readonly single-line></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="2">
-                                    <v-text-field type="text" v-model="customerInfo.phone2" label="Phone 2" readonly single-line></v-text-field>
+                                    <v-text-field type="text" v-model="customerInfo.phone2" label="טלפון 2" readonly single-line></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="2">
-                                    <v-text-field type="text" v-model="customerInfo.phone3" label="Phone 3" readonly single-line></v-text-field>
-                                </v-col>                            </v-row>
-                        </div>
-                    </v-layout>
-                    <!-- ------------------- Item Area  ------------------- -->
-                    <v-col cols="6">
-                        <div class="payment-area v-area">
-                            <h6 class="area-header">Item Area</h6>
-                            <v-row no-gutters>
-                                <v-col class="px-2" cols="6">
-                                    <v-combobox v-model="ticket.item" :items="itemList" label="Item" reverse/>
-                                </v-col>
-                                <v-col class="px-2" cols="3">
-                                    <v-menu v-model="menu2" :close-on-content-click="false" nudge-right="40" transition="scale-transition" offset-y min-width="auto">
-                                        <template v-slot:activator="{ on, attrs }">
-                                            <v-text-field v-model="ticket.entryDate" v-bind="attrs" v-on="on" label="Entry Date" readonly></v-text-field>
-                                        </template>
-                                        <v-date-picker v-model="ticket.entryDate" @input="menu2 = false"></v-date-picker>
-                                    </v-menu>
-                                </v-col>
-                                <v-col class="px-2" cols="2">
-                                    <v-text-field type="number" v-model="ticket.checkPrice" label="Check price"></v-text-field>
-                                </v-col>
-                                <v-col class="px-2" cols="12">
-                                    <v-combobox v-model="ticket.accessories" :items="accessoriesList" label="Accessories" multiple chips reverse/>
-                                </v-col>
-                                <v-col class="px-2" cols="12">
-                                    <v-combobox v-model="ticket.entryCondition" :items="entryConditionList" label="Entry Condition" multiple chips reverse/>
-                                </v-col>
-                                <v-col class="px-2" cols="12">
-                                    <v-combobox v-model="ticket.defectDescription" :items="defectList" label="Defect description" multiple chips reverse/>
+                                    <v-text-field type="text" v-model="customerInfo.phone3" label="טלפון 3" readonly single-line></v-text-field>
                                 </v-col>
                             </v-row>
                         </div>
-                    </v-col>
+                    </v-layout>
                     <!-- ------------------- Treatment Area  ------------------- -->
                     <v-col cols="6">
-                        <div class="treatment-area v-area" :class="{'no-print': noPrintTreatment}">
-                            <h6 class="area-header">Treatment Area</h6>
+                        <div class="treatment-area v-areaMiddle v-area1" :class="{'no-print': disableTreatment}">
+                            <h6 class="area-header">טיפול במכשיר</h6>
                             <v-row no-gutters>
                                 <v-col class="px-2" cols="12">
-                                    <v-combobox chips v-model="ticket.defectFound" :items="defectFoundList" label="Defects Found" multiple reverse></v-combobox>
+                                    <v-combobox v-model="ticket.defectFound" :items="defectFoundList" label="רשימת ממצאים" multiple reverse></v-combobox>
                                 </v-col>
-                                <v-col class="px-2 " cols="12">
-                                    <v-combobox chips v-model="ticket.defectFixes" :items="defectFixesList" label="Defect Fixes" multiple reverse></v-combobox>
+                                <v-col class="px-2" cols="12">
+                                    <v-combobox v-model="ticket.defectFixes" :items="defectFixesList" label="רשימת תיקונים" multiple reverse></v-combobox>
                                 </v-col>
-                                <v-col class="px-2" cols="3">
+                                <v-col class="px-2" cols="4">
                                     <v-menu v-model="menu1" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
                                         <template v-slot:activator="{ on, attrs }">
-                                            <v-text-field v-model="ticket.fixDate" v-bind="attrs" v-on="on" label="Fix Date" readonly></v-text-field>
+                                            <v-text-field v-model="ticket.fixDate" v-bind="attrs" v-on="on" label="תאריך תיקון" readonly></v-text-field>
                                         </template>
                                         <v-date-picker v-model="ticket.fixDate" @input="menu1 = false"></v-date-picker>
                                     </v-menu>
@@ -102,39 +77,70 @@
                             </v-row>
                         </div>
                     </v-col>
-                    <!-- ------------------- Payment Area  ------------------- -->
+                    <!-- ------------------- Item Area  ------------------- -->
                     <v-col cols="6">
+                        <div class="payment-area v-areaMiddle v-area1">
+                            <h6 class="area-header">פרטי המכשיר</h6>
+                            <v-row no-gutters>
+                                <v-col class="px-2" cols="6">
+                                    <v-combobox v-model="ticket.item" :items="itemList" label="שם המכשיר" reverse/>
+                                </v-col>
+                                <v-col class="px-2" cols="4">
+                                    <v-menu v-model="menu2" :close-on-content-click="false" nudge-right="40" transition="scale-transition" offset-y min-width="auto">
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-text-field v-model="ticket.entryDate" v-bind="attrs" v-on="on" label="תאריך כניסה" readonly></v-text-field>
+                                        </template>
+                                        <v-date-picker v-model="ticket.entryDate" @input="menu2 = false"></v-date-picker>
+                                    </v-menu>
+                                </v-col>
+                                <v-col class="px-2" cols="2">
+                                    <v-text-field v-model="ticket.checkPrice" label="מחיר בדיקה"></v-text-field>
+                                </v-col>
+                                <v-col class="px-2" cols="12">
+                                    <v-combobox v-model="ticket.defectDescription" :items="defectList" label="תאור התקלה" multiple reverse dense/>
+                                </v-col>
+                                <v-col class="px-2" cols="12">
+                                    <v-combobox v-model="ticket.entryCondition" :items="entryConditionList" label="מצב המכשיר" multiple reverse dense/>
+                                </v-col>
+                                <v-col class="px-2" cols="12">
+                                    <v-combobox v-model="ticket.accessories" :items="accessoriesList" label="אביזר נוסף" multiple reverse/>
+                                </v-col>
+                            </v-row>
+                        </div>
+                    </v-col>
+                    <!-- ------------------- Payment Area  ------------------- -->
+                    <v-col cols="12">
                         <div class="payment-area v-area">
-                            <h6 class="area-header">Payment Area</h6>
+                            <h6 class="area-header">תשלומים</h6>
                             <v-row no-gutters>
                                 <v-col class="px-2" cols="2">
-                                    <v-text-field type="number" v-model="ticket.prepaid" label="Pre-paid"></v-text-field>
+                                    <v-text-field type="number" v-model="ticket.prepaid" label="שולם מראש" @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="2">
-                                    <v-text-field v-model="ticket.prepaidInvoice" label="PP-Invoice"></v-text-field>
+                                    <v-text-field v-model="ticket.prepaidInvoice" label="חשבונית מראש" @focus="$event.target.select()"></v-text-field>
                                 </v-col>                                
                                 <v-col class="px-2" cols="2">
-                                    <v-text-field @input="onAmountChange" type="number" v-model="ticket.amount" label="Amount"></v-text-field>
+                                    <v-text-field @input="onAmountChange" type="number" v-model="ticket.amount" label="סכום" @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="2">
-                                    <v-text-field type="vat" v-model="ticket.vat" label="VAT"></v-text-field>
+                                    <v-text-field type="vat" v-model="ticket.vat" label="מע'מ" @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="2">
-                                    <v-text-field @input="onTotalChange" type="total" v-model="ticket.total" label="Total"></v-text-field>
+                                    <v-text-field @input="onTotalChange" type="total" v-model="ticket.total" label="סה'ב" @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="2">
-                                    <v-text-field v-model="ticket.invoice" label="Invoice ID"></v-text-field>
+                                    <v-text-field v-model="ticket.invoice" label="חשבונית" @focus="$event.target.select()"></v-text-field>
                                 </v-col>
-                                <v-col class="px-2" cols="3">
+                                <v-col class="px-2" cols="4">
                                     <v-menu v-model="menu" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
                                         <template v-slot:activator="{ on, attrs }">
-                                            <v-text-field v-model="ticket.exitDate" v-bind="attrs" v-on="on" label="Exit Date" readonly/>
+                                            <v-text-field v-model="ticket.exitDate" v-bind="attrs" v-on="on" label="תאריך יציאה" readonly/>
                                         </template>
                                         <v-date-picker v-model="ticket.exitDate" @input="menu = false"/>
                                     </v-menu>
                                 </v-col>
-                                <v-col class="px-2" cols="9">
-                                    <v-text-field v-model="ticket.remarks" label="Remark" reverse/>
+                                <v-col class="px-2" cols="8">
+                                    <v-combobox v-model="ticket.remarks" :items="remarkList" label="הערות" reverse/>
                                 </v-col>
                             </v-row>
                         </div>
@@ -144,16 +150,18 @@
             <div class="no-print">
                 <v-card-actions>
                     <v-btn-toggle v-model="ticket.ticketStatus" group mandatory color="error">
-                        <v-btn text value="Open"     elevation='3' small> Open   </v-btn>
-                        <v-btn text value="Checked"  elevation='3' small> Checked</v-btn>
-                        <v-btn text value="Fixed"    elevation='3' small> Fixed  </v-btn>
-                        <v-btn text value="Closed"   elevation='3' small> Closed </v-btn>
+                        <v-btn text value="Open"     elevation='3' small> פתוח   </v-btn>
+                        <v-btn text value="Checked"  elevation='3' small> נבדק</v-btn>
+                        <v-btn text value="Fixed"    elevation='3' small> תוקן  </v-btn>
+                        <v-btn text value="Closed"   elevation='3' small> סגור </v-btn>
                     </v-btn-toggle>                
                     <v-spacer></v-spacer>
-                        <v-btn color="primary" text @click="printTicket(noPrintTreatment = true)">PrintEntry</v-btn>
-                        <v-btn color="primary" text @click="printTicket(noPrintTreatment = false)">PrintExit</v-btn>
-                        <v-btn color="primary" text @click="dialog = false"> Cancel</v-btn>
-                        <v-btn :disabled = "!ticket.customerName" color="primary" text @click="submitTicket()" :loading="loading"> Save </v-btn>
+                    <v-btn elevation='3' @click="printTicket(disableTreatment = true)" small>הדפסת קליטה</v-btn>
+                    <v-btn elevation='3' @click="printTicket(disableTreatment = false)" small>הדפסת יציאה</v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn :disabled = "!ticket.customerName" elevation='3' 
+                            @click="submitTicket()" :loading="loading" small> שמור </v-btn>
+                    <v-btn elevation='3' @click="dialog = false" small> בטל</v-btn>
                 </v-card-actions>
             </div>
         </v-card>
@@ -181,12 +189,6 @@ export default {
 			showMessage: false,
             search: '',
             newTicket: false,
-            onPrint: false,
-            options: {
-                color: "grey lighten-3",
-                width: 1500,
-                zIndex: 1200,
-            },
             defectList: [],
             itemList: [],
             accessoriesList: [],
@@ -194,12 +196,13 @@ export default {
             defectFoundList: [],
             defectFixesList: [],
             customers: [],
+            remarkList: '',
             customerInfo: '',
             loading: false,
             menu: false,
             menu1: false,
             menu2: false,
-            noPrintTreatment: false,
+            disableTreatment: false,
         };
     },
 
@@ -209,13 +212,14 @@ export default {
 			try {
 				if(this.newTicket) {
                     this.ticket.year = new Date(this.ticket.entryDate).getFullYear() ;
-                    let lastTicket = await apiService.getMany({model: TICKET_MODEL , sort: {ticketId: -1 } , limit: 1});
-                    const { ticketId } = lastTicket.data[0];
-                    await apiService.create({...this.ticket, ticketId: ticketId+1} , {model:TICKET_MODEL});
+                    // let lastTicket = await apiService.getMany({model: TICKET_MODEL , sort: {ticketId: -1 } , limit: 1});
+                    // const { ticketId } = lastTicket.data[0];
+                    // await apiService.create({...this.ticket, ticketId: ticketId+1} , {model:TICKET_MODEL});
+                    await apiService.create({...this.ticket} , {model:TICKET_MODEL});
 				} else {
 					await apiService.update(this.ticket._id , { ...this.ticket } , {model:TICKET_MODEL});
 				}
-                this.dialog = false;
+                this.dialog = false;            
                 this.resolve(true);
 			} catch (error) {
 				console.log(error);
@@ -226,21 +230,27 @@ export default {
         debounceInput: debounce(async function (value) {
             if(value) {
                 let response = await specificServiceEndPoints.searchCustomers({customer: value});
-                this.customers = response.data.customers.map(item => item.name);
+                this.customers = response.data.customers.map(item => item.fullName);
             }
-        }, 200),
+        }, 500),
 
         async open(ticket, newTicket) {
             this.newTicket = newTicket;
             this.ticket = newTicket ? {} : {...ticket};
-            if(!newTicket) {
+            if(newTicket) {
+                this.customerInfo = ''
+                this.ticket.entryDate = new Date().toISOString().substr(0, 10)
+                let lastTicket = await apiService.getMany({model: TICKET_MODEL , sort: {ticketId: -1 } , limit: 1});
+                const { ticketId } = lastTicket.data[0];
+                this.ticket.ticketId = ticketId+1
+            } else {
                 this.customers.push(ticket.customerName);
                 const response = await apiService.getOne({model: CUSTOMER_MODEL, fullName:ticket.customerName})
                 this.customerInfo = response.data
-                this.ticket.exitDate ? this.ticket.exitDate = new Date (this.ticket.exitDate).toISOString().substr(0, 10) : ''
-                this.ticket.entryDate ? this.ticket.entryDate = new Date (this.ticket.entryDate).toISOString().substr(0, 10) : ''
-                this.ticket.fixDate ? this.ticket.fixDate = new Date (this.ticket.fixDate).toISOString().substr(0, 10) : ''
-            } else this.customerInfo = '';
+                this.ticket.exitDate ? this.ticket.exitDate = new Date(this.ticket.exitDate).toISOString().substr(0, 10) : ''
+                this.ticket.entryDate ? this.ticket.entryDate = new Date(this.ticket.entryDate).toISOString().substr(0, 10) : ''
+                this.ticket.fixDate ? this.ticket.fixDate = new Date(this.ticket.fixDate).toISOString().substr(0, 10) : ''
+            }
             this.dialog = true;
             return new Promise((resolve) => {
                 this.resolve = resolve;
@@ -248,10 +258,10 @@ export default {
         },
 
         printTicket() {
-            this.onPrint = true;
             setTimeout(() => {
                 window.print();                
-            }, 1);
+            }, 20); // this delay is needed for "disableTreatment" to take effect
+            this.submitTicket() 
         },
 
         async openNewCustomerForm(){
@@ -266,8 +276,15 @@ export default {
             });
         },
 
+        async getRemarkList() {
+            let response = await apiService.getMany({model: TABLE_MODEL , table_id: 2} );
+            this.remarkList = response.data.map((item) => {
+                return (item.description)
+            });
+        },
+
         async getItemsList() {
-            let response = await apiService.getMany({model: TABLE_MODEL , table_id: 1} );
+            let response = await apiService.getMany({model: TABLE_MODEL , table_id: 3} );
             this.itemList = response.data.map((item) => {
                 return (item.description)
             });
@@ -331,6 +348,15 @@ export default {
                 return
             }
             this.debounceInput(val)
+        },
+
+        // Whenever the customer is piked - fatch customerInfo
+        async 'ticket.customerName' (newFullName) {
+            if (newFullName) {
+                const response = await apiService.getOne({model: CUSTOMER_MODEL, fullName:newFullName})
+                this.customerInfo = response.data
+                this.ticket.customerId = this.customerInfo.customerId
+            }
         }
     },
     mounted() {
@@ -340,25 +366,59 @@ export default {
 		this.getEntryConditionList();
 		this.getDefectFoundList();
 		this.getDefectFixesList();
+        this.getRemarkList();
 	},
 };
 </script>
 
 <style scoped>
     .overflow{
-        overflow: scroll;
+        overflow: auto;
     }
     .v-area{
         border: 1px solid black;
-        border-radius: 12px;
-        padding: 5px;
-        margin: 5px;
+        border-radius: 0px;
+        padding: 0px;
+        margin: 0px;
+    }
+    .v-areaMiddle{
+        border: 1px solid black;
+        border-radius: 0px;
+        padding: 0px;
+        margin: 0px;
+        height:360px;
     }
 
-    .print-logo{
-        width: 15%;
+    .area-header {
+        color: blue;
+        font-size: large;
+        font-style:italic;
     }
-    .fixDefectFontSize {
-        font-variant-caps: all-small-caps !important;
+    @media screen {
+        div.divHeader, div.divFooter{
+            display: none;
+        }
+    }
+    @media print {
+        .print-logo{
+            width: 30%;
+        }
+        div.divHeader {
+            position: fixed;
+            top: 0;
+        }
+        div.divFooter {
+            position: fixed;
+            bottom: 0;
+            font-size: larger ;
+        }
+        .v-area1{
+            border: 1px solid black;
+            border-radius: 0px;
+            padding: 0px;
+            margin: 0px;
+            /* width:470px; */
+            height:560px;
+        }
     }
 </style>

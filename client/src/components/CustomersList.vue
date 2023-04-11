@@ -3,9 +3,8 @@
 		<v-layout class="mt-1" row wrap>
 			<v-card class="p-3 m-3">
 
-
-				<!-- <v-data-table
-					:headers="headers"
+				<v-data-table
+					:headers="headersVD"
 					disable-pagination
 					hide-default-footer
 					fixed-header
@@ -16,6 +15,7 @@
 					:search="search"
 					:loading = "loading"
 					loader-height = "30"
+					@click:row="customerForm"
 					dense
 				>
 					<template v-slot:top>
@@ -23,30 +23,31 @@
 							<v-toolbar-title>Customers - {{customers.length}}</v-toolbar-title>
 							<v-spacer></v-spacer>
 							<v-text-field v-model="search" class="mx-4"	label="Search" clearable></v-text-field>
+							<v-radio-group v-model="hasTicket" row>
+								<v-radio label="בעלי כרטיס" :value=true></v-radio>
+								<v-radio label="ללא כרטיס" :value=false></v-radio>
+							</v-radio-group>
 							<v-spacer></v-spacer>
-							<v-btn @click="updateCustomer()" small class="mt-3">
+							<v-btn @click="customerForm()" small class="mt-3">
 								<v-icon class="nav-icon" small >mdi-plus</v-icon>
 								Add Customer
 							</v-btn>
 						</v-toolbar>
 					</template>
-					<template v-slot:[`item.issueDate`]="{ item }">
+					<!-- <template v-slot:[`item.issueDate`]="{ item }">
 						<span>{{ item.issueDate ? new Date(item.issueDate).toDateString() : ''}}</span>
 					</template>
-					<template v-slot:[`item.fullName`]="{ item }">
-						<span>{{ item.name + ' ' + item.family}}</span>
-					</template>
 					<template v-slot:[`item.controls`]="{ item }">
-						<v-btn @click="updateCustomer(item)" x-small>
+						<v-btn @click="customerForm(item)" x-small>
 							<v-icon small>mdi-pencil</v-icon>
 						</v-btn>
 						<v-btn  @click="deleteCustomer(item._id)" x-small>
 							<v-icon small>mdi-delete</v-icon>
 						</v-btn>
-					</template>
-				</v-data-table> -->
+					</template> -->
+				</v-data-table>
 
-				<vue-virtual-table
+				<!-- <vue-virtual-table
 					:config="headers"
 					:data="customers"
 					:height="800"			
@@ -65,17 +66,15 @@
 					</template>
 
 					<template slot-scope="scope" slot="actionCommon">
-						<v-btn @click="updateCustomer(scope.row)" x-small>
+						<v-btn @click="customerForm(scope.row)" x-small>
 							<v-icon small>mdi-pencil</v-icon>
 						</v-btn>
 						<v-btn  @click="deleteCustomer(scope.row._id)" x-small>
 							<v-icon small>mdi-delete</v-icon>
 						</v-btn>
 					</template>
-
-					
-				</vue-virtual-table>
-
+				</vue-virtual-table> -->
+				<v-btn @click="updateHasTickets" :loading="loading">Run Script</v-btn>
 			</v-card>
 		</v-layout>
 		<customer-form ref="customerForm"/>
@@ -86,23 +85,27 @@
 
 
 <script>
-import { CUSTOMER_HEADERS, CUSTOMER_MODEL, } from "../constants/constants";
+import { CUSTOMER_HEADERS, CUSTOMER_HEADERS_VD, CUSTOMER_MODEL } from "../constants/constants";
 import apiService from "../services/apiService";
 import CustomerForm from './CustomerForm.vue';
 import ConfirmDialog from './Common/ConfirmDialog.vue';
-import VueVirtualTable from 'vue-virtual-table'
+import specificServiceEndPoints from '../services/specificServiceEndPoints';
+// import VueVirtualTable from 'vue-virtual-table'
 
 export default {
 	name: "customers-list",
-	components: { CustomerForm, ConfirmDialog,VueVirtualTable },
+	// components: { CustomerForm, ConfirmDialog,VueVirtualTable },
+	components: { CustomerForm, ConfirmDialog },
 	data() {
 		return {
 			customers: [],
 			showMessage: false,
 			message: '',
 			headers: CUSTOMER_HEADERS,
+			headersVD: CUSTOMER_HEADERS_VD,
 			search: '',
-			loading: '',
+			loading: false,
+			hasTicket: true,
 		}
 	},
 
@@ -110,7 +113,7 @@ export default {
 		async getCustomers() {
 			this.loading = true
 			try {
-				const response = await apiService.getMany({model: CUSTOMER_MODEL, limit: 99999});
+				const response = await apiService.getMany({model: CUSTOMER_MODEL , hasTicket: this.hasTicket});
 				if(response.data) {
 					this.customers = response.data;
 				}
@@ -120,11 +123,12 @@ export default {
 			this.loading = false
 		},
 
-		async updateCustomer(item) {
+		async customerForm(item) {
 			let newCustomer = item ? false : true;
 			await this.$refs.customerForm.open(item, newCustomer);
 			this.getCustomers();
 		},
+
 		async deleteCustomer(id) {
 			try {
 				if(id) {
@@ -139,13 +143,22 @@ export default {
 			}
 		},
 
+		async updateHasTickets() {
+			await specificServiceEndPoints.hasTicketsBulk()
+		}
 	},
 
 	mounted() {
 		this.getCustomers();
-		this.$root.$on("newCustomer", () => {
-			this.updateCustomer();
-		});
+		// this.$root.$on("newCustomer", () => {
+		// 	this.customerForm();
+		// });
+	},
+
+	watch: {
+		hasTicket() {
+			this.getCustomers();
+		},
 	},
 };
 </script>
@@ -156,16 +169,6 @@ export default {
 	margin: 12px;
 }
 
-.expanded-datatable{
-	width: 100%;
-    margin: 12px;
-    border: 10px solid #98e983;
-	cursor: pointer;
-}
-
-.v-data-table__expanded{
-	text-align: -webkit-center;
-}
 .search-wrapper{
 	/* width: 20%; */
     margin: 0;

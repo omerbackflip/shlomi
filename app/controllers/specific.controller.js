@@ -94,7 +94,7 @@ exports.searchCustomer = async (req, res) => {
 		const { customer } = req.query;
 		if(customer) {
 			const data = await Customer.aggregate([
-				{$match:{$or:[{"name":{$regex:'.*' + customer + '.*',$options: 'i'}},]}},
+				{$match:{$or:[{"fullName":{$regex:'.*' + customer + '.*',$options: 'i'}},]}},
 			]);
 			res.send({success: true, customers: data});
 		} else {
@@ -103,6 +103,19 @@ exports.searchCustomer = async (req, res) => {
 	} catch (error) {
 		console.log(error)
 		res.status(500).send({ message: "Error searching customers", error });
+	}
+};
+
+exports.hasTicketsBulk = async () => {
+	try {
+		let data = await Customer.find()
+		data.map(async (item) => {
+			let findTicket = await Ticket.findOne({customerId: item.customerId}) 
+			await Customer.updateOne({customerId: item.customerId},{hasTicket: (findTicket != null) ? true : false})	
+		})
+	} catch (error) {
+		console.log(error)
+		res.status(500).send({ message: "Error hasTicketsBulk", error });
 	}
 };
 

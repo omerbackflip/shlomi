@@ -32,7 +32,6 @@ class SpecificServiceEndPoints {
 		});
 	}
 
-
 	async saveDefectsImport(file) {
 		var formData = new FormData();
 		formData.append("file", file);
@@ -43,9 +42,12 @@ class SpecificServiceEndPoints {
 		});
 	}
 
-
 	async searchCustomers(params) {
 		return await axios.get(`${baseUrl}/specific/search-customers`,{params});
+	}
+
+	async hasTicketsBulk() {
+		return await axios.post(`${baseUrl}/specific/hasTickets-bulk`);
 	}
 }
 

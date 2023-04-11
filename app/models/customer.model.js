@@ -3,8 +3,8 @@ module.exports = mongoose => {
 		{
 			customerId: Number,
 			fullName: String,
-			name: String,
-			family: String,
+			// name: String,
+			// family: String,
 			address: String,
 			city: String,
 			phone1: String,				
@@ -12,6 +12,7 @@ module.exports = mongoose => {
 			phone3: String,
 			arrivedFrom: String,
 			issueDate: Date,
+			hasTicket: Boolean,
 		},
 		{ timestamps: true }
 	);

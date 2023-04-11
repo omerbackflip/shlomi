@@ -19,7 +19,8 @@
 				>
 					<template v-slot:top>
 						<v-toolbar flat>
-							<v-toolbar-title>{{ticketsFilter}} Tickets - {{tickets.length}}</v-toolbar-title>
+							<!-- <v-toolbar-title>{{ticketsFilter}} Tickets - {{tickets.length}}</v-toolbar-title> -->
+							<v-toolbar-title>{{header}} - {{tickets.length}}</v-toolbar-title>
 							<v-spacer></v-spacer>
 							<v-text-field v-model="search" class="mx-4"	label="Search" clearable></v-text-field>
 							<v-spacer></v-spacer>
@@ -62,17 +63,18 @@ import TicketForm from './TicketForm.vue';
 import ConfirmDialog from './Common/ConfirmDialog.vue';
 
 export default {
-	name: "tickets-list",
+	name: "ticket-list",
 	components: { TicketForm, ConfirmDialog },
 	data() {
 		return {
 			tickets: [],
 			showMessage: false,
-			message: '',
+			header: '',
 			headers: TICKET_HEADERS,
 			listOfItems: [],
 			search: '',
 			ticketsFilter: 'Open',
+			ticketType: 'STATUS',
 			loading: '',
 		}
 	},
@@ -82,11 +84,23 @@ export default {
 			this.loading = true;
 			let response = '';
 			try {
-				if (isNaN(this.ticketsFilter)) { // get tickets by status
-					response = await apiService.getMany({model: TICKET_MODEL, ticketStatus: this.ticketsFilter });
-				} else {						// get tickets by year
-					response = await apiService.getMany({model: TICKET_MODEL, year: this.ticketsFilter });  // change here NOT ticket FIler
-				}	
+				switch (this.ticketType) {
+					case 'YEAR':
+						response = await apiService.getMany({model: TICKET_MODEL, year: this.ticketsFilter });
+						this.header = "Total for year " + this.ticketsFilter 
+						break;
+					case 'CUSTOMER':
+						response = await apiService.getMany({model: TICKET_MODEL, customerId: this.ticketsFilter });
+						this.header = "Total for Customer ID " + this.ticketsFilter 
+						break;
+					case 'STATUS':
+						response = await apiService.getMany({model: TICKET_MODEL, ticketStatus: this.ticketsFilter });
+						this.header = "Total for Status " + this.ticketsFilter 
+						break;
+					default:
+						console.log("switch filter is WRONG !!")
+				}
+				
 				if(response.data) {
 					this.tickets = response.data;
 				}
@@ -108,15 +122,13 @@ export default {
 				console.log(error);
 			}
 		},
+
 		async updateTicket(item) {
 			let newTicket = item ? false : true;
 			await this.$refs.ticketForm.open(item, newTicket);
-			console.log("AFTER OPEN FORM TICKET")
 			this.getTickets();
 		},
-		// async onItemSelect(value,data) {
-		// 	await apiService.update( data._id, {...data , item: value}, {model: TICKET_MODEL});
-		// },
+
 		async deleteTicket(id) {
 			try {
 				if(id) {
@@ -130,17 +142,17 @@ export default {
 				console.log(error);		
 			}
 		},
-		// toTitleCase(text) {
-		// 	const result = text.replace(/([A-Z])/g, " $1");
-		// 	return result.charAt(0).toUpperCase() + result.slice(1);
-		// }
-
 	},
 
 	mounted() {
+		if (this.$route.params.ticketType) { // this is called from CustomerList.vue
+				this.ticketType = this.$route.params.ticketType
+				this.ticketsFilter = this.$route.params.ticketsFilter
+		}
 		this.getTickets();
 		this.getItemList();
-		this.$root.$on("filterChange", (filter) => {
+		this.$root.$on("filterChange", (filter, type) => {
+			this.ticketType = type
 			this.ticketsFilter = filter;
 		});
 	},

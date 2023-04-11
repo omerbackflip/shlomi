@@ -5,8 +5,8 @@ exports.getCustomersToSave = (data) => {
             let customer = {
                 customerId: item['ID'],
                 fullName: item['FullName'],
-                name: item['Name'],
-                family: item['Famaly'],
+                // name: item['Name'],
+                // family: item['Famaly'],
                 address: item['Address'],
                 city: item['City'],
                 phone1: item['Phone 1'],				

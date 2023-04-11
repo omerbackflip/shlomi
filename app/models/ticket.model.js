@@ -3,7 +3,7 @@ module.exports = mongoose => {
 		{
 			ticketId: Number,
 			ticketStatus: String,
-			customerId: String,
+			customerId: Number,
 			customerName: String,
 			item: String,
 			entryCondition: [String],
