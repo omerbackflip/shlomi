@@ -36,7 +36,7 @@ export const CUSTOMER_HEADERS_VD = [
     { text: 'Customer ID', value: 'customerId' , align:'end'},
     { text: 'Full Name', value: 'fullName', actionName:'name' , align:'end'},
     { text: 'Address', value: 'address', align:'end' },
-    // { text: 'City', value: 'city' , align:'end'},
+    { text: 'City', value: 'city' , align:'end'},
     { text: 'Phone 1', value: 'phone1' , align:'end'},
     { text: 'Phone 2', value: 'phone2' , align:'end'},
     { text: 'Phone 3', value: 'phone3' , align:'end'},
