@@ -24,10 +24,9 @@
                         <div class="v-area">
                             <h6 class="area-header">פרטי לקוח</h6>
                             <v-row no-gutters>
-                                <v-col cols="3">
+                                <v-col cols="6" sm="3">
                                     <v-autocomplete
                                         v-model="ticket.customerName" 
-                                        label="שם לקוח"
                                         auto-select-first
                                         :search-input.sync="search"
                                         append-icon="mdi-account-plus"
@@ -40,23 +39,23 @@
                                         :items="customers"
                                     ></v-autocomplete>
                                 </v-col>
-                                <v-col cols="3">
-                                    <v-text-field type="text" v-model="customerInfo.address" label="כתובת" readonly single-line></v-text-field>
+                                <v-col class="px-2" cols="6" sm="3">
+                                    <v-text-field type="text" v-model="customerInfo.address" label="כתובת" readonly single-line reverse></v-text-field>
                                 </v-col>
-                                <v-col class="px-2" cols="2">
+                                <v-col class="px-2" cols="4" sm="2">
                                     <v-text-field type="text" v-model="customerInfo.phone1" label="טלפון 1" readonly single-line></v-text-field>
                                 </v-col>
-                                <v-col class="px-2" cols="2">
+                                <v-col class="px-2" cols="4" sm="2">
                                     <v-text-field type="text" v-model="customerInfo.phone2" label="טלפון 2" readonly single-line></v-text-field>
                                 </v-col>
-                                <v-col class="px-2" cols="2">
+                                <v-col class="px-2" cols="4" sm="2">
                                     <v-text-field type="text" v-model="customerInfo.phone3" label="טלפון 3" readonly single-line></v-text-field>
                                 </v-col>
                             </v-row>
                         </div>
                     </v-layout>
                     <!-- ------------------- Treatment Area  ------------------- -->
-                    <v-col cols="6">
+                    <v-col cols="12" sm="6">
                         <div class="treatment-area v-areaMiddle v-area1" :class="{'no-print': disableTreatment}">
                             <h6 class="area-header">טיפול במכשיר</h6>
                             <v-row no-gutters>
@@ -78,7 +77,7 @@
                         </div>
                     </v-col>
                     <!-- ------------------- Item Area  ------------------- -->
-                    <v-col cols="6">
+                    <v-col cols="12" sm="6">
                         <div class="payment-area v-areaMiddle v-area1">
                             <h6 class="area-header">פרטי המכשיר</h6>
                             <v-row no-gutters>
@@ -113,22 +112,22 @@
                         <div class="payment-area v-area">
                             <h6 class="area-header">תשלומים</h6>
                             <v-row no-gutters>
-                                <v-col class="px-2" cols="2">
+                                <v-col class="px-2" cols="6" sm="2">
                                     <v-text-field type="number" v-model="ticket.prepaid" label="שולם מראש" @focus="$event.target.select()"></v-text-field>
                                 </v-col>
-                                <v-col class="px-2" cols="2">
+                                <v-col class="px-2" cols="6" sm="2">
                                     <v-text-field v-model="ticket.prepaidInvoice" label="חשבונית מראש" @focus="$event.target.select()"></v-text-field>
                                 </v-col>                                
-                                <v-col class="px-2" cols="2">
+                                <v-col class="px-2" cols="3" sm="2">
                                     <v-text-field @input="onAmountChange" type="number" v-model="ticket.amount" label="סכום" @focus="$event.target.select()"></v-text-field>
                                 </v-col>
-                                <v-col class="px-2" cols="2">
+                                <v-col class="px-2" cols="3" sm="2">
                                     <v-text-field type="vat" v-model="ticket.vat" label="מע'מ" @focus="$event.target.select()"></v-text-field>
                                 </v-col>
-                                <v-col class="px-2" cols="2">
+                                <v-col class="px-2" cols="3" sm="2">
                                     <v-text-field @input="onTotalChange" type="total" v-model="ticket.total" label="סה'ב" @focus="$event.target.select()"></v-text-field>
                                 </v-col>
-                                <v-col class="px-2" cols="2">
+                                <v-col class="px-2" cols="3" sm="2">
                                     <v-text-field v-model="ticket.invoice" label="חשבונית" @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="4">
@@ -146,24 +145,28 @@
                         </div>
                     </v-col>
                 </v-row>
+                    <div class="no-print">
+                        <v-card-actions>
+                        <v-col>
+                <v-layout wrap justify-center>
+                            <v-btn-toggle v-model="ticket.ticketStatus" group mandatory color="error">
+                                <v-btn text value="Open"     elevation='3' small>פתוח</v-btn>
+                                <v-btn text value="Checked"  elevation='3' small>נבדק</v-btn>
+                                <v-btn text value="Fixed"    elevation='3' small>תוקן</v-btn>
+                                <v-btn text value="Closed"   elevation='3' small>סגור</v-btn>
+                            </v-btn-toggle>
+                            <v-spacer></v-spacer>
+                            <v-btn elevation='3' @click="printTicket(disableTreatment = true)" small>קליטה</v-btn>
+                            <v-btn elevation='3' @click="printTicket(disableTreatment = false)" small>יציאה</v-btn>
+                            <v-spacer></v-spacer>
+                            <v-btn :disabled = "!ticket.customerName" elevation='3' 
+                                    @click="submitTicket()" :loading="loading" small> שמור </v-btn>
+                            <v-btn elevation='3' @click="dialog = false" small> בטל</v-btn>
+                </v-layout>
+                        </v-col>
+                        </v-card-actions>
+                    </div>
             </v-container>
-            <div class="no-print">
-                <v-card-actions>
-                    <v-btn-toggle v-model="ticket.ticketStatus" group mandatory color="error">
-                        <v-btn text value="Open"     elevation='3' small> פתוח   </v-btn>
-                        <v-btn text value="Checked"  elevation='3' small> נבדק</v-btn>
-                        <v-btn text value="Fixed"    elevation='3' small> תוקן  </v-btn>
-                        <v-btn text value="Closed"   elevation='3' small> סגור </v-btn>
-                    </v-btn-toggle>                
-                    <v-spacer></v-spacer>
-                    <v-btn elevation='3' @click="printTicket(disableTreatment = true)" small>הדפסת קליטה</v-btn>
-                    <v-btn elevation='3' @click="printTicket(disableTreatment = false)" small>הדפסת יציאה</v-btn>
-                    <v-spacer></v-spacer>
-                    <v-btn :disabled = "!ticket.customerName" elevation='3' 
-                            @click="submitTicket()" :loading="loading" small> שמור </v-btn>
-                    <v-btn elevation='3' @click="dialog = false" small> בטל</v-btn>
-                </v-card-actions>
-            </div>
         </v-card>
         <customer-form ref="customerForm"/>
     </v-dialog>
@@ -417,4 +420,8 @@ export default {
             height:560px;
         }
     }
+
+    /* .v-input {
+        font-size: small !important ;
+    } */
 </style>

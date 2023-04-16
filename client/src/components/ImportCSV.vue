@@ -22,7 +22,6 @@
 
 		<v-snackbar :v-model="message.length" :multi-line="true">
 			{{ message }}
-
 			<template v-slot:action="{ attrs }">
 				<v-btn color="red" text v-bind="attrs" @click="message = ''">
 				Close
@@ -102,7 +101,7 @@ export default {
 
 <style scoped>
 	.ml-3{
-		margin-left: 5px;
+		margin: 5px;
 	}
 	.color-primary{
 		color: white;

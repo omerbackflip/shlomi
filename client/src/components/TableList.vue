@@ -10,7 +10,7 @@
           disable-pagination
           hide-default-footer
           fixed-header
-          height="72.37vh"
+          height="75vh"
           @click:row="filterTbl"
           dense
           class="elevation-3 mr-2"
@@ -19,15 +19,15 @@
 					mobile-breakpoint="0"
         >
           <template v-slot:top>
-              <v-toolbar flat>
-							<v-toolbar-title>DATA - {{tables.length}}</v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-btn @click="updateTable()" small class="mt-3">
-                  <v-icon class="nav-icon" small >mdi-plus</v-icon>
-                  Add Table
-                </v-btn>
-              </v-toolbar>
-            </template>
+            <v-toolbar flat>
+            <v-toolbar-title>DATA - {{tables.length}}</v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-btn @click="updateTable()" small class="mt-3">
+                <v-icon class="nav-icon" small >mdi-plus</v-icon>
+                Add Table
+              </v-btn>
+            </v-toolbar>
+          </template>
           <template v-slot:[`item.actions`]="{ item }">
             <!-- <v-icon small @click="editOne(item._id)">mdi-pencil</v-icon> -->
             <div>
@@ -80,7 +80,6 @@
         </v-data-table>
         </v-col>
         <v-col>
-        <div class="title">{{ tableTitle ? tableTitle + ' - ' + tableCode.length: "Title" }}</div>
         <v-data-table
           :headers="headers"
           :items="tableCode"
@@ -92,7 +91,17 @@
           class="elevation-3"
 					mobile-breakpoint="0"
         >
-          <template v-slot:[`item.actions`]="{ item }">
+        <template v-slot:top>
+            <v-toolbar flat>
+            <v-toolbar-title>{{ tableTitle ? tableTitle + ' - ' + tableCode.length: "Title" }}</v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-btn @click="updateTable()" small class="mt-3">
+                <v-icon class="nav-icon" small >mdi-plus</v-icon>
+                Add Table
+              </v-btn>
+            </v-toolbar>
+        </template>
+        <template v-slot:[`item.actions`]="{ item }">
             <!-- <v-icon small @click="editOne(item._id)">mdi-pencil</v-icon> -->
             <div>
               <v-icon
