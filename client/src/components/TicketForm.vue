@@ -170,7 +170,7 @@
 </template>
 
 <script>
-import { TICKET_MODEL, TABLE_MODEL, CUSTOMER_MODEL, VAT_PERCENTAGE } from "../constants/constants";
+import { TICKET_MODEL, TABLE_MODEL, CUSTOMER_MODEL, VAT_PERCENTAGE, NEW_TICKET } from "../constants/constants";
 import apiService from "../services/apiService";
 import specificServiceEndPoints from '../services/specificServiceEndPoints';
 import CustomerForm from './CustomerForm.vue';
@@ -212,9 +212,6 @@ export default {
 			try {
 				if(this.newTicket) {
                     this.ticket.year = new Date(this.ticket.entryDate).getFullYear() ;
-                    // let lastTicket = await apiService.getMany({model: TICKET_MODEL , sort: {ticketId: -1 } , limit: 1});
-                    // const { ticketId } = lastTicket.data[0];
-                    // await apiService.create({...this.ticket, ticketId: ticketId+1} , {model:TICKET_MODEL});
                     await apiService.create({...this.ticket} , {model:TICKET_MODEL});
 				} else {
 					await apiService.update(this.ticket._id , { ...this.ticket } , {model:TICKET_MODEL});
@@ -236,10 +233,9 @@ export default {
 
         async open(ticket, newTicket) {
             this.newTicket = newTicket;
-            this.ticket = newTicket ? {} : {...ticket};
+            this.ticket = newTicket ? NEW_TICKET : {...ticket};
             if(newTicket) {
                 this.customerInfo = ''
-                this.ticket.entryDate = new Date().toISOString().substr(0, 10)
                 let lastTicket = await apiService.getMany({model: TICKET_MODEL , sort: {ticketId: -1 } , limit: 1});
                 const { ticketId } = lastTicket.data[0];
                 this.ticket.ticketId = ticketId+1

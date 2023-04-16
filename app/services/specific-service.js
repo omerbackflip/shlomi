@@ -14,6 +14,8 @@ exports.getCustomersToSave = (data) => {
                 phone3: item['Phone 3'],
                 arrivedFrom: item['Arrived from'],
                 issueDate: !isNaN(Date.parse(item['issue date'])) ? item['issue date'] : new Date(),
+                // hasTicket: item['hasTicket'],  // there is dedicated bach to run after loading
+                remark: item['remark'],
             }
 
             customers.push(customer);

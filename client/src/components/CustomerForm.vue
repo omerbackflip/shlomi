@@ -1,7 +1,9 @@
 <template>
     <v-dialog
         v-model="dialog"
-        width="600"
+        transition="dialog-bottom-transition"
+        width="900"
+        :scrollable = false
         :style="{ zIndex: options.zIndex }"
         @keydown.esc="dialog = false"
     >
@@ -12,44 +14,47 @@
             <div class="field-margin" v-show="showMessage">
                 {{message}}
             </div>
-                <v-row class="p-3 overflow-hidden">
-                    <v-col cols="4">
-                        <v-text-field type="number" v-model="customer.customerId" label="Customer ID" readonly></v-text-field>
-                    </v-col>
-                    <v-col cols="4">
-                        <v-text-field v-model="customer.fullName" label="Name"></v-text-field>
-                    </v-col>      
-                    <v-col cols="4">
-                        <v-text-field v-model="customer.address" label="Address"></v-text-field>
-                    </v-col>
-                    <v-col cols="4">
-                        <v-text-field v-model="customer.city" label="City"></v-text-field>
-                    </v-col>
-                    <v-col cols="4">
-                        <v-text-field v-model="customer.phone1" label="Phone 1"></v-text-field>
-                    </v-col>
-                    <v-col cols="4">
-                        <v-text-field v-model="customer.phone2" label="Phone 2"></v-text-field>
-                    </v-col>
-                    <v-col cols="4">
-                        <v-text-field v-model="customer.phone3" label="Phone 3"></v-text-field>
-                    </v-col>
-                    <v-col cols="4">
-                        <v-text-field v-model="customer.arrivedFrom" label="Arrived From"></v-text-field>
-                    </v-col>
-                    <v-col cols="4">
-                        <v-dialog ref="dialog" v-model="dateModal" :return-value.sync="customer.issueDate" persistent width="290px">
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-text-field v-model="customer.issueDate" label="Issue date" readonly v-bind="attrs" v-on="on" ></v-text-field>
-                            </template> 
-                            <v-date-picker v-model="customer.issueDate" scrollable>
-                                <v-spacer></v-spacer>
-                                <v-btn text color="primary" @click="dateModal = false">Cancel</v-btn>
-                                <v-btn text color="primary" @click="$refs.dialog.save(customer.issueDate)">OK</v-btn>
-                            </v-date-picker>
-                        </v-dialog>
-                    </v-col>
-                </v-row>
+            <v-row class="p-3 overflow-hidden">
+                <v-col cols="4">
+                    <v-text-field type="number" v-model="customer.customerId" label="Customer ID" readonly></v-text-field>
+                </v-col>
+                <v-col cols="4">
+                    <v-text-field v-model="customer.fullName" label="Name"></v-text-field>
+                </v-col>      
+                <v-col cols="4">
+                    <v-text-field v-model="customer.address" label="Address"></v-text-field>
+                </v-col>
+                <v-col cols="4">
+                    <v-text-field v-model="customer.city" label="City"></v-text-field>
+                </v-col>
+                <v-col cols="4">
+                    <v-text-field v-model="customer.phone1" label="Phone 1"></v-text-field>
+                </v-col>
+                <v-col cols="4">
+                    <v-text-field v-model="customer.phone2" label="Phone 2"></v-text-field>
+                </v-col>
+                <v-col cols="4">
+                    <v-text-field v-model="customer.phone3" label="Phone 3"></v-text-field>
+                </v-col>
+                <v-col cols="4">
+                    <v-text-field v-model="customer.arrivedFrom" label="Arrived From"></v-text-field>
+                </v-col>
+                <v-col cols="4">
+                    <v-dialog ref="dialog" v-model="dateModal" :return-value.sync="customer.issueDate" persistent width="290px">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-text-field v-model="customer.issueDate" label="Issue date" readonly v-bind="attrs" v-on="on" ></v-text-field>
+                        </template> 
+                        <v-date-picker v-model="customer.issueDate" scrollable>
+                            <v-spacer></v-spacer>
+                            <v-btn text color="primary" @click="dateModal = false">Cancel</v-btn>
+                            <v-btn text color="primary" @click="$refs.dialog.save(customer.issueDate)">OK</v-btn>
+                        </v-date-picker>
+                    </v-dialog>
+                </v-col>
+                <v-col cols="12">
+                    <v-text-field v-model="customer.remark" label="הערה" reverse></v-text-field>
+                </v-col>
+            </v-row>
             <v-divider></v-divider>
             <v-card-actions>
                 <v-btn v-if="customer.hasTicket" color="primary" text @click="customerTickets"> פעילות לקוח </v-btn>

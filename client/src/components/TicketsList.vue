@@ -39,6 +39,9 @@
 					<template v-slot:[`item.exitDate`]="{ item }">
 						<span>{{ item.exitDate ? new Date(item.exitDate).toLocaleDateString('sv-SE') : '-'}}</span>
 					</template>					
+					<template v-slot:[`item.total`]="{ item }">
+						<span>{{ item.total ? item.total.toLocaleString() : '' }}</span>
+					</template>	
 					<template v-slot:[`item.controls`]="{ item }">
 						<td @click.stop>
 							<v-btn @click="deleteTicket(item._id)" x-small>

@@ -13,6 +13,7 @@ module.exports = mongoose => {
 			arrivedFrom: String,
 			issueDate: Date,
 			hasTicket: Boolean,
+			remark: String,
 		},
 		{ timestamps: true }
 	);

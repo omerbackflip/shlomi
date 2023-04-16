@@ -44,3 +44,27 @@ export const CUSTOMER_HEADERS_VD = [
     // { text: 'Issue Date', value: 'issueDate', align:'end'},
     // { text: 'Controls', value: 'controls', align:'end'},
 ]
+
+export const NEW_TICKET = {
+    ticketId: '',
+    ticketStatus: 'Open',
+    customerId: '',
+    customerName: '',
+    item: '',
+    entryCondition: [],
+    accessories: [],
+    defectDescription: [],
+    defectFound: [],
+    defectFixes: [],
+    prepaid: '',
+    prepaidInvoice: '',
+    amount: '',
+    vat: '',
+    total: '',
+    invoice: '',
+    year: '',
+    entryDate: new Date().toISOString().substr(0, 10),
+    fixDate: null,
+    exitDate: null,
+    remarks: '',
+}
