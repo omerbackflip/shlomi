@@ -15,7 +15,9 @@
         </div>
         <v-card class="overflow">
             <v-card-title class="text-h6 grey lighten-2">
-                {{!(ticket.ticketId) ? 'חדש' : 'עדכון'}} כרטיס תיקון - {{ticket.ticketId}}
+                {{(newTicket) ? '' : 'עדכון'}} כרטיס תיקון - {{ticket.ticketId}}
+                <v-spacer></v-spacer>
+                <v-btn @click="dialog = false" small><v-icon small> mdi-close </v-icon> </v-btn>
             </v-card-title>
             <v-container>
                 <v-row >
@@ -78,7 +80,7 @@
                     </v-col>
                     <!-- ------------------- Item Area  ------------------- -->
                     <v-col cols="12" sm="6">
-                        <div class="payment-area v-areaMiddle v-area1">
+                        <div class=" v-areaMiddle v-area1">
                             <h6 class="area-header">פרטי המכשיר</h6>
                             <v-row no-gutters>
                                 <v-col class="px-2" cols="6">
@@ -109,7 +111,7 @@
                     </v-col>
                     <!-- ------------------- Payment Area  ------------------- -->
                     <v-col cols="12">
-                        <div class="payment-area v-area">
+                        <div class=" v-area">
                             <h6 class="area-header">תשלומים</h6>
                             <v-row no-gutters>
                                 <v-col class="px-2" cols="6" sm="2">
@@ -147,23 +149,22 @@
                 </v-row>
                     <div class="no-print">
                         <v-card-actions>
-                        <v-col>
-                <v-layout wrap justify-center>
-                            <v-btn-toggle v-model="ticket.ticketStatus" group mandatory color="error">
-                                <v-btn text value="Open"     elevation='3' small>פתוח</v-btn>
-                                <v-btn text value="Checked"  elevation='3' small>נבדק</v-btn>
-                                <v-btn text value="Fixed"    elevation='3' small>תוקן</v-btn>
-                                <v-btn text value="Closed"   elevation='3' small>סגור</v-btn>
-                            </v-btn-toggle>
-                            <v-spacer></v-spacer>
-                            <v-btn elevation='3' @click="printTicket(disableTreatment = true)" small>קליטה</v-btn>
-                            <v-btn elevation='3' @click="printTicket(disableTreatment = false)" small>יציאה</v-btn>
-                            <v-spacer></v-spacer>
-                            <v-btn :disabled = "!ticket.customerName" elevation='3' 
-                                    @click="submitTicket()" :loading="loading" small> שמור </v-btn>
-                            <v-btn elevation='3' @click="dialog = false" small> בטל</v-btn>
-                </v-layout>
-                        </v-col>
+                            <v-col>
+                                <v-layout wrap justify-center>
+                                    <v-btn-toggle v-model="ticket.ticketStatus" group mandatory color="error">
+                                        <v-btn text value="Open"     elevation='3' small>פתוח</v-btn>
+                                        <v-btn text value="Checked"  elevation='3' small>נבדק</v-btn>
+                                        <v-btn text value="Fixed"    elevation='3' small>תוקן</v-btn>
+                                        <v-btn text value="Closed"   elevation='3' small>סגור</v-btn>
+                                    </v-btn-toggle>
+                                    <v-spacer></v-spacer>
+                                    <v-btn @click="printTicket(disableTreatment = true)" small>קליטה</v-btn>
+                                    <v-btn @click="printTicket(disableTreatment = false)" small>יציאה</v-btn>
+                                    <v-spacer></v-spacer>
+                                    <v-btn @click="submitTicket()" :loading="loading" small> שמור </v-btn>
+                                    <v-btn @click="dialog = false" small> בטל</v-btn>
+                                </v-layout>
+                            </v-col>
                         </v-card-actions>
                     </div>
             </v-container>
