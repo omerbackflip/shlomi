@@ -7,13 +7,7 @@
         <div class="divHeader">
             <img class="print-logo" src="../../public/logo.jpg" alt="" srcset="" >
         </div>
-        <div class="divFooter">
-            חתימה : ___________________ 
-            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-            תאריך : {{ new Date().toISOString().substr(0, 10) }}
-        </div>
-        <v-card class="overflow">
+        <v-card >
             <v-card-title class="text-h6 grey lighten-2">
                 {{(newTicket) ? '' : 'עדכון'}} כרטיס תיקון - {{ticket.ticketId}}
                 <v-spacer></v-spacer>
@@ -22,13 +16,13 @@
             <v-container>
                 <v-row >
                     <!-- ------------------- Customer Area  ------------------- -->
-                    <v-layout justify-center>
+                    <v-col cols="12">
                         <div class="v-area">
-                            <h6 class="area-header">פרטי לקוח</h6>
+                            <h6 class="area-header">Customer Area</h6>
                             <v-row no-gutters>
                                 <v-col cols="6" sm="3">
                                     <v-autocomplete
-                                        v-model="ticket.customerName" 
+                                        v-model="ticket.customerName"
                                         auto-select-first
                                         :search-input.sync="search"
                                         append-icon="mdi-account-plus"
@@ -55,11 +49,11 @@
                                 </v-col>
                             </v-row>
                         </div>
-                    </v-layout>
+                    </v-col>
                     <!-- ------------------- Treatment Area  ------------------- -->
-                    <v-col cols="12" sm="6">
+                    <v-col sm="6">
                         <div class="treatment-area v-areaMiddle v-area1" :class="{'no-print': disableTreatment}">
-                            <h6 class="area-header">טיפול במכשיר</h6>
+                            <h6 class="area-header">Treatment Area</h6>
                             <v-row no-gutters>
                                 <v-col class="px-2" cols="12">
                                     <v-combobox v-model="ticket.defectFound" :items="defectFoundList" label="רשימת ממצאים" multiple reverse></v-combobox>
@@ -79,9 +73,9 @@
                         </div>
                     </v-col>
                     <!-- ------------------- Item Area  ------------------- -->
-                    <v-col cols="12" sm="6">
+                    <v-col sm="6">
                         <div class=" v-areaMiddle v-area1">
-                            <h6 class="area-header">פרטי המכשיר</h6>
+                            <h6 class="area-header">Item Area</h6>
                             <v-row no-gutters>
                                 <v-col class="px-2" cols="6">
                                     <v-combobox v-model="ticket.item" :items="itemList" label="שם המכשיר" reverse/>
@@ -94,9 +88,9 @@
                                         <v-date-picker v-model="ticket.entryDate" @input="menu2 = false"></v-date-picker>
                                     </v-menu>
                                 </v-col>
-                                <v-col class="px-2" cols="2">
+                                <!-- <v-col class="px-2" cols="2">
                                     <v-text-field v-model="ticket.checkPrice" label="מחיר בדיקה"></v-text-field>
-                                </v-col>
+                                </v-col> -->
                                 <v-col class="px-2" cols="12">
                                     <v-combobox v-model="ticket.defectDescription" :items="defectList" label="תאור התקלה" multiple reverse dense/>
                                 </v-col>
@@ -112,14 +106,14 @@
                     <!-- ------------------- Payment Area  ------------------- -->
                     <v-col cols="12">
                         <div class=" v-area">
-                            <h6 class="area-header">תשלומים</h6>
+                            <h6 class="area-header">Payment Area</h6>
                             <v-row no-gutters>
                                 <v-col class="px-2" cols="6" sm="2">
                                     <v-text-field type="number" v-model="ticket.prepaid" label="שולם מראש" @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="6" sm="2">
                                     <v-text-field v-model="ticket.prepaidInvoice" label="חשבונית מראש" @focus="$event.target.select()"></v-text-field>
-                                </v-col>                                
+                                </v-col>
                                 <v-col class="px-2" cols="3" sm="2">
                                     <v-text-field @input="onAmountChange" type="number" v-model="ticket.amount" label="סכום" @focus="$event.target.select()"></v-text-field>
                                 </v-col>
@@ -147,28 +141,34 @@
                         </div>
                     </v-col>
                 </v-row>
-                    <div class="no-print">
-                        <v-card-actions>
-                            <v-col>
-                                <v-layout wrap justify-center>
-                                    <v-btn-toggle v-model="ticket.ticketStatus" group mandatory color="error">
-                                        <v-btn text value="Open"     elevation='3' small>פתוח</v-btn>
-                                        <v-btn text value="Checked"  elevation='3' small>נבדק</v-btn>
-                                        <v-btn text value="Fixed"    elevation='3' small>תוקן</v-btn>
-                                        <v-btn text value="Closed"   elevation='3' small>סגור</v-btn>
-                                    </v-btn-toggle>
-                                    <v-spacer></v-spacer>
-                                    <v-btn @click="printTicket(disableTreatment = true)" small>קליטה</v-btn>
-                                    <v-btn @click="printTicket(disableTreatment = false)" small>יציאה</v-btn>
-                                    <v-spacer></v-spacer>
-                                    <v-btn @click="submitTicket()" :loading="loading" small> שמור </v-btn>
-                                    <v-btn @click="dialog = false" small> בטל</v-btn>
-                                </v-layout>
-                            </v-col>
-                        </v-card-actions>
-                    </div>
+                <div class="no-print">
+                    <v-card-actions>
+                        <v-col>
+                            <v-layout wrap justify-center>
+                                <v-btn-toggle v-model="ticket.ticketStatus" group mandatory color="error">
+                                    <v-btn text value="Open"     elevation='3' small>פתוח</v-btn>
+                                    <v-btn text value="Checked"  elevation='3' small>נבדק</v-btn>
+                                    <v-btn text value="Fixed"    elevation='3' small>תוקן</v-btn>
+                                    <v-btn text value="Closed"   elevation='3' small>סגור</v-btn>
+                                </v-btn-toggle>
+                                <v-spacer></v-spacer>
+                                <v-btn @click="printTicket(disableTreatment = true)" small>קליטה</v-btn>
+                                <v-btn @click="printTicket(disableTreatment = false)" small>יציאה</v-btn>
+                                <v-spacer></v-spacer>
+                                <v-btn @click="submitTicket()" :loading="loading" small> שמור </v-btn>
+                                <v-btn @click="dialog = false" small> בטל</v-btn>
+                            </v-layout>
+                        </v-col>
+                    </v-card-actions>
+                </div>
             </v-container>
         </v-card>
+        <div class="divFooter">
+            חתימה : ___________________
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+            תאריך : {{ new Date().toISOString().substr(0, 10) }}
+        </div>
         <customer-form ref="customerForm"/>
     </v-dialog>
 </template>
@@ -189,7 +189,7 @@ export default {
 			dialog: false,
             dateModal : false,
             dateModal2 : false,
-            resolve: null,  
+            resolve: null,
 			showMessage: false,
             search: '',
             newTicket: false,
@@ -220,7 +220,7 @@ export default {
 				} else {
 					await apiService.update(this.ticket._id , { ...this.ticket } , {model:TICKET_MODEL});
 				}
-                this.dialog = false;            
+                this.dialog = false;
                 this.resolve(true);
 			} catch (error) {
 				console.log(error);
@@ -259,9 +259,9 @@ export default {
 
         printTicket() {
             setTimeout(() => {
-                window.print();                
+                window.print();
             }, 20); // this delay is needed for "disableTreatment" to take effect
-            this.submitTicket() 
+            this.submitTicket()
         },
 
         async openNewCustomerForm(){
@@ -394,6 +394,10 @@ export default {
         font-size: large;
         font-style:italic;
     }
+
+    .container {
+        padding-bottom: 0px !important;
+    }
     @media screen {
         div.divHeader, div.divFooter{
             display: none;
@@ -418,7 +422,7 @@ export default {
             padding: 0px;
             margin: 0px;
             /* width:470px; */
-            height:560px;
+            /* height:560px; */
         }
     }
 

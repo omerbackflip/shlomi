@@ -60,7 +60,7 @@
 
 
 <script>
-import { TICKET_HEADERS, TICKET_MODEL, TABLE_MODEL} from "../constants/constants";
+import { TICKET_HEADERS, TICKET_MODEL } from "../constants/constants";
 import apiService from "../services/apiService";
 import TicketForm from './TicketForm.vue';
 import ConfirmDialog from './Common/ConfirmDialog.vue';
@@ -113,18 +113,18 @@ export default {
 			this.loading = false
 		},
 
-		async getItemList () {
-			try {
-				const response = await apiService.getMany({model: TABLE_MODEL, table_id : 1});
-				if(response.data) {
-					this.listOfItems = response.data.map ((item) => {
-						return (item.description)
-					});
-				}
-			} catch (error) {
-				console.log(error);
-			}
-		},
+		// async getItemList () {
+		// 	try {
+		// 		const response = await apiService.getMany({model: TABLE_MODEL, table_id : 1});
+		// 		if(response.data) {
+		// 			this.listOfItems = response.data.map ((item) => {
+		// 				return (item.description)
+		// 			});
+		// 		}
+		// 	} catch (error) {
+		// 		console.log(error);
+		// 	}
+		// },
 
 		async updateTicket(item) {
 			let newTicket = item ? false : true;
@@ -153,7 +153,7 @@ export default {
 				this.ticketsFilter = this.$route.params.ticketsFilter
 		}
 		this.getTickets();
-		this.getItemList();
+		// this.getItemList();
 		this.$root.$on("filterChange", (filter, type) => {
 			this.ticketType = type
 			this.ticketsFilter = filter;

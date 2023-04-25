@@ -26,6 +26,9 @@ module.exports = mongoose => {
 		{ timestamps: true }
 	);
 
+	schema.index({ year: 1});
+	schema.index({ ticketStatus: 1});
+  
 	const Ticket = mongoose.model("ticket", schema);
 	return Ticket;
 };

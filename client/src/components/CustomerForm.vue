@@ -14,7 +14,7 @@
             <div class="field-margin" v-show="showMessage">
                 {{message}}
             </div>
-            <v-row class="p-3 overflow-hidden">
+            <v-row class="pa-3 overflow-hidden">
                 <v-col cols="4">
                     <v-text-field type="number" v-model="customer.customerId" label="Customer ID" readonly></v-text-field>
                 </v-col>
