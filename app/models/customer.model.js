@@ -17,6 +17,7 @@ module.exports = mongoose => {
 		},
 		{ timestamps: true }
 	);
+	schema.index({ hasTicket: 1});
 
 	const Customer = mongoose.model("customer", schema);
 	return Customer;

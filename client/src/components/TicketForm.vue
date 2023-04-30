@@ -14,9 +14,9 @@
                 <v-btn @click="dialog = false" small><v-icon small> mdi-close </v-icon> </v-btn>
             </v-card-title>
             <v-container>
-                <v-row >
+                <v-row style="justify-content: center;">
                     <!-- ------------------- Customer Area  ------------------- -->
-                    <v-col cols="12">
+                    <v-col cols="10">
                         <div class="v-area">
                             <h6 class="area-header">Customer Area</h6>
                             <v-row no-gutters>
@@ -36,16 +36,17 @@
                                     ></v-autocomplete>
                                 </v-col>
                                 <v-col class="px-2" cols="6" sm="3">
-                                    <v-text-field type="text" v-model="customerInfo.address" label="כתובת" readonly single-line reverse></v-text-field>
+                                    <!-- <v-text-field type="text" v-model="customerInfo.address" label="כתובת" readonly single-line reverse></v-text-field> -->
+                                    <v-text-field type="text" :value="customerInfo.address +' '+ customerInfo.city" readonly reverse></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="4" sm="2">
-                                    <v-text-field type="text" v-model="customerInfo.phone1" label="טלפון 1" readonly single-line></v-text-field>
+                                    <v-text-field type="text" :value="customerInfo.phone1" readonly></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="4" sm="2">
-                                    <v-text-field type="text" v-model="customerInfo.phone2" label="טלפון 2" readonly single-line></v-text-field>
+                                    <v-text-field type="text" :value="customerInfo.phone2" readonly></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="4" sm="2">
-                                    <v-text-field type="text" v-model="customerInfo.phone3" label="טלפון 3" readonly single-line></v-text-field>
+                                    <v-text-field type="text" :value="customerInfo.phone3" readonly></v-text-field>
                                 </v-col>
                             </v-row>
                         </div>
@@ -386,7 +387,7 @@ export default {
         border-radius: 0px;
         padding: 0px;
         margin: 0px;
-        height:360px;
+        height:300px;
     }
 
     .area-header {
@@ -426,7 +427,4 @@ export default {
         }
     }
 
-    /* .v-input {
-        font-size: small !important ;
-    } */
 </style>

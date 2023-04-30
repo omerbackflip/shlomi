@@ -37,7 +37,7 @@
                     <v-text-field v-model="customer.phone3" label="Phone 3"></v-text-field>
                 </v-col>
                 <v-col cols="4">
-                    <v-text-field v-model="customer.arrivedFrom" label="Arrived From"></v-text-field>
+                    <v-combobox v-model="customer.arrivedFrom" :items="arrivedFromList" label="Arrived From" reverse/>
                 </v-col>
                 <v-col cols="4">
                     <v-dialog ref="dialog" v-model="dateModal" :return-value.sync="customer.issueDate" persistent width="290px">
@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import { CUSTOMER_MODEL } from "../constants/constants";
+import { CUSTOMER_MODEL,TABLE_MODEL } from "../constants/constants";
 import apiService from "../services/apiService";
 import ConfirmDialog from './Common/ConfirmDialog.vue';
 
@@ -90,6 +90,7 @@ export default {
                 width: 600,
                 zIndex: 200,
             },
+            arrivedFromList: [],
         };
     },
     methods: {
@@ -152,11 +153,19 @@ export default {
 				console.log(error);		
 			}
 		},
-
+        async getArrivedFromList() {
+            let response = await apiService.getMany({model: TABLE_MODEL , table_id: 14} );
+            this.arrivedFromList = response.data.map((item) => {
+                return (item.description)
+            });
+        },
         customerTickets() {
 			this.$router.push({ name: "ticket-list", params: { ticketsFilter: this.customer.customerId, ticketType: 'CUSTOMER' } });
         }
     },
+    mounted() {
+		this.getArrivedFromList();
+    }
 };
 </script>
 
