@@ -113,19 +113,6 @@ export default {
 			this.loading = false
 		},
 
-		// async getItemList () {
-		// 	try {
-		// 		const response = await apiService.getMany({model: TABLE_MODEL, table_id : 1});
-		// 		if(response.data) {
-		// 			this.listOfItems = response.data.map ((item) => {
-		// 				return (item.description)
-		// 			});
-		// 		}
-		// 	} catch (error) {
-		// 		console.log(error);
-		// 	}
-		// },
-
 		async updateTicket(item) {
 			let newTicket = item ? false : true;
 			await this.$refs.ticketForm.open(item, newTicket);
@@ -153,7 +140,6 @@ export default {
 				this.ticketsFilter = this.$route.params.ticketsFilter
 		}
 		this.getTickets();
-		// this.getItemList();
 		this.$root.$on("filterChange", (filter, type) => {
 			this.ticketType = type
 			this.ticketsFilter = filter;
@@ -168,9 +154,7 @@ export default {
 };
 </script>
 
-<style>
-
-
+<style scoped>
 .field-margin{
 	margin: 12px;
 }
