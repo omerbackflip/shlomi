@@ -49,7 +49,7 @@
       "parser": "babel-eslint"
     },
     "rules": {
-      "no-debugger":"off"
+      "no-debugger": "off"
     }
   },
   "browserslist": [

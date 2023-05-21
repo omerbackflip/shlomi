@@ -2,6 +2,9 @@ export const CUSTOMER_MODEL = 'customers';
 export const TICKET_MODEL = 'tickets';
 export const TABLE_MODEL = 'tables';
 
+export const printTicketTopPadding = '70px';
+export const printTicketRightPadding = '180px';
+
 export const VAT_PERCENTAGE = 17;
 
 export const TICKET_HEADERS = [

@@ -52,8 +52,11 @@
 				</v-data-table>
 			</v-card>
 		</v-layout>
-		<ticket-form ref="ticketForm"/>
+		<ticket-form @openPrint="handlePrint" ref="ticketForm"/>
 		<confirm-dialog ref="confirm"/>
+		<div>
+            <PrintTicketVue :customerInfo="customerInfo" :ticket="printData" ref="printTicketVue"/>
+        </div>
 	</div>
 </template>
 
@@ -64,18 +67,21 @@ import { TICKET_HEADERS, TICKET_MODEL } from "../constants/constants";
 import apiService from "../services/apiService";
 import TicketForm from './TicketForm.vue';
 import ConfirmDialog from './Common/ConfirmDialog.vue';
+import PrintTicketVue from './PrintTicket.vue';
 
 export default {
 	name: "ticket-list",
-	components: { TicketForm, ConfirmDialog },
+	components: { TicketForm, ConfirmDialog, PrintTicketVue },
 	data() {
 		return {
 			tickets: [],
 			showMessage: false,
 			header: '',
 			headers: TICKET_HEADERS,
+			customerInfo: null,
 			listOfItems: [],
 			search: '',
+			printData: null,
 			ticketsFilter: 'Open',
 			ticketType: 'STATUS',
 			loading: '',
@@ -112,7 +118,11 @@ export default {
 			}
 			this.loading = false
 		},
-
+		handlePrint(data) {
+			this.printData = data.ticket;
+			this.customerInfo = data.customerInfo;
+			this.$refs.printTicketVue.print(data);				
+		},
 		async updateTicket(item) {
 			let newTicket = item ? false : true;
 			await this.$refs.ticketForm.open(item, newTicket);

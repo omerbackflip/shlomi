@@ -259,10 +259,10 @@ export default {
         },
 
         printTicket() {
-            setTimeout(() => {
-                window.print();
-            }, 20); // this delay is needed for "disableTreatment" to take effect
-            this.submitTicket()
+            this.dialog = false;
+            setTimeout(() => {  
+                this.$emit('openPrint', {ticket: this.ticket, customerInfo: this.customerInfo});                
+            }, 500);
         },
 
         async openNewCustomerForm(){
