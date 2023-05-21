@@ -3,6 +3,9 @@
         <v-app-bar app dark>
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
             <v-toolbar-title>-Shlomi-</v-toolbar-title>
+            <div class="db-text">
+                <p >Database Pointer: {{local ? 'Local Host' : 'Production'}} </p>
+            </div>
             <v-spacer></v-spacer>
             <v-btn-toggle v-if="isTicketsList" v-model="ticketStatus" @change="onFilterChange" group mandatory>
                 <v-btn text value="Open"     elevation='3' small> פתוח </v-btn>
@@ -35,10 +38,13 @@
 
 <script>
 
+import SpecificServiceEndPoints from "../../services/specificServiceEndPoints";
 export default {
     data() {
         return {
             drawer: false,
+            local: false,
+            production: false,
             links: [
                 {icon: 'mdi-briefcase-check', text: 'Tickets', route: '/'},
                 {icon: 'mdi-account-multiple-check', text: 'Customers', route: '/customers'},
@@ -69,9 +75,26 @@ export default {
             this.$root.$emit('filterChange',filter, type);
         },
 
+        async getDatabaseInformation() {
+            try {
+                const response = await SpecificServiceEndPoints.getDbInfo();
+                if(response && response.data && response.data.success) {
+                    const { local, production } = response.data;
+                    this.local = local;
+                    this.production = production;
+                }
+            } catch (error) {
+                console.log(error);
+
+            }
+        }
+
         // onAddCustomer() {
         //     this.$root.$emit('newCustomer');
         // },
+    },
+    mounted() {
+        this.getDatabaseInformation();
     },
     computed: {
         isTicketsList() {
@@ -137,6 +160,15 @@ export default {
         margin-bottom: 20px !important;
         margin-left: 20px !important;
         max-width: 6% !important;   
+    }
+
+    .db-text{
+        margin-left: 100px;
+        margin-top: 3px;
+        border: 1px solid white;
+        padding: 4px;
+        border-radius: 4px;
+        font-size: 14px;
     }
 
 </style>

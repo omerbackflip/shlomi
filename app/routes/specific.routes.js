@@ -16,6 +16,7 @@ module.exports = app => {
 
   router.get("/search-customers", specific.searchCustomer);
   router.post("/hasTickets-bulk", specific.hasTicketsBulk);
-  
+  router.get("/get-database-info", specific.getDbInfo);
+
   app.use('/api/specific', router);
 };

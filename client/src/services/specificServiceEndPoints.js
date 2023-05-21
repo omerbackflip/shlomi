@@ -49,6 +49,10 @@ class SpecificServiceEndPoints {
 	async hasTicketsBulk() {
 		return await axios.post(`${baseUrl}/specific/hasTickets-bulk`);
 	}
+
+	async getDbInfo() {
+		return await axios.get(`${baseUrl}/specific/get-database-info`);
+	}
 }
 
 export default new SpecificServiceEndPoints();

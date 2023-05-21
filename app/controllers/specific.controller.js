@@ -8,6 +8,7 @@ const XLSX = require('xlsx');
 const fs = require('fs');
 const { transformCSVData } = require("../util/util");
 const ticketModel = require("../models/ticket.model");
+const { url } = require("../config/db.config");
 
 exports.saveCustomersBulk = async (req, res) => {
 	try {
@@ -116,6 +117,16 @@ exports.hasTicketsBulk = async () => {
 	} catch (error) {
 		console.log(error)
 		res.status(500).send({ message: "Error hasTicketsBulk", error });
+	}
+};
+
+exports.getDbInfo = (req,res) => {
+	try {
+		const local = url.includes('localhost');
+		return res.send({ success: true, local , production: !local});
+	} catch (error) {
+		console.log(error)
+		res.status(500).send({ message: "Error getting db info", error });
 	}
 };
 
