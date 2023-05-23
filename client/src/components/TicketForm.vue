@@ -258,10 +258,10 @@ export default {
             });
         },
 
-        printTicket() {
+        printTicket(disableTreatment) {
             this.dialog = false;
             setTimeout(() => {  
-                this.$emit('openPrint', {ticket: this.ticket, customerInfo: this.customerInfo});                
+                this.$emit('openPrint', {ticket: this.ticket, customerInfo: this.customerInfo, disableTreatment});                
             }, 500);
         },
 

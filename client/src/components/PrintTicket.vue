@@ -66,7 +66,7 @@
                 <v-row style="justify-content: center;">
 
                     <!-- ------------------- Treatment Area  ------------------- -->
-                    <v-col class="mb--20" cols="12">
+                    <v-col v-if="entryMode" class="mb--20" cols="12">
                         <div class="treatment-area v-areaMiddle" :class="{'no-print': disableTreatment}">
                                 <table class="table">
                                     <thead>
@@ -156,6 +156,7 @@ export default {
             loading: false,
             customers: [],
             menu: false,
+            entryMode: false,
             menu1: false,
             topPadding: printTicketTopPadding,
             rightPadding: printTicketRightPadding,
@@ -190,6 +191,7 @@ export default {
         print(data) {
             this.ticket = data.ticket;
             this.customerInfo = data.customerInfo;
+            this.entryMode = data.disableTreatment;
             this.dialog = true;
             setTimeout(() => {	
                 window.print();
@@ -248,6 +250,7 @@ export default {
         height: 100% !important;
         font-size: 12px !important;
         overflow: hidden !important;
+        box-shadow: none !important;
     }
     .overflow{
         overflow: auto;
