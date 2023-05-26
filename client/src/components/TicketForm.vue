@@ -156,6 +156,7 @@
                                 <v-btn @click="printTicket(disableTreatment = true)" small>קליטה</v-btn>
                                 <v-btn @click="printTicket(disableTreatment = false)" small>יציאה</v-btn>
                                 <v-spacer></v-spacer>
+                                <v-btn @click="sendMessage()" small> <v-icon small> mdi-whatsapp </v-icon> Send message </v-btn>
                                 <v-btn @click="submitTicket()" :loading="loading" small> שמור </v-btn>
                                 <v-btn @click="dialog = false" small> בטל</v-btn>
                             </v-layout>
@@ -175,7 +176,7 @@
 </template>
 
 <script>
-import { TICKET_MODEL, TABLE_MODEL, CUSTOMER_MODEL, VAT_PERCENTAGE, NEW_TICKET } from "../constants/constants";
+import { TICKET_MODEL, TABLE_MODEL, CUSTOMER_MODEL, VAT_PERCENTAGE, NEW_TICKET, messageTemplate } from "../constants/constants";
 import apiService from "../services/apiService";
 import specificServiceEndPoints from '../services/specificServiceEndPoints';
 import CustomerForm from './CustomerForm.vue';
@@ -263,6 +264,24 @@ export default {
             setTimeout(() => {  
                 this.$emit('openPrint', {ticket: this.ticket, customerInfo: this.customerInfo, disableTreatment});                
             }, 500);
+        },
+
+        async sendMessage() {
+            try {
+                if(this.customerInfo && this.customerInfo.phone1) {
+                    const name = this.customerInfo.fullName || this.ticket.customerName;
+                    const itemName = this.ticket.item;
+                    const message = messageTemplate.replace("__name__", name).replace("__itemName__", itemName);
+                    await specificServiceEndPoints.sendMessageToUser({message, phone: this.customerInfo.phone1});
+                    alert('Message sent successfully');
+                    this.submitTicket();
+                } else {
+                    alert("User has no primary phone number");
+                }
+            } catch (error) {
+                console.log(error);
+                alert("Can't send message to user!");
+            }
         },
 
         async openNewCustomerForm(){

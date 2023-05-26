@@ -7,6 +7,8 @@ export const printTicketRightPadding = '180px';
 
 export const VAT_PERCENTAGE = 17;
 
+export const messageTemplate = `Dear __name__, Hope you are doing great, Your item __itemName__ has been fixed, You are required to please pick it up from our store. Thanks.`;
+
 export const TICKET_HEADERS = [
     { text: 'Ticket ID', value: 'ticketId', align:'end' },
     { text: 'Year', value: 'year', align:'end' },
