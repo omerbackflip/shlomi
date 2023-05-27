@@ -9,55 +9,55 @@
         </div>
         <v-card :style="{ 'padding-top': topPadding, 'padding-right': rightPadding, height: '100%' }" class="over-flow-hidden">
             <v-card-title class="text-h6 padding-title text-center">
-                {{(newTicket) ? '' : 'עדכון'}} כרטיס תיקון - {{ticket.ticketId}}
+                כרטיס תיקון - {{ticket.ticketId}}
             </v-card-title>
             <v-container>
                     <!-- ------------------- Customer Area  ------------------- -->
 
-                <div class="col mb--20 left-align" cols="12">
+                <div class="col mb--20 right-align" cols="12">
                     <div class="v-area">
                         <div class="row mr-200 mb--30">
-                            <div class="col" >
-                                <p class="field-text">{{ticket.customerName}}</p>
-                            </div>
                             <div class="col px-2" >
-                                <p class="field-text">{{customerInfo.address +' '+ customerInfo.city}}</p>
+                                <p class="field-text">כתובת : {{customerInfo.address +' '+ customerInfo.city}}</p>
+                            </div>
+                            <div class="col" >
+                                <p class="field-text">שם לקוח : {{ticket.customerName}}</p>
                             </div>
                         </div>
                         <div class="row mr-200">
                             <div class="col" >
-                                <p class="field-text">{{customerInfo.phone1}}</p>
+                                <p class="field-text">טלפון 3 : {{customerInfo.phone3}}</p>
                             </div>
                             <div class="col" >
-                                <p class="field-text">{{customerInfo.phone2}}</p>
+                                <p class="field-text">טלפון 2 : {{customerInfo.phone2}}</p>
                             </div>
                             <div class="col" >
-                                <p class="field-text">{{customerInfo.phone3}}</p>
+                                <p class="field-text">טלפון 1 : {{customerInfo.phone1}}</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- ------------------- Item Area  ------------------- -->
-                <div class="col mb--20 left-align" cols="12">
+                <div class="col mb--20 right-align" cols="12">
                     <div class="v-areaMiddle v-area1">
                         <div class="row mr-200 mb--30">
                             <div class="col" >
-                                <p class="field-text">{{ticket.item}}</p>
+                                <p class="field-text">תאור התקלה ע"פ הלקוח : {{ticket.defectDescription && ticket.defectDescription.join('')}}</p>
                             </div>
                             <div class="col" >
-                                <p class="field-text">{{ticket.entryDate}}</p>
+                                <p class="field-text">סוג המכשיר : {{ticket.item}}</p>
                             </div>
                         </div>
                         <div class="row mr-200">
                             <div class="col" >
-                                <p class="field-text">{{ticket.defectDescription && ticket.defectDescription.join('')}}</p>
+                                <p class="field-text">נכנס לתיקון : {{ticket.entryDate}}</p>
+                            </div>
+                            <div class="col" v-if="ticket.entryCondition != ''">
+                                <p class="field-text">מצב המכשיר : {{ticket.entryCondition && ticket.entryCondition.join('')}}</p>
                             </div>
                             <div class="col" >
-                                <p class="field-text">{{ticket.entryCondition && ticket.entryCondition.join('')}}</p>
-                            </div>
-                            <div class="col" >
-                                <p class="field-text">{{ticket.accessories && ticket.accessories.join('')}}</p>
+                                <p class="field-text">אביזר נוסף : {{ticket.accessories && ticket.accessories.join('')}}</p>
                             </div>
                         </div>
                     </div>
@@ -71,18 +71,14 @@
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th>Defects Found</th>
-                                            <th>Defect Fixes</th>
+                                            <th>תאור ביצוע העבודה</th>
+                                            <th>תקלות שאובחונו</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr v-for="index in maxRows" :key="index">
-                                            <td>{{ ticket.defectFound[index] }}</td>
-                                            <td>{{ ticket.defectFixes[index] }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td> Fix Date</td>
-                                            <td> {{ticket.fixDate}} </td>
+                                            <td>{{ ticket.defectFixes[index-1] }}</td>
+                                            <td>{{ ticket.defectFound[index-1] }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -93,22 +89,21 @@
                     <!-- ------------------- Payment Area  ------------------- -->
                     <v-col class="mb--20" cols="12">
                         <div class=" v-area">
-                            <table class="table">
+                            <table class="table-payment">
                                 <tbody>
-                                    <tr><td>Pre-paid</td><td>{{ ticket.prepaid }}</td></tr>
-                                    <tr><td>Pre-paid Invoice</td><td>{{ ticket.prepaidInvoice }}</td></tr>
-                                    <tr><td>Amount</td><td>{{ ticket.amount }}</td></tr>
-                                    <tr><td>VAT</td><td>{{ ticket.vat }}</td></tr>
-                                    <tr><td>Total</td><td>{{ ticket.total }}</td></tr>
-                                    <tr><td>Invoice</td><td>{{ ticket.invoice }}</td></tr>
-                                    <tr><td>Exit Date</td><td>{{ ticket.exitDate }}</td></tr>
-                                    <tr><td>Remarks</td><td>{{ ticket.remarks }}</td></tr>
+                                    <tr><td>{{ ticket.amount }}</td>    <td style="text-align-last: right;">סכום</td></tr>
+                                    <tr><td>{{ ticket.vat }}</td>       <td style="text-align-last: right;">מע"מ</td></tr>
+                                    <tr><td>{{ ticket.total }}</td>     <td style="text-align-last: right;">סה"כ לתשלום</td></tr>
+                                    <tr><td>{{ ticket.prepaid }}</td>   <td style="text-align-last: right;">שולם ע"ח  ({{ ticket.prepaidInvoice }}) </td></tr>
+                                    <tr><td>{{ ticket.invoice }}</td>   <td style="text-align-last: right;">חשבונית</td></tr>
+                                    <!-- <tr><td>Exit Date</td><td>{{ ticket.exitDate }}</td></tr>
+                                    <tr><td>Remarks</td><td>{{ ticket.remarks }}</td></tr> -->
                                 </tbody>
                             </table>
                         </div>
                     </v-col>
                 </v-row>
-                <div class="footer-content left-align">
+                <div class="footer-content right-align">
                     <p>לורם איפסום דולוראיפסום דולור  איפסום דולור סיט אמת.</p>
                     <p>לורם  איפסום דולור איפסום דולור איפסום דולור סיט אמת.</p>
                     <p class="heading"><span class="underline">לורם איפסום</span> - כותרת מודגשת</p>
@@ -129,7 +124,7 @@
                         <span class="signature-text">לורם  איפסום דולוראיפסום 21 מאי, 2023</span>
                     </div>
                     <div class="line"></div>
-                    <p class="bold-text left-align">אינקידידונט אות לבורה -  איפסום דולוראדיפיסינג אלית</p>
+                    <p class="bold-text right-align">אינקידידונט אות לבורה -  איפסום דולוראדיפיסינג אלית</p>
                 </div>
             </v-container>
         </v-card>
@@ -234,8 +229,10 @@ export default {
     },
     computed: {
         maxRows() {
-            let length = Math.max(this.ticket.defectFound && this.ticket.defectFound.length || 0, this.ticket.defectFixes && this.ticket.defectFixes.length || 0) - 1;
+            let length = Math.max(  this.ticket.defectFound && this.ticket.defectFound.length || 0, 
+                                    this.ticket.defectFixes && this.ticket.defectFixes.length || 0) ;
             return  length >= 0 ? length : 0;
+            debugger // eslint-disable-line
         },
     },
     mounted() {
@@ -260,6 +257,7 @@ export default {
         border-radius: 0px;
         padding: 0px;
         margin: 0px;
+        text-align: -webkit-center
     }
     .v-areaMiddle{
         border-radius: 0px;
@@ -308,11 +306,18 @@ export default {
     .table {
       border-collapse: collapse;
     }
+    .table-payment {
+      border-collapse: collapse;
+      width:   50%;
+    }
     .table th, .table td {
       padding: 2px;
       border: 1px solid #c0bbbb;
     }
-
+    .table-payment th, .table-payment td {
+      padding: 2px;
+      border: 1px solid #c0bbbb;
+    }
     .table td{
         padding: 0px !important;
         margin: 0 !important; 
@@ -337,8 +342,8 @@ export default {
         margin-top: 12px;
     }
 
-    .left-align {
-        text-align: left;
+    .right-align {
+        text-align: right;
     }
 
     .heading {

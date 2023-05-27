@@ -9,7 +9,7 @@
         </div>
         <v-card >
             <v-card-title class="text-h6 grey lighten-2">
-                {{(newTicket) ? '' : 'עדכון'}} כרטיס תיקון - {{ticket.ticketId}}
+                כרטיס תיקון - {{ticket.ticketId}}
                 <v-spacer></v-spacer>
                 <v-btn @click="dialog = false" small><v-icon small> mdi-close </v-icon> </v-btn>
             </v-card-title>
@@ -57,10 +57,10 @@
                             <h6 class="area-header">Treatment Area</h6>
                             <v-row no-gutters>
                                 <v-col class="px-2" cols="12">
-                                    <v-combobox v-model="ticket.defectFound" :items="defectFoundList" label="רשימת ממצאים" multiple reverse></v-combobox>
+                                    <v-combobox v-model="ticket.defectFound" :items="defectFoundList" label="תקלות שאובחנו" multiple reverse></v-combobox>
                                 </v-col>
                                 <v-col class="px-2" cols="12">
-                                    <v-combobox v-model="ticket.defectFixes" :items="defectFixesList" label="רשימת תיקונים" multiple reverse></v-combobox>
+                                    <v-combobox v-model="ticket.defectFixes" :items="defectFixesList" label="תאור ביצוע העבודה" multiple reverse></v-combobox>
                                 </v-col>
                                 <v-col class="px-2" cols="4">
                                     <v-menu v-model="menu1" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
