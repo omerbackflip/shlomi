@@ -7,8 +7,11 @@ const specificService = require("../services/specific-service");
 const XLSX = require('xlsx');
 const fs = require('fs');
 const { transformCSVData } = require("../util/util");
-const ticketModel = require("../models/ticket.model");
 const { url } = require("../config/db.config");
+
+const accountSid = process.env.ACCOUNT_SID;
+const authToken = process.env.AUTH_TOKEN;
+const client = require('twilio')(accountSid, authToken);
 
 exports.saveCustomersBulk = async (req, res) => {
 	try {
@@ -107,7 +110,7 @@ exports.searchCustomer = async (req, res) => {
 	}
 };
 
-exports.hasTicketsBulk = async () => {
+exports.hasTicketsBulk = async (req,res) => {
 	try {
 		let data = await Customer.find()
 		data.map(async (item) => {
@@ -127,6 +130,30 @@ exports.getDbInfo = (req,res) => {
 	} catch (error) {
 		console.log(error)
 		res.status(500).send({ message: "Error getting db info", error });
+	}
+};
+
+exports.sendMessageToUser = async (req, res) => {
+	const { message,phone } = req.body;
+
+	if(message && phone) {
+
+		client.messages.create({
+			body: message,
+			from: 'whatsapp:+14155238886',
+			to: `whatsapp:${phone}`
+		})
+		.then(message => {
+			
+			// console.log(message);
+			res.send({ success: true, message: "Successfully sent message" });
+
+		}).catch((error) => {
+			console.log(error);
+			res.status(500).send({ message: "Error while sending message to user! ", error });
+		});	
+	} else {
+		return res.send({success: false, message: 'Please provide message and phone both!'});
 	}
 };
 

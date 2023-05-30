@@ -74,7 +74,7 @@
 						</v-btn>
 					</template>
 				</vue-virtual-table> -->
-				<v-btn @click="updateHasTickets" :loading="loading">Run Script</v-btn>
+				<v-btn @click="updateHasTickets" :loading="loading">Run HasTicket Script</v-btn>
 			</v-card>
 		</v-layout>
 		<customer-form ref="customerForm"/>

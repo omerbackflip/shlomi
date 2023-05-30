@@ -53,7 +53,8 @@
                     </v-col>
                     <!-- ------------------- Treatment Area  ------------------- -->
                     <v-col sm="6">
-                        <div class="treatment-area v-areaMiddle v-area1" :class="{'no-print': disableTreatment}">
+                        <!-- <div class="treatment-area v-areaMiddle v-area1" :class="{'no-print': includeTreatment}"> -->
+                        <div class="treatment-area v-areaMiddle v-area1">
                             <h6 class="area-header">Treatment Area</h6>
                             <v-row no-gutters>
                                 <v-col class="px-2" cols="12">
@@ -153,9 +154,10 @@
                                     <v-btn text value="Closed"   elevation='3' small>סגור</v-btn>
                                 </v-btn-toggle>
                                 <v-spacer></v-spacer>
-                                <v-btn @click="printTicket(disableTreatment = true)" small>קליטה</v-btn>
-                                <v-btn @click="printTicket(disableTreatment = false)" small>יציאה</v-btn>
+                                <v-btn @click="printTicket(includeTreatment = false)" small>קליטה</v-btn>
+                                <v-btn @click="printTicket(includeTreatment = true)" small>יציאה</v-btn>
                                 <v-spacer></v-spacer>
+                                <v-btn @click="sendMessage()" small color=success> <v-icon small class="pr-2"> mdi-whatsapp </v-icon> הודעה </v-btn>
                                 <v-btn @click="submitTicket()" :loading="loading" small> שמור </v-btn>
                                 <v-btn @click="dialog = false" small> בטל</v-btn>
                             </v-layout>
@@ -175,7 +177,7 @@
 </template>
 
 <script>
-import { TICKET_MODEL, TABLE_MODEL, CUSTOMER_MODEL, VAT_PERCENTAGE, NEW_TICKET } from "../constants/constants";
+import { TICKET_MODEL, TABLE_MODEL, CUSTOMER_MODEL, VAT_PERCENTAGE, NEW_TICKET, messageTemplate } from "../constants/constants";
 import apiService from "../services/apiService";
 import specificServiceEndPoints from '../services/specificServiceEndPoints';
 import CustomerForm from './CustomerForm.vue';
@@ -207,7 +209,7 @@ export default {
             menu: false,
             menu1: false,
             menu2: false,
-            disableTreatment: false,
+            includeTreatment: false,
         };
     },
 
@@ -258,11 +260,32 @@ export default {
             });
         },
 
-        printTicket(disableTreatment) {
-            this.dialog = false;
+        printTicket(includeTreatment) {
+            // this.dialog = false;
+            this.submitTicket()
             setTimeout(() => {  
-                this.$emit('openPrint', {ticket: this.ticket, customerInfo: this.customerInfo, disableTreatment});                
+                this.$emit('openPrint', {ticket: this.ticket, customerInfo: this.customerInfo, includeTreatment});                
             }, 500);
+        },
+
+        async sendMessage() {
+            try {
+                if(this.customerInfo && this.customerInfo.phone1) {
+                    const name = this.customerInfo.fullName || this.ticket.customerName;
+                    const itemName = this.ticket.item;
+                    const message = messageTemplate.replace("__name__", name).replace("__itemName__", itemName);
+                    let cutomerPhone = "+972".concat(this.customerInfo.phone1.replace("-","").substring(1))
+                    // console.log(cutomerPhone)
+                    await specificServiceEndPoints.sendMessageToUser({message, phone: cutomerPhone});
+                    alert('Message sent successfully to ' + cutomerPhone);
+                    this.submitTicket();
+                } else {
+                    alert("User has no primary phone number");
+                }
+            } catch (error) {
+                console.log(error);
+                alert("Can't send message to user!");
+            }
         },
 
         async openNewCustomerForm(){

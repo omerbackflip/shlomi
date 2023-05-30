@@ -53,6 +53,10 @@ class SpecificServiceEndPoints {
 	async getDbInfo() {
 		return await axios.get(`${baseUrl}/specific/get-database-info`);
 	}
+
+	async sendMessageToUser(body) {
+		return await axios.post(`${baseUrl}/specific/send-message`,body);
+	}
 }
 
 export default new SpecificServiceEndPoints();

@@ -122,7 +122,8 @@ export default {
             if (newCustomer) {
                 this.customer = {issueDate: new Date().toISOString().substr(0, 10)}
                 let lastCustomer = await apiService.getMany({model: CUSTOMER_MODEL , sort: {customerId: -1 } , limit: 1});
-                this.customer.customerId  = lastCustomer.data[0].customerId+1;
+                this.customer.customerId = lastCustomer.data[0].customerId+1;
+                this.customer.hasTicket = false;
             } else {
                 this.customer = customer
                 this.customer.issueDate = new Date(this.customer.issueDate).toISOString().substr(0, 10)

@@ -2,10 +2,12 @@ export const CUSTOMER_MODEL = 'customers';
 export const TICKET_MODEL = 'tickets';
 export const TABLE_MODEL = 'tables';
 
-export const printTicketTopPadding = '70px';
-export const printTicketRightPadding = '180px';
+export const printTicketTopPadding = '100px';
+export const printTicketRightPadding = '150px';
 
 export const VAT_PERCENTAGE = 17;
+
+export const messageTemplate = `__name__ היקר, המכשיר __itemName__ תוקן הנך מתבקש לסור למעבדה לקחתו. תודה, מעבדת ישראל.`;
 
 export const TICKET_HEADERS = [
     { text: 'Ticket ID', value: 'ticketId', align:'end' },

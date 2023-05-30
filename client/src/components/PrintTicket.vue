@@ -4,11 +4,8 @@
         width="1200"
         @keydown.esc="dialog = false"
     >
-        <div class="divHeader">
-            <img class="print-logo" src="../../public/logo.jpg" alt="" srcset="" >
-        </div>
         <v-card :style="{ 'padding-top': topPadding, 'padding-right': rightPadding, height: '100%' }" class="over-flow-hidden">
-            <v-card-title class="text-h6 padding-title text-center">
+            <v-card-title class="text-h4 padding-title text-center">
                 כרטיס תיקון - {{ticket.ticketId}}
             </v-card-title>
             <v-container>
@@ -17,22 +14,22 @@
                 <div class="col mb--20 right-align" cols="12">
                     <div class="v-area">
                         <div class="row mr-200 mb--30">
-                            <div class="col px-2" >
-                                <p class="field-text">כתובת : {{customerInfo.address +' '+ customerInfo.city}}</p>
+                            <div class="col" >
+                                <p class="field-text"><b>כתובת : </b>{{customerInfo.address +' '+ customerInfo.city}}</p>
                             </div>
                             <div class="col" >
-                                <p class="field-text">שם לקוח : {{ticket.customerName}}</p>
+                                <p class="field-text"><b>שם לקוח :</b>{{ticket.customerName}}</p>
                             </div>
                         </div>
                         <div class="row mr-200">
-                            <div class="col" >
-                                <p class="field-text">טלפון 3 : {{customerInfo.phone3}}</p>
+                            <div v-if="customerInfo.phone3" class="col" >
+                                <p class="field-text"><b>טלפון 3 : </b>{{customerInfo.phone3}}</p>
                             </div>
-                            <div class="col" >
-                                <p class="field-text">טלפון 2 : {{customerInfo.phone2}}</p>
+                            <div v-if="customerInfo.phone2" class="col" >
+                                <p class="field-text"><b>טלפון 2 : </b>{{customerInfo.phone2}}</p>
                             </div>
-                            <div class="col" >
-                                <p class="field-text">טלפון 1 : {{customerInfo.phone1}}</p>
+                            <div v-if="customerInfo.phone1" class="col" >
+                                <p class="field-text"><b>טלפון 1 : </b>{{customerInfo.phone1}}</p>
                             </div>
                         </div>
                     </div>
@@ -43,21 +40,21 @@
                     <div class="v-areaMiddle v-area1">
                         <div class="row mr-200 mb--30">
                             <div class="col" >
-                                <p class="field-text">תאור התקלה ע"פ הלקוח : {{ticket.defectDescription && ticket.defectDescription.join('')}}</p>
+                                <p class="field-text"><b>תאור התקלה ע"פ הלקוח : </b>{{ticket.defectDescription && ticket.defectDescription.join('')}}</p>
                             </div>
                             <div class="col" >
-                                <p class="field-text">סוג המכשיר : {{ticket.item}}</p>
+                                <p class="field-text" style="direction: rtl;"><b>סוג המכשיר : </b>{{ticket.item}}</p>
                             </div>
                         </div>
                         <div class="row mr-200">
                             <div class="col" >
-                                <p class="field-text">נכנס לתיקון : {{ticket.entryDate}}</p>
+                                <p class="field-text"><b>נכנס לתיקון : </b>{{ticket.entryDate}}</p>
                             </div>
                             <div class="col" v-if="ticket.entryCondition != ''">
-                                <p class="field-text">מצב המכשיר : {{ticket.entryCondition && ticket.entryCondition.join('')}}</p>
+                                <p class="field-text"><b>מצב המכשיר : </b>{{ticket.entryCondition && ticket.entryCondition.join('')}}</p>
                             </div>
                             <div class="col" >
-                                <p class="field-text">אביזר נוסף : {{ticket.accessories && ticket.accessories.join('')}}</p>
+                                <p class="field-text"><b>אביזר נוסף : </b>{{ticket.accessories && ticket.accessories.join('')}}</p>
                             </div>
                         </div>
                     </div>
@@ -66,8 +63,9 @@
                 <v-row style="justify-content: center;">
 
                     <!-- ------------------- Treatment Area  ------------------- -->
-                    <v-col v-if="entryMode" class="mb--20" cols="12">
-                        <div class="treatment-area v-areaMiddle" :class="{'no-print': disableTreatment}">
+                    <v-col v-if="includeTreatment" class="mb--20" cols="12">
+                        <!-- <div class="treatment-area v-areaMiddle" :class="{'no-print': includeTreatment}"> -->
+                        <div class="treatment-area v-areaMiddle" >
                                 <table class="table">
                                     <thead>
                                         <tr>
@@ -90,41 +88,38 @@
                     <v-col class="mb--20" cols="12">
                         <div class=" v-area">
                             <table class="table-payment">
-                                <tbody>
-                                    <tr><td>{{ ticket.amount }}</td>    <td style="text-align-last: right;">סכום</td></tr>
-                                    <tr><td>{{ ticket.vat }}</td>       <td style="text-align-last: right;">מע"מ</td></tr>
-                                    <tr><td>{{ ticket.total }}</td>     <td style="text-align-last: right;">סה"כ לתשלום</td></tr>
-                                    <tr><td>{{ ticket.prepaid }}</td>   <td style="text-align-last: right;">שולם ע"ח  ({{ ticket.prepaidInvoice }}) </td></tr>
-                                    <tr><td>{{ ticket.invoice }}</td>   <td style="text-align-last: right;">חשבונית</td></tr>
+                                <tbody style="text-align-last: right;">
+                                    <tr><td>{{ ticket.amount ? ticket.amount.toLocaleString() : '' }}</td><td>מחיר</td></tr>
+                                    <tr><td>{{ ticket.vat }}</td><td>מע"מ</td></tr>
+                                    <tr><td>{{ ticket.total ? ticket.total.toLocaleString() : '' }}</td><td>סה"כ לתשלום</td></tr>
+                                    <tr><td>{{ ticket.prepaid }}</td><td>שולם ע"ח  ({{ ticket.prepaidInvoice }}) </td></tr>
+                                    <tr><td>{{ (ticket.total - ticket.prepaid).toLocaleString()}}</td><td><b>סה"כ נותר לתשלום</b></td></tr>
                                     <!-- <tr><td>Exit Date</td><td>{{ ticket.exitDate }}</td></tr>
                                     <tr><td>Remarks</td><td>{{ ticket.remarks }}</td></tr> -->
                                 </tbody>
+                                {{ ticket.invoice }} -  חשבונית
                             </table>
                         </div>
                     </v-col>
                 </v-row>
                 <div class="footer-content right-align">
-                    <p>לורם איפסום דולוראיפסום דולור  איפסום דולור סיט אמת.</p>
-                    <p>לורם  איפסום דולור איפסום דולור איפסום דולור סיט אמת.</p>
-                    <p class="heading"><span class="underline">לורם איפסום</span> - כותרת מודגשת</p>
-                    <p>לורם איפסוםאיפסום דולור  דולור סיט אמת, סיט אדיפיסינג אלית.</p>
-                    <p>סד דו איאמוד טמפור  איפסום דולוראינקידידונט אות לבורה ואלורה מגנה אליקוא.</p>
-                    <p class="date">21 מאי, 2023</p>
-                    <ol>
-                        <li> איפסום דולורלורם איפסום דולור סיט אמת</li>
-                        <li>קונסקטטור אדיפיסינג אליתאיפסום דולור</li>
-                        <li>סד דו איאמוד איפסום דולור טמפוראיפסום דולור</li>
-                        <li>אינקידידונט אות לבורה ואלורה מגנה איפסום דולוראליקוא</li>
-                        <li>אות אנים אד מיניםאיפסום דולור  ויניאםאיפסום דולור</li>
-                    </ol>
-                    <div class="line"></div>
-                    <div class="signature-line">
-                        <span class="sign">חתימה</span>
-                        <span class="signature-underline"></span>
-                        <span class="signature-text">לורם  איפסום דולוראיפסום 21 מאי, 2023</span>
+                    <p> כאן צריך לבוא הערות הדפסת מכשיר</p>
+                    <p class="heading"><span class="underline">תנאי אחריות</span></p>
+                    <p>מעבדת ישראל אחראית על התיקון שבוצע בלבד כמפורט בכרטיס תיקון</p>
+                    <p style="direction: rtl;">למשך 3 חודשים החל מתאריך - {{ ticket.exitDate }} </p>
+                    <p>האחריות לא תחול בשל אחד או יותר מהתנאים הבאים</p>
+                    <div class="list">
+                        <li>ליקוי אחר במכשיר אשר לא פורט בכרטיס השרות</li>
+                        <li>שבר או סדק כלשהו</li>
+                        <li>הפעלה לא נכונה של המכשיר המנוגדת להוראות היצרון</li>
+                        <li>המכשיר פורק ע"י אדם שאינו מורשה מטעם מעבדת ישראל</li>
+                        <li>חדירת נוזלים לתוך המכשיר</li>
                     </div>
-                    <div class="line"></div>
-                    <p class="bold-text right-align">אינקידידונט אות לבורה -  איפסום דולוראדיפיסינג אלית</p>
+                    <p style="direction: rtl; text-align-last: center;">
+                        <span>מאשר קבלת המכשיר בתאריך - {{ ticket.exitDate }}</span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span>חתימת הלקוח ______________</span></p>
+                    <p class="bold-text">מעבדת ישראל - לשרותך תמיד !</p>
                 </div>
             </v-container>
         </v-card>
@@ -151,11 +146,10 @@ export default {
             loading: false,
             customers: [],
             menu: false,
-            entryMode: false,
             menu1: false,
             topPadding: printTicketTopPadding,
             rightPadding: printTicketRightPadding,
-            disableTreatment: false,
+            includeTreatment: true,
         };
     },
 
@@ -186,7 +180,7 @@ export default {
         print(data) {
             this.ticket = data.ticket;
             this.customerInfo = data.customerInfo;
-            this.entryMode = data.disableTreatment;
+            this.includeTreatment = data.includeTreatment;
             this.dialog = true;
             setTimeout(() => {	
                 window.print();
@@ -232,7 +226,6 @@ export default {
             let length = Math.max(  this.ticket.defectFound && this.ticket.defectFound.length || 0, 
                                     this.ticket.defectFixes && this.ticket.defectFixes.length || 0) ;
             return  length >= 0 ? length : 0;
-            debugger // eslint-disable-line
         },
     },
     mounted() {
@@ -253,8 +246,6 @@ export default {
         overflow: auto;
     }
     .v-area{
-        border: 0px solid black;
-        border-radius: 0px;
         padding: 0px;
         margin: 0px;
         text-align: -webkit-center
@@ -271,6 +262,7 @@ export default {
 
     .container {
         padding-bottom: 0px !important;
+        font-size: medium;
     }
     @media screen {
         div.divHeader, div.divFooter{
@@ -326,6 +318,8 @@ export default {
 
     .field-text{
         min-inline-size: max-content;
+        text-align: right;
+        padding-right: 0px;
     }
 
     .mb--20{
@@ -337,9 +331,9 @@ export default {
     }
 
     .footer-content {
-        font-size: 12px;
+        font-size: 15px;
         color: black;
-        margin-top: 12px;
+        margin-top: 42px;
     }
 
     .right-align {
@@ -385,6 +379,9 @@ export default {
     }
     .bold-text {
         font-weight: bold;
+        text-align-last: center;
+        direction: rtl;
+        font-size: xx-large;
     }
 
     ::v-deep .padding-title{
@@ -409,12 +406,17 @@ export default {
     .col {
         position: relative;
         width: 100%;
-        padding-right: 15px;
+        padding-right: 0px;
         padding-left: 15px;
     }
 
     .mr-200{
-        margin-right: 10px;
+        margin-right: 0px;
+    }
+    .list {
+        direction: rtl;
+        margin-right: 30px;
+        margin-bottom: 30px;
     }
 
 </style>
