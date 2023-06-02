@@ -123,7 +123,7 @@
               />
             </div>
             <!-- <div v-else @click="setEdit(item)"> -->
-            <div v-else>
+            <div v-else  class="hebrew">
               <span> {{ item.description }}</span>
             </div>
           </template>
@@ -309,5 +309,9 @@ export default {
   text-align: center;
   font-weight: bold;
   font-size: 16px;
+}
+.hebrew {
+  direction: rtl;
+  text-align: right;
 }
 </style>

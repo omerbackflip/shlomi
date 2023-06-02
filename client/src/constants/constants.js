@@ -2,8 +2,8 @@ export const CUSTOMER_MODEL = 'customers';
 export const TICKET_MODEL = 'tickets';
 export const TABLE_MODEL = 'tables';
 
-export const printTicketTopPadding = '100px';
-export const printTicketRightPadding = '150px';
+export const printTicketTopPadding = '50px';
+export const printTicketRightPadding = '110px';
 
 export const VAT_PERCENTAGE = 17;
 
@@ -18,7 +18,7 @@ export const TICKET_HEADERS = [
     { text: 'Defect description', value: 'defectDescription', align:'end' },
     { text: 'Total', value: 'total', align:'end' },
     { text: 'Invoice', value: 'invoice', align:'end' },
-    { text: 'Remarks', value: 'remarks', align:'end' },
+    { text: 'Remarks', value: 'remarks', align:'right' },
     { text: 'Fix Date', value: 'fixDate', align:'end' },
     { text: 'Exit Date', value: 'exitDate', align:'end' },
     { text: '', value: 'controls' },

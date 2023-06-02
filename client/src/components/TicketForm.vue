@@ -4,9 +4,6 @@
         width="1200"
         @keydown.esc="dialog = false"
     >
-        <div class="divHeader">
-            <img class="print-logo" src="../../public/logo.jpg" alt="" srcset="" >
-        </div>
         <v-card >
             <v-card-title class="text-h6 grey lighten-2">
                 כרטיס תיקון - {{ticket.ticketId}}
@@ -14,7 +11,7 @@
                 <v-btn @click="dialog = false" small><v-icon small> mdi-close </v-icon> </v-btn>
             </v-card-title>
             <v-container>
-                <v-row style="justify-content: center;">
+                <v-row style="justify-content: center; direction: rtl;">
                     <!-- ------------------- Customer Area  ------------------- -->
                     <v-col cols="10">
                         <div class="v-area">
@@ -53,15 +50,14 @@
                     </v-col>
                     <!-- ------------------- Treatment Area  ------------------- -->
                     <v-col sm="6">
-                        <!-- <div class="treatment-area v-areaMiddle v-area1" :class="{'no-print': includeTreatment}"> -->
                         <div class="treatment-area v-areaMiddle v-area1">
                             <h6 class="area-header">Treatment Area</h6>
                             <v-row no-gutters>
                                 <v-col class="px-2" cols="12">
-                                    <v-combobox v-model="ticket.defectFound" :items="defectFoundList" label="תקלות שאובחנו" multiple reverse></v-combobox>
+                                    <v-combobox v-model="ticket.defectFound" :items="defectFoundList" label="תקלות שאובחנו" multiple></v-combobox>
                                 </v-col>
                                 <v-col class="px-2" cols="12">
-                                    <v-combobox v-model="ticket.defectFixes" :items="defectFixesList" label="תאור ביצוע העבודה" multiple reverse></v-combobox>
+                                    <v-combobox v-model="ticket.defectFixes" :items="defectFixesList" label="תאור ביצוע העבודה" multiple></v-combobox>
                                 </v-col>
                                 <v-col class="px-2" cols="4">
                                     <v-menu v-model="menu1" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
@@ -80,7 +76,7 @@
                             <h6 class="area-header">Item Area</h6>
                             <v-row no-gutters>
                                 <v-col class="px-2" cols="6">
-                                    <v-combobox v-model="ticket.item" :items="itemList" label="שם המכשיר" reverse/>
+                                    <v-combobox v-model="ticket.item" :items="itemList" label="שם המכשיר" />
                                 </v-col>
                                 <v-col class="px-2" cols="4">
                                     <v-menu v-model="menu2" :close-on-content-click="false" nudge-right="40" transition="scale-transition" offset-y min-width="auto">
@@ -94,13 +90,13 @@
                                     <v-text-field v-model="ticket.checkPrice" label="מחיר בדיקה"></v-text-field>
                                 </v-col> -->
                                 <v-col class="px-2" cols="12">
-                                    <v-combobox v-model="ticket.defectDescription" :items="defectList" label="תאור התקלה" multiple reverse dense/>
+                                    <v-combobox v-model="ticket.defectDescription" :items="defectList" label="תאור התקלה" multiple dense/>
                                 </v-col>
                                 <v-col class="px-2" cols="12">
-                                    <v-combobox v-model="ticket.entryCondition" :items="entryConditionList" label="מצב המכשיר" multiple reverse dense/>
+                                    <v-combobox v-model="ticket.entryCondition" :items="entryConditionList" label="מצב המכשיר" multiple dense/>
                                 </v-col>
-                                <v-col class="px-2" cols="12">
-                                    <v-combobox v-model="ticket.accessories" :items="accessoriesList" label="אביזר נוסף" multiple reverse/>
+                                <v-col class="px-2" cols="6">
+                                    <v-combobox v-model="ticket.accessories" :items="accessoriesList" label="אביזר נוסף" multiple />
                                 </v-col>
                             </v-row>
                         </div>
@@ -111,19 +107,19 @@
                             <h6 class="area-header">Payment Area</h6>
                             <v-row no-gutters>
                                 <v-col class="px-2" cols="6" sm="2">
-                                    <v-text-field type="number" v-model="ticket.prepaid" label="שולם מראש" @focus="$event.target.select()"></v-text-field>
+                                    <v-text-field v-model="ticket.prepaid" label="שולם מראש" @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="6" sm="2">
                                     <v-text-field v-model="ticket.prepaidInvoice" label="חשבונית מראש" @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="3" sm="2">
-                                    <v-text-field @input="onAmountChange" type="number" v-model="ticket.amount" label="סכום" @focus="$event.target.select()"></v-text-field>
+                                    <v-text-field @input="onAmountChange" v-model="ticket.amount" label="סכום" @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="3" sm="2">
-                                    <v-text-field type="vat" v-model="ticket.vat" label="מע'מ" @focus="$event.target.select()"></v-text-field>
+                                    <v-text-field v-model="ticket.vat" label="מע'מ" @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="3" sm="2">
-                                    <v-text-field @input="onTotalChange" type="total" v-model="ticket.total" label="סה'ב" @focus="$event.target.select()"></v-text-field>
+                                    <v-text-field @input="onTotalChange" v-model="ticket.total" label="סה'ב" @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="3" sm="2">
                                     <v-text-field v-model="ticket.invoice" label="חשבונית" @focus="$event.target.select()"></v-text-field>
@@ -154,8 +150,8 @@
                                     <v-btn text value="Closed"   elevation='3' small>סגור</v-btn>
                                 </v-btn-toggle>
                                 <v-spacer></v-spacer>
-                                <v-btn @click="printTicket(includeTreatment = false)" small>קליטה</v-btn>
-                                <v-btn @click="printTicket(includeTreatment = true)" small>יציאה</v-btn>
+                                <v-btn @click="printForm(printExit = false)" small>קליטה</v-btn>
+                                <v-btn @click="printForm(printExit = true)" small>יציאה</v-btn>
                                 <v-spacer></v-spacer>
                                 <v-btn @click="sendMessage()" small color=success> <v-icon small class="pr-2"> mdi-whatsapp </v-icon> הודעה </v-btn>
                                 <v-btn @click="submitTicket()" :loading="loading" small> שמור </v-btn>
@@ -209,7 +205,7 @@ export default {
             menu: false,
             menu1: false,
             menu2: false,
-            includeTreatment: false,
+            printExit: false,
         };
     },
 
@@ -260,12 +256,14 @@ export default {
             });
         },
 
-        printTicket(includeTreatment) {
-            // this.dialog = false;
+        printForm(printExit) {
+            this.dialog = false;  // need to close this dialog so no print it in background
             this.submitTicket()
             setTimeout(() => {  
-                this.$emit('openPrint', {ticket: this.ticket, customerInfo: this.customerInfo, includeTreatment});                
-            }, 500);
+                this.$emit('openPrint', {ticket: this.ticket, customerInfo: this.customerInfo, printExit});                
+                // printExit   ? this.$refs.printExitVue.print({ticket: this.ticket, customerInfo: this.customerInfo, printExit}) 
+                //             : this.$refs.printEntryVue.print({ticket: this.ticket, customerInfo: this.customerInfo, printExit});
+            }, 1000);
         },
 
         async sendMessage() {
@@ -428,13 +426,6 @@ export default {
         }
     }
     @media print {
-        .print-logo{
-            width: 30%;
-        }
-        div.divHeader {
-            position: fixed;
-            top: 0;
-        }
         div.divFooter {
             position: fixed;
             bottom: 0;

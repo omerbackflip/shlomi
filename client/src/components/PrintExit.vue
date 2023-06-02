@@ -1,12 +1,12 @@
 <template>
     <v-dialog
-        v-model="dialog"
+        v-model="exitDialog"
         width="1200"
-        @keydown.esc="dialog = false"
+        @keydown.esc="exitDialog = false"
     >
         <v-card :style="{ 'padding-top': topPadding, 'padding-right': rightPadding, height: '100%' }" class="over-flow-hidden">
             <v-card-title class="text-h4 padding-title text-center">
-                כרטיס תיקון - {{ticket.ticketId}}
+             כרטיס תיקון מס' - {{ticket.ticketId}}
             </v-card-title>
             <v-container>
                     <!-- ------------------- Customer Area  ------------------- -->
@@ -63,8 +63,8 @@
                 <v-row style="justify-content: center;">
 
                     <!-- ------------------- Treatment Area  ------------------- -->
-                    <v-col v-if="includeTreatment" class="mb--20" cols="12">
-                        <!-- <div class="treatment-area v-areaMiddle" :class="{'no-print': includeTreatment}"> -->
+                    <v-col v-if="printExit" class="mb--20" cols="12">
+                        <!-- <div class="treatment-area v-areaMiddle" :class="{'no-print': printExit}"> -->
                         <div class="treatment-area v-areaMiddle" >
                                 <table class="table">
                                     <thead>
@@ -94,8 +94,6 @@
                                     <tr><td>{{ ticket.total ? ticket.total.toLocaleString() : '' }}</td><td>סה"כ לתשלום</td></tr>
                                     <tr><td>{{ ticket.prepaid }}</td><td>שולם ע"ח  ({{ ticket.prepaidInvoice }}) </td></tr>
                                     <tr><td>{{ (ticket.total - ticket.prepaid).toLocaleString()}}</td><td><b>סה"כ נותר לתשלום</b></td></tr>
-                                    <!-- <tr><td>Exit Date</td><td>{{ ticket.exitDate }}</td></tr>
-                                    <tr><td>Remarks</td><td>{{ ticket.remarks }}</td></tr> -->
                                 </tbody>
                                 {{ ticket.invoice }} -  חשבונית
                             </table>
@@ -103,7 +101,7 @@
                     </v-col>
                 </v-row>
                 <div class="footer-content right-align">
-                    <p> כאן צריך לבוא הערות הדפסת מכשיר</p>
+                    <p class="field-text">{{ticket.remarks}}</p>
                     <p class="heading"><span class="underline">תנאי אחריות</span></p>
                     <p>מעבדת ישראל אחראית על התיקון שבוצע בלבד כמפורט בכרטיס תיקון</p>
                     <p style="direction: rtl;">למשך 3 חודשים החל מתאריך - {{ ticket.exitDate }} </p>
@@ -116,7 +114,7 @@
                         <li>חדירת נוזלים לתוך המכשיר</li>
                     </div>
                     <p style="direction: rtl; text-align-last: center;">
-                        <span>מאשר קבלת המכשיר בתאריך - {{ ticket.exitDate }}</span>
+                        <span>מאשר קבלת המכשיר בתאריך {{ ticket.exitDate }}</span>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <span>חתימת הלקוח ______________</span></p>
                     <p class="bold-text">מעבדת ישראל - לשרותך תמיד !</p>
@@ -128,15 +126,16 @@
 </template>
 
 <script>
-import { TICKET_MODEL, CUSTOMER_MODEL, VAT_PERCENTAGE, NEW_TICKET, printTicketTopPadding, printTicketRightPadding } from "../constants/constants";
-import apiService from "../services/apiService";
+// import { TICKET_MODEL, CUSTOMER_MODEL, VAT_PERCENTAGE, NEW_TICKET, printTicketTopPadding, printTicketRightPadding } from "../constants/constants";
+import { printTicketTopPadding, printTicketRightPadding } from "../constants/constants";
+// import apiService from "../services/apiService";
 
 export default {
-    name: "ticket-form",
+    name: "print-exit",
     data() {
         return {
             ticket: {customerName:''},
-			dialog: false,
+			exitDialog: false,
             dateModal : false,
             dateModal2 : false,
             resolve: null,
@@ -149,77 +148,77 @@ export default {
             menu1: false,
             topPadding: printTicketTopPadding,
             rightPadding: printTicketRightPadding,
-            includeTreatment: true,
+            printExit: true,
         };
     },
 
     methods: {
 
-        async open(ticket, newTicket) {
-            this.newTicket = newTicket;
-            this.ticket = newTicket ? NEW_TICKET : {...ticket};
-            if(newTicket) {
-                this.customerInfo = ''
-                let lastTicket = await apiService.getMany({model: TICKET_MODEL , sort: {ticketId: -1 } , limit: 1});
-                const { ticketId } = lastTicket.data[0];
-                this.ticket.ticketId = ticketId+1
-            } else {
-                this.customers.push(ticket.customerName);
-                const response = await apiService.getOne({model: CUSTOMER_MODEL, fullName:ticket.customerName})
-                this.customerInfo = response.data
-                this.ticket.exitDate ? this.ticket.exitDate = new Date(this.ticket.exitDate).toISOString().substr(0, 10) : ''
-                this.ticket.entryDate ? this.ticket.entryDate = new Date(this.ticket.entryDate).toISOString().substr(0, 10) : ''
-                this.ticket.fixDate ? this.ticket.fixDate = new Date(this.ticket.fixDate).toISOString().substr(0, 10) : ''
-            }
-            this.dialog = true;
-            return new Promise((resolve) => {
-                this.resolve = resolve;
-            });
-        },
+        // async open(ticket, newTicket) {
+        //     this.newTicket = newTicket;
+        //     this.ticket = newTicket ? NEW_TICKET : {...ticket};
+        //     if(newTicket) {
+        //         this.customerInfo = ''
+        //         let lastTicket = await apiService.getMany({model: TICKET_MODEL , sort: {ticketId: -1 } , limit: 1});
+        //         const { ticketId } = lastTicket.data[0];
+        //         this.ticket.ticketId = ticketId+1
+        //     } else {
+        //         this.customers.push(ticket.customerName);
+        //         const response = await apiService.getOne({model: CUSTOMER_MODEL, fullName:ticket.customerName})
+        //         this.customerInfo = response.data
+        //         this.ticket.exitDate ? this.ticket.exitDate = new Date(this.ticket.exitDate).toISOString().substr(0, 10) : ''
+        //         this.ticket.entryDate ? this.ticket.entryDate = new Date(this.ticket.entryDate).toISOString().substr(0, 10) : ''
+        //         this.ticket.fixDate ? this.ticket.fixDate = new Date(this.ticket.fixDate).toISOString().substr(0, 10) : ''
+        //     }
+        //     this.exitDialog = true;
+        //     return new Promise((resolve) => {
+        //         this.resolve = resolve;
+        //     });
+        // },
 
         print(data) {
             this.ticket = data.ticket;
             this.customerInfo = data.customerInfo;
-            this.includeTreatment = data.includeTreatment;
-            this.dialog = true;
+            this.printExit = data.printExit;
+            this.exitDialog = true;
             setTimeout(() => {	
                 window.print();
 			}, 500);
         },
 
-        onAmountChange() {
-            let { amount } = this.ticket;
-            if(amount && amount >= 0) {
-                this.ticket.vat = ((parseFloat(amount) * VAT_PERCENTAGE)/100)
-                this.ticket.total = (this.ticket.vat + parseFloat(amount)).toFixed(0);
-            } else {
-                this.ticket.amount = 0;
-                this.ticket.vat = 0;
-                this.ticket.total = 0;
-            }
-        },
+        // onAmountChange() {
+        //     let { amount } = this.ticket;
+        //     if(amount && amount >= 0) {
+        //         this.ticket.vat = ((parseFloat(amount) * VAT_PERCENTAGE)/100)
+        //         this.ticket.total = (this.ticket.vat + parseFloat(amount)).toFixed(0);
+        //     } else {
+        //         this.ticket.amount = 0;
+        //         this.ticket.vat = 0;
+        //         this.ticket.total = 0;
+        //     }
+        // },
 
-        onTotalChange() {
-            let { total } = this.ticket;
-            if(total && total >= 0) {
-                this.ticket.amount = (parseFloat(total)/(1+VAT_PERCENTAGE/100)).toFixed(0);
-                this.ticket.vat = (parseFloat(total)- this.ticket.amount).toFixed(0);
-            } else {
-                this.ticket.amount = 0;
-                this.ticket.vat = 0;
-                this.ticket.total = 0;
-            }
-        },
+        // onTotalChange() {
+        //     let { total } = this.ticket;
+        //     if(total && total >= 0) {
+        //         this.ticket.amount = (parseFloat(total)/(1+VAT_PERCENTAGE/100)).toFixed(0);
+        //         this.ticket.vat = (parseFloat(total)- this.ticket.amount).toFixed(0);
+        //     } else {
+        //         this.ticket.amount = 0;
+        //         this.ticket.vat = 0;
+        //         this.ticket.total = 0;
+        //     }
+        // },
     },
     watch: {
         // Whenever the customer is piked - fatch customerInfo
-        async 'ticket.customerName' (newFullName) {
-            if (newFullName) {
-                const response = await apiService.getOne({model: CUSTOMER_MODEL, fullName:newFullName})
-                this.customerInfo = response.data
-                this.ticket.customerId = this.customerInfo.customerId
-            }
-        }
+        // async 'ticket.customerName' (newFullName) {
+        //     if (newFullName) {
+        //         const response = await apiService.getOne({model: CUSTOMER_MODEL, fullName:newFullName})
+        //         this.customerInfo = response.data
+        //         this.ticket.customerId = this.customerInfo.customerId
+        //     }
+        // }
     },
     computed: {
         maxRows() {
@@ -262,7 +261,7 @@ export default {
 
     .container {
         padding-bottom: 0px !important;
-        font-size: medium;
+        font-size: small;
     }
     @media screen {
         div.divHeader, div.divFooter{
@@ -318,6 +317,7 @@ export default {
 
     .field-text{
         min-inline-size: max-content;
+        direction: rtl;
         text-align: right;
         padding-right: 0px;
     }
@@ -381,7 +381,7 @@ export default {
         font-weight: bold;
         text-align-last: center;
         direction: rtl;
-        font-size: xx-large;
+        font-size: large;
     }
 
     ::v-deep .padding-title{
@@ -415,6 +415,7 @@ export default {
     }
     .list {
         direction: rtl;
+        text-align: right;
         margin-right: 30px;
         margin-bottom: 30px;
     }

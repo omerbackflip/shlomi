@@ -42,6 +42,9 @@
 					<template v-slot:[`item.total`]="{ item }">
 						<span>{{ item.total ? item.total.toLocaleString() : '' }}</span>
 					</template>	
+					<template v-slot:[`item.remarks`]="{ item }">
+						<div style="direction: rtl;"> {{ item.remarks }} </div>
+					</template>	
 					<template v-slot:[`item.controls`]="{ item }">
 						<td @click.stop>
 							<v-btn @click="deleteTicket(item._id)" x-small>
@@ -55,7 +58,10 @@
 		<ticket-form @openPrint="handlePrint" ref="ticketForm"/>
 		<confirm-dialog ref="confirm"/>
 		<div>
-            <PrintTicketVue :customerInfo="customerInfo" :ticket="printData" ref="printTicketVue"/>
+            <PrintExitVue :customerInfo="customerInfo" :ticket="printData" ref="printExitVue"/>
+        </div>
+		<div>
+            <PrintEntryVue :customerInfo="customerInfo" :ticket="printData" ref="printEntryVue"/>
         </div>
 	</div>
 </template>
@@ -67,11 +73,12 @@ import { TICKET_HEADERS, TICKET_MODEL } from "../constants/constants";
 import apiService from "../services/apiService";
 import TicketForm from './TicketForm.vue';
 import ConfirmDialog from './Common/ConfirmDialog.vue';
-import PrintTicketVue from './PrintTicket.vue';
+import PrintExitVue from './PrintExit.vue';
+import PrintEntryVue from './PrintEntry.vue';
 
 export default {
 	name: "ticket-list",
-	components: { TicketForm, ConfirmDialog, PrintTicketVue },
+	components: { TicketForm, ConfirmDialog, PrintExitVue, PrintEntryVue },
 	data() {
 		return {
 			tickets: [],
@@ -121,7 +128,7 @@ export default {
 		handlePrint(data) {
 			this.printData = data.ticket;
 			this.customerInfo = data.customerInfo;
-			this.$refs.printTicketVue.print(data);				
+			data.printExit ? this.$refs.printExitVue.print(data) : this.$refs.printEntryVue.print(data);
 		},
 		async updateTicket(item) {
 			let newTicket = item ? false : true;
@@ -165,14 +172,6 @@ export default {
 </script>
 
 <style scoped>
-.field-margin{
-	margin: 12px;
-}
-
-.v-data-table__expanded{
-	text-align: -webkit-center;
-}
-
 .row {
 	cursor: pointer;
 }

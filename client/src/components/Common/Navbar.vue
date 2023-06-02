@@ -2,23 +2,16 @@
     <nav class="no-print">
         <v-app-bar app dark>
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-            <v-toolbar-title>-Shlomi-</v-toolbar-title>
             <div class="db-text">
-                <p >Database Pointer: {{local ? 'Local Host' : 'Production'}} </p>
+                <p >{{local ? 'Local Host' : 'Production'}} </p>
             </div>
-            <v-spacer></v-spacer>
             <v-btn-toggle v-if="isTicketsList" v-model="ticketStatus" @change="onFilterChange" group mandatory>
                 <v-btn text value="Open"     elevation='3' small> פתוח </v-btn>
                 <v-btn text value="Checked"  elevation='3' small> נבדק </v-btn>
                 <v-btn text value="Fixed"    elevation='3' small> תוקן </v-btn>
             </v-btn-toggle>
-            <v-select v-if="isTicketsList" :items="years" v-model="ticketYear" @change="onFilterChange" label = "Select Year"/>
-            <!-- <v-btn v-if="isCustomerList" text elevation='3' small @click="onAddCustomer"> 
-                <v-icon>mdi-plus</v-icon>
-                Add Customer 
-            </v-btn> -->
+            <v-select v-if="isTicketsList" :items="years" v-model="ticketYear" @change="onFilterChange" label = "Year"/>
         </v-app-bar>
-
         <v-navigation-drawer app v-model="drawer" class="primary text-left ">
             <v-list class="ml-1">
                 <v-list-item v-for="link in links" :key="link.text" router @click="navigate(link)">
@@ -31,9 +24,7 @@
                 </v-list-item>
             </v-list>
         </v-navigation-drawer>
-
     </nav>
-    
 </template>
 
 <script>
@@ -89,9 +80,6 @@ export default {
             }
         }
 
-        // onAddCustomer() {
-        //     this.$root.$emit('newCustomer');
-        // },
     },
     mounted() {
         this.getDatabaseInformation();
@@ -163,7 +151,7 @@ export default {
     }
 
     .db-text{
-        margin-left: 100px;
+        /* margin-left: 100px; */
         margin-top: 3px;
         border: 1px solid white;
         padding: 4px;
