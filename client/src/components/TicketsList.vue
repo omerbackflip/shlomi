@@ -55,14 +55,15 @@
 				</v-data-table>
 			</v-card>
 		</v-layout>
-		<ticket-form @openPrint="handlePrint" ref="ticketForm"/>
+		<!-- <ticket-form @openPrint="handlePrint" ref="ticketForm"/> -->
+		<ticket-form ref="ticketForm"/>
 		<confirm-dialog ref="confirm"/>
-		<div>
+		<!-- <div>
             <PrintExitVue :customerInfo="customerInfo" :ticket="printData" ref="printExitVue"/>
         </div>
 		<div>
             <PrintEntryVue :customerInfo="customerInfo" :ticket="printData" ref="printEntryVue"/>
-        </div>
+        </div> -->
 	</div>
 </template>
 
@@ -73,12 +74,13 @@ import { TICKET_HEADERS, TICKET_MODEL } from "../constants/constants";
 import apiService from "../services/apiService";
 import TicketForm from './TicketForm.vue';
 import ConfirmDialog from './Common/ConfirmDialog.vue';
-import PrintExitVue from './PrintExit.vue';
-import PrintEntryVue from './PrintEntry.vue';
+// import PrintExitVue from './PrintExit.vue';
+// import PrintEntryVue from './PrintEntry.vue';
 
 export default {
 	name: "ticket-list",
-	components: { TicketForm, ConfirmDialog, PrintExitVue, PrintEntryVue },
+	// components: { TicketForm, ConfirmDialog, PrintExitVue, PrintEntryVue },
+	components: { TicketForm, ConfirmDialog },
 	data() {
 		return {
 			tickets: [],
@@ -125,11 +127,11 @@ export default {
 			}
 			this.loading = false
 		},
-		handlePrint(data) {
-			this.printData = data.ticket;
-			this.customerInfo = data.customerInfo;
-			data.printExit ? this.$refs.printExitVue.print(data) : this.$refs.printEntryVue.print(data);
-		},
+		// handlePrint(data) {
+		// 	this.printData = data.ticket;
+		// 	this.customerInfo = data.customerInfo;
+		// 	data.printExit ? this.$refs.printExitVue.print(data) : this.$refs.printEntryVue.print(data);
+		// },
 		async updateTicket(item) {
 			let newTicket = item ? false : true;
 			await this.$refs.ticketForm.open(item, newTicket);
@@ -176,4 +178,9 @@ export default {
 	cursor: pointer;
 }
 
+@media print {  /* Very important to remove background in print mode */
+    .no-print {
+        display: none;
+    }
+}
 </style>

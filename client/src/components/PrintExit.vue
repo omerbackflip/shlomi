@@ -4,7 +4,7 @@
         width="1200"
         @keydown.esc="exitDialog = false"
     >
-        <v-card :style="{ 'padding-top': topPadding, 'padding-right': rightPadding, height: '100%' }" class="over-flow-hidden">
+        <v-card :style="{ 'padding-top': topPadding, 'padding-right': rightPadding, height: '100%' }" class="elevation-0">
             <v-card-title class="text-h4 padding-title text-center">
              כרטיס תיקון מס' - {{ticket.ticketId}}
             </v-card-title>
@@ -63,9 +63,8 @@
                 <v-row style="justify-content: center;">
 
                     <!-- ------------------- Treatment Area  ------------------- -->
-                    <v-col v-if="printExit" class="mb--20" cols="12">
-                        <!-- <div class="treatment-area v-areaMiddle" :class="{'no-print': printExit}"> -->
-                        <div class="treatment-area v-areaMiddle" >
+                    <v-col class="mb--20" cols="12">
+                        <div class="v-areaMiddle" >
                                 <table class="table">
                                     <thead>
                                         <tr>
@@ -136,16 +135,7 @@ export default {
         return {
             ticket: {customerName:''},
 			exitDialog: false,
-            dateModal : false,
-            dateModal2 : false,
-            resolve: null,
-			showMessage: false,
-            newTicket: false,
             customerInfo: {address: null},
-            loading: false,
-            customers: [],
-            menu: false,
-            menu1: false,
             topPadding: printTicketTopPadding,
             rightPadding: printTicketRightPadding,
             printExit: true,
@@ -153,29 +143,6 @@ export default {
     },
 
     methods: {
-
-        // async open(ticket, newTicket) {
-        //     this.newTicket = newTicket;
-        //     this.ticket = newTicket ? NEW_TICKET : {...ticket};
-        //     if(newTicket) {
-        //         this.customerInfo = ''
-        //         let lastTicket = await apiService.getMany({model: TICKET_MODEL , sort: {ticketId: -1 } , limit: 1});
-        //         const { ticketId } = lastTicket.data[0];
-        //         this.ticket.ticketId = ticketId+1
-        //     } else {
-        //         this.customers.push(ticket.customerName);
-        //         const response = await apiService.getOne({model: CUSTOMER_MODEL, fullName:ticket.customerName})
-        //         this.customerInfo = response.data
-        //         this.ticket.exitDate ? this.ticket.exitDate = new Date(this.ticket.exitDate).toISOString().substr(0, 10) : ''
-        //         this.ticket.entryDate ? this.ticket.entryDate = new Date(this.ticket.entryDate).toISOString().substr(0, 10) : ''
-        //         this.ticket.fixDate ? this.ticket.fixDate = new Date(this.ticket.fixDate).toISOString().substr(0, 10) : ''
-        //     }
-        //     this.exitDialog = true;
-        //     return new Promise((resolve) => {
-        //         this.resolve = resolve;
-        //     });
-        // },
-
         print(data) {
             this.ticket = data.ticket;
             this.customerInfo = data.customerInfo;
@@ -185,40 +152,9 @@ export default {
                 window.print();
 			}, 500);
         },
-
-        // onAmountChange() {
-        //     let { amount } = this.ticket;
-        //     if(amount && amount >= 0) {
-        //         this.ticket.vat = ((parseFloat(amount) * VAT_PERCENTAGE)/100)
-        //         this.ticket.total = (this.ticket.vat + parseFloat(amount)).toFixed(0);
-        //     } else {
-        //         this.ticket.amount = 0;
-        //         this.ticket.vat = 0;
-        //         this.ticket.total = 0;
-        //     }
-        // },
-
-        // onTotalChange() {
-        //     let { total } = this.ticket;
-        //     if(total && total >= 0) {
-        //         this.ticket.amount = (parseFloat(total)/(1+VAT_PERCENTAGE/100)).toFixed(0);
-        //         this.ticket.vat = (parseFloat(total)- this.ticket.amount).toFixed(0);
-        //     } else {
-        //         this.ticket.amount = 0;
-        //         this.ticket.vat = 0;
-        //         this.ticket.total = 0;
-        //     }
-        // },
     },
     watch: {
-        // Whenever the customer is piked - fatch customerInfo
-        // async 'ticket.customerName' (newFullName) {
-        //     if (newFullName) {
-        //         const response = await apiService.getOne({model: CUSTOMER_MODEL, fullName:newFullName})
-        //         this.customerInfo = response.data
-        //         this.ticket.customerId = this.customerInfo.customerId
-        //     }
-        // }
+
     },
     computed: {
         maxRows() {

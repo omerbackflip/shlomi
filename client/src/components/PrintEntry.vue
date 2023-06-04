@@ -4,7 +4,7 @@
         width="1200"
         @keydown.esc="entryDialog = false"
     >
-        <v-card :style="{ 'padding-top': topPadding, 'padding-right': rightPadding, height: '100%' }">
+        <v-card :style="{ 'padding-top': topPadding, 'padding-right': rightPadding, height: '100%' }" class="elevation-0">
             <v-card-title class="text-h5 text-center">
                שובר הזמנת תיקון מס'  - {{ticket.ticketId}}
             </v-card-title>
@@ -144,16 +144,7 @@ export default {
         return {
             ticket: {customerName:''},
 			entryDialog: false,
-            dateModal : false,
-            dateModal2 : false,
-            resolve: null,
-			showMessage: false,
-            newTicket: false,
             customerInfo: {address: null},
-            loading: false,
-            customers: [],
-            menu: false,
-            menu1: false,
             topPadding: printTicketTopPadding,
             rightPadding: printTicketRightPadding,
             printExit: true,
@@ -161,29 +152,6 @@ export default {
     },
 
     methods: {
-
-        // async open(ticket, newTicket) {
-        //     this.newTicket = newTicket;
-        //     this.ticket = newTicket ? NEW_TICKET : {...ticket};
-        //     if(newTicket) {
-        //         this.customerInfo = ''
-        //         let lastTicket = await apiService.getMany({model: TICKET_MODEL , sort: {ticketId: -1 } , limit: 1});
-        //         const { ticketId } = lastTicket.data[0];
-        //         this.ticket.ticketId = ticketId+1
-        //     } else {
-        //         this.customers.push(ticket.customerName);
-        //         const response = await apiService.getOne({model: CUSTOMER_MODEL, fullName:ticket.customerName})
-        //         this.customerInfo = response.data
-        //         this.ticket.exitDate ? this.ticket.exitDate = new Date(this.ticket.exitDate).toISOString().substr(0, 10) : ''
-        //         this.ticket.entryDate ? this.ticket.entryDate = new Date(this.ticket.entryDate).toISOString().substr(0, 10) : ''
-        //         this.ticket.fixDate ? this.ticket.fixDate = new Date(this.ticket.fixDate).toISOString().substr(0, 10) : ''
-        //     }
-        //     this.entryDialog = true;
-        //     return new Promise((resolve) => {
-        //         this.resolve = resolve;
-        //     });
-        // },
-
         print(data) {
             this.ticket = data.ticket;
             this.customerInfo = data.customerInfo;
@@ -193,47 +161,10 @@ export default {
                 window.print();
 			}, 500);
         },
-
-        // onAmountChange() {
-        //     let { amount } = this.ticket;
-        //     if(amount && amount >= 0) {
-        //         this.ticket.vat = ((parseFloat(amount) * VAT_PERCENTAGE)/100)
-        //         this.ticket.total = (this.ticket.vat + parseFloat(amount)).toFixed(0);
-        //     } else {
-        //         this.ticket.amount = 0;
-        //         this.ticket.vat = 0;
-        //         this.ticket.total = 0;
-        //     }
-        // },
-
-        // onTotalChange() {
-        //     let { total } = this.ticket;
-        //     if(total && total >= 0) {
-        //         this.ticket.amount = (parseFloat(total)/(1+VAT_PERCENTAGE/100)).toFixed(0);
-        //         this.ticket.vat = (parseFloat(total)- this.ticket.amount).toFixed(0);
-        //     } else {
-        //         this.ticket.amount = 0;
-        //         this.ticket.vat = 0;
-        //         this.ticket.total = 0;
-        //     }
-        // },
     },
     watch: {
-        // Whenever the customer is piked - fatch customerInfo
-        // async 'ticket.customerName' (newFullName) {
-        //     if (newFullName) {
-        //         const response = await apiService.getOne({model: CUSTOMER_MODEL, fullName:newFullName})
-        //         this.customerInfo = response.data
-        //         this.ticket.customerId = this.customerInfo.customerId
-        //     }
-        // }
     },
     computed: {
-        // maxRows() {
-        //     let length = Math.max(  this.ticket.defectFound && this.ticket.defectFound.length || 0, 
-        //                             this.ticket.defectFixes && this.ticket.defectFixes.length || 0) ;
-        //     return  length >= 0 ? length : 0;
-        // },
     },
     mounted() {
 	},
@@ -241,7 +172,6 @@ export default {
 </script>
 
 <style scoped>
-
     .generic1{
         overflow: hidden !important;
         font-size: initial !important;
@@ -268,27 +198,6 @@ export default {
     }
     .text-center{
         place-content: center;
-    }
-
-    .table {
-      border-collapse: collapse;
-    }
-    .table-payment {
-      border-collapse: collapse;
-      width:   50%;
-    }
-    .table th, .table td {
-      padding: 2px;
-      border: 1px solid #c0bbbb;
-    }
-    .table-payment th, .table-payment td {
-      padding: 2px;
-      border: 1px solid #c0bbbb;
-    }
-    .table td{
-        padding: 0px !important;
-        margin: 0 !important; 
-        line-height: 1.5 !important;
     }
 
     .field-text{
@@ -318,49 +227,6 @@ export default {
         text-align: right;
     }
 
-    .heading {
-        font-weight: bold;
-    }
-
-    .underline {
-        text-decoration: underline;
-    }
-
-    .date {
-        margin-top: 10px;
-    }
-
-    .line {
-        height: 1px;
-        background-color: rgb(255, 255, 255);
-        margin-top: 10px;
-        margin-bottom: 10px;
-    }
-
-    .signature-line {
-        display: flex;
-        align-items: center;
-    }
-
-    .sign {
-        margin-right: 10px;
-    }
-
-    .signature-underline {
-        border-bottom: 1px solid black;
-        width: 50px;
-        margin-right: 10px;
-    }
-
-    .signature-text {
-        flex-grow: 1;
-    }
-    .bold-text {
-        font-weight: bold;
-        text-align-last: center;
-        direction: rtl;
-        font-size: large;
-    }
 
     ::v-deep {
         padding: 0px 6px -4px !important;
@@ -389,12 +255,6 @@ export default {
 
     .mr-200{
         margin-right: 0px;
-    }
-    .list {
-        direction: rtl;
-        text-align: right;
-        margin-right: 30px;
-        margin-bottom: 30px;
     }
 
 </style>

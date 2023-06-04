@@ -50,7 +50,7 @@
                     </v-col>
                     <!-- ------------------- Treatment Area  ------------------- -->
                     <v-col sm="6">
-                        <div class="treatment-area v-areaMiddle v-area1">
+                        <div class="v-areaMiddle">
                             <h6 class="area-header">Treatment Area</h6>
                             <v-row no-gutters>
                                 <v-col class="px-2" cols="12">
@@ -72,7 +72,7 @@
                     </v-col>
                     <!-- ------------------- Item Area  ------------------- -->
                     <v-col sm="6">
-                        <div class=" v-areaMiddle v-area1">
+                        <div class=" v-areaMiddle">
                             <h6 class="area-header">Item Area</h6>
                             <v-row no-gutters>
                                 <v-col class="px-2" cols="6">
@@ -86,9 +86,6 @@
                                         <v-date-picker v-model="ticket.entryDate" @input="menu2 = false"></v-date-picker>
                                     </v-menu>
                                 </v-col>
-                                <!-- <v-col class="px-2" cols="2">
-                                    <v-text-field v-model="ticket.checkPrice" label="מחיר בדיקה"></v-text-field>
-                                </v-col> -->
                                 <v-col class="px-2" cols="12">
                                     <v-combobox v-model="ticket.defectDescription" :items="defectList" label="תאור התקלה" multiple dense/>
                                 </v-col>
@@ -139,7 +136,7 @@
                         </div>
                     </v-col>
                 </v-row>
-                <div class="no-print">
+                <div>
                     <v-card-actions>
                         <v-col>
                             <v-layout wrap justify-center>
@@ -162,13 +159,13 @@
                 </div>
             </v-container>
         </v-card>
-        <div class="divFooter">
-            חתימה : ___________________
-            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-            תאריך : {{ new Date().toISOString().substr(0, 10) }}
-        </div>
         <customer-form ref="customerForm"/>
+        <div>
+            <PrintEntryVue :customerInfo="customerInfo" :ticket="ticket" ref="printEntryVue"/>
+        </div>
+        <div>
+            <PrintExitVue :customerInfo="customerInfo" :ticket="ticket" ref="printExitVue"/>
+        </div>
     </v-dialog>
 </template>
 
@@ -178,10 +175,12 @@ import apiService from "../services/apiService";
 import specificServiceEndPoints from '../services/specificServiceEndPoints';
 import CustomerForm from './CustomerForm.vue';
 import debounce from 'debounce';
+import PrintEntryVue from './PrintEntry.vue';
+import PrintExitVue from './PrintExit.vue';
 
 export default {
     name: "ticket-form",
-    components: { CustomerForm },
+    components: { CustomerForm, PrintEntryVue, PrintExitVue },
     data() {
         return {
             ticket: {customerName:''},
@@ -260,9 +259,9 @@ export default {
             this.dialog = false;  // need to close this dialog so no print it in background
             this.submitTicket()
             setTimeout(() => {  
-                this.$emit('openPrint', {ticket: this.ticket, customerInfo: this.customerInfo, printExit});                
-                // printExit   ? this.$refs.printExitVue.print({ticket: this.ticket, customerInfo: this.customerInfo, printExit}) 
-                //             : this.$refs.printEntryVue.print({ticket: this.ticket, customerInfo: this.customerInfo, printExit});
+                // this.$emit('openPrint', {ticket: this.ticket, customerInfo: this.customerInfo, printExit});                
+                printExit   ? this.$refs.printExitVue.print({ticket: this.ticket, customerInfo: this.customerInfo, printExit}) 
+                            : this.$refs.printEntryVue.print({ticket: this.ticket, customerInfo: this.customerInfo, printExit});
             }, 1000);
         },
 
@@ -420,25 +419,4 @@ export default {
     .container {
         padding-bottom: 0px !important;
     }
-    @media screen {
-        div.divHeader, div.divFooter{
-            display: none;
-        }
-    }
-    @media print {
-        div.divFooter {
-            position: fixed;
-            bottom: 0;
-            font-size: larger ;
-        }
-        .v-area1{
-            border: 1px solid black;
-            border-radius: 0px;
-            padding: 0px;
-            margin: 0px;
-            /* width:470px; */
-            /* height:560px; */
-        }
-    }
-
 </style>
