@@ -5,6 +5,7 @@
             <div class="db-text">
                 <p >{{local ? 'Local Host' : 'Production'}} </p>
             </div>
+            <v-spacer></v-spacer>
             <v-btn-toggle v-if="isTicketsList" v-model="ticketStatus" @change="onFilterChange" group mandatory>
                 <v-btn text value="Open"     elevation='3' small> פתוח </v-btn>
                 <v-btn text value="Checked"  elevation='3' small> נבדק </v-btn>
