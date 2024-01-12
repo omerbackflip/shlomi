@@ -3,7 +3,8 @@
         <v-app-bar app dark>
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
             <div class="db-text">
-                <p >{{local ? 'Local Host' : 'Production'}} </p>
+                <div v-if="isMobile()"> {{local ? 'L' : 'P'}}                   </div>
+                <div v-else>            {{local ? 'Local Host' : 'Production'}} </div>
             </div>
             <v-spacer></v-spacer>
             <v-btn-toggle v-if="isTicketsList" v-model="ticketStatus" @change="onFilterChange" group mandatory>
@@ -11,7 +12,7 @@
                 <v-btn text value="Checked"  elevation='3' small> נבדק </v-btn>
                 <v-btn text value="Fixed"    elevation='3' small> תוקן </v-btn>
             </v-btn-toggle>
-            <v-select v-if="isTicketsList" :items="years" v-model="ticketYear" @change="onFilterChange" label = "Year"/>
+            <v-select v-if="isTicketsList" :items="years" v-model="ticketYear" @change="onFilterChange" label="Year"/>
         </v-app-bar>
         <v-navigation-drawer app v-model="drawer" class="primary text-left ">
             <v-list class="ml-1">
@@ -31,24 +32,27 @@
 <script>
 
 import SpecificServiceEndPoints from "../../services/specificServiceEndPoints";
+import { isMobile } from '../../constants/constants';
+
 export default {
     data() {
         return {
+            isMobile,
             drawer: false,
             local: false,
             production: false,
             links: [
-                {icon: 'mdi-briefcase-check', text: 'Tickets', route: '/'},
-                {icon: 'mdi-account-multiple-check', text: 'Customers', route: '/customers'},
-                {icon: 'mdi-file-table-box-multiple', text: 'Tables', route: '/tables'},
-                {icon: 'mdi-cash-multiple', text: 'Import Data', route: '/import'},
+                {icon: 'mdi-briefcase-check', text: 'כרטיסי תיקון', route: '/'},
+                {icon: 'mdi-account-multiple-check', text: 'לקוחות', route: '/customers'},
+                {icon: 'mdi-file-table-box-multiple', text: 'טבלאות', route: '/tables'},
+                {icon: 'mdi-cash-multiple', text: 'יבוא נתונים', route: '/import'},
             ],
             dialog: false,
             ticketStatus: 'Open',
-            ticketYear: '2022',
+            ticketYear: '',
             years: [2023, 2022, 2021, 2020, 2019, 2018, 2017,
                     2016, 2015, 2014, 2013, 2012, 2011, 2010,
-                    2009, 2008, 2007, 2006]
+                    2009, 2008, 2007, 2006],
         }
     },
     methods:{
@@ -148,7 +152,7 @@ export default {
     .v-input {
         margin-bottom: 20px !important;
         margin-left: 20px !important;
-        max-width: 6% !important;   
+        max-width: 5rem !important;   
     }
 
     .db-text{

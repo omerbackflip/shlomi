@@ -26,7 +26,7 @@
 							<v-spacer></v-spacer>
 							<v-btn @click="updateTicket()" small class="mt-3 mr-2">
 								<v-icon class="nav-icon" small >mdi-plus</v-icon>
-								New Ticket
+								<div v-if="!isMobile()"> כרטיס חדש </div>
 							</v-btn>
 						</v-toolbar>
 					</template>
@@ -58,19 +58,13 @@
 		<!-- <ticket-form @openPrint="handlePrint" ref="ticketForm"/> -->
 		<ticket-form ref="ticketForm"/>
 		<confirm-dialog ref="confirm"/>
-		<!-- <div>
-            <PrintExitVue :customerInfo="customerInfo" :ticket="printData" ref="printExitVue"/>
-        </div>
-		<div>
-            <PrintEntryVue :customerInfo="customerInfo" :ticket="printData" ref="printEntryVue"/>
-        </div> -->
 	</div>
 </template>
 
 
 
 <script>
-import { TICKET_HEADERS, TICKET_MODEL } from "../constants/constants";
+import { TICKET_HEADERS, TICKET_MODEL, isMobile } from "../constants/constants";
 import apiService from "../services/apiService";
 import TicketForm from './TicketForm.vue';
 import ConfirmDialog from './Common/ConfirmDialog.vue';
@@ -83,6 +77,7 @@ export default {
 	components: { TicketForm, ConfirmDialog },
 	data() {
 		return {
+			isMobile,
 			tickets: [],
 			showMessage: false,
 			header: '',
@@ -105,15 +100,15 @@ export default {
 				switch (this.ticketType) {
 					case 'YEAR':
 						response = await apiService.getMany({model: TICKET_MODEL, year: this.ticketsFilter });
-						this.header = "Total for year " + this.ticketsFilter 
+						this.header = "סה'כ לשנה " + this.ticketsFilter 
 						break;
 					case 'CUSTOMER':
 						response = await apiService.getMany({model: TICKET_MODEL, customerId: this.ticketsFilter });
-						this.header = "Total for Customer ID " + this.ticketsFilter 
+						this.header = "סה'כ ללקוח " + this.ticketsFilter 
 						break;
 					case 'STATUS':
 						response = await apiService.getMany({model: TICKET_MODEL, ticketStatus: this.ticketsFilter });
-						this.header = "Total for Status " + this.ticketsFilter 
+						this.header = this.ticketsFilter 
 						break;
 					default:
 						console.log("switch filter is WRONG !!")
@@ -127,11 +122,7 @@ export default {
 			}
 			this.loading = false
 		},
-		// handlePrint(data) {
-		// 	this.printData = data.ticket;
-		// 	this.customerInfo = data.customerInfo;
-		// 	data.printExit ? this.$refs.printExitVue.print(data) : this.$refs.printEntryVue.print(data);
-		// },
+
 		async updateTicket(item) {
 			let newTicket = item ? false : true;
 			await this.$refs.ticketForm.open(item, newTicket);
@@ -177,6 +168,12 @@ export default {
 .row {
 	cursor: pointer;
 }
+
+.v-toolbar__title {
+        white-space: pre-wrap !important;
+        font-size: smaller !important;
+    }
+
 
 @media print {  /* Very important to remove background in print mode */
     .no-print {

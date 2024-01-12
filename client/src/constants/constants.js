@@ -10,45 +10,52 @@ export const VAT_PERCENTAGE = 17;
 export const messageTemplate = `__name__ היקר, המכשיר __itemName__ תוקן הנך מתבקש לסור למעבדה לקחתו. תודה, מעבדת ישראל.`;
 
 export const TICKET_HEADERS = [
-    { text: 'Ticket ID', value: 'ticketId', align:'end' },
-    { text: 'Year', value: 'year', align:'end' },
-    { text: 'Entry date', value: 'entryDate', align:'end' },
-    { text: 'Customer Name', value: 'customerName', align:'end' },
-    { text: 'Item', value: 'item', align:'end' },
-    { text: 'Defect description', value: 'defectDescription', align:'end' },
-    { text: 'Total', value: 'total', align:'end' },
-    { text: 'Invoice', value: 'invoice', align:'end' },
-    { text: 'Remarks', value: 'remarks', align:'right' },
-    { text: 'Fix Date', value: 'fixDate', align:'end' },
-    { text: 'Exit Date', value: 'exitDate', align:'end' },
-    { text: '', value: 'controls' },
+    { text: 'מס כרטיס', value: 'ticketId', align:'end', class: 'primary white--text' },
+    { text: 'שנה', value: 'year', align:'end', class: 'primary white--text' },
+    { text: 'תאריך כניסה', value: 'entryDate', align:'end', class: 'primary white--text' },
+    { text: 'שם לקוח', value: 'customerName', align:'end', class: 'primary white--text' },
+    { text: 'מכשיר', value: 'item', align:'end', class: 'primary white--text' },
+    { text: 'תאור תקלה', value: 'defectDescription', align:'end', class: 'primary white--text' },
+    { text: 'סה-כ', value: 'total', align:'end', class: 'primary white--text' },
+    { text: 'חשבונית', value: 'invoice', align:'end', class: 'primary white--text' },
+    { text: 'הערות', value: 'remarks', align:'right', class: 'primary white--text' },
+    { text: 'תאריך תיקון', value: 'fixDate', align:'end', class: 'primary white--text' },
+    { text: 'תאריך יציאה', value: 'exitDate', align:'end', class: 'primary white--text' },
+    { text: '', value: 'controls', class: 'primary white--text' },
 ]
 
-export const CUSTOMER_HEADERS = [
-    { name: 'Customer ID', prop: 'customerId' ,searchable: true},
-    { name: 'Full Name', prop: '_action', actionName:'name' ,searchable: true},
-    { name: 'Address', prop: 'address',searchable: true },
-    { name: 'City', prop: 'city' ,searchable: true},
-    { name: 'Phone 1', prop: 'phone1' ,searchable: true},
-    { name: 'Phone 2', prop: 'phone2' ,searchable: true},
-    { name: 'Phone 3', prop: 'phone3' ,searchable: true},
-    { name: 'Arrived from', prop: 'arrivedFrom' ,searchable: true},
-    { name: 'Issue Date', prop: '_action', actionName:'issueDate' ,searchable: true},
-    { name: 'Controls', prop: '_action', actionName: 'actionCommon' ,searchable: true},
+export const CUSTOMER_HEADERS = [  // used for vue-virtual-table
+    { name: 'מס לקוח', prop: 'customerId' ,searchable: true, class: 'primary white--text'},
+    { name: 'שם לקוח', prop: '_action', actionName:'name' ,searchable: true, class: 'primary white--text'},
+    { name: 'כתובת', prop: 'address',searchable: true, class: 'primary white--text' },
+    { name: 'עיר', prop: 'city' ,searchable: true, class: 'primary white--text'},
+    { name: 'טלפון 1', prop: 'phone1' ,searchable: true, class: 'primary white--text'},
+    { name: 'טלפון 2', prop: 'phone2' ,searchable: true, class: 'primary white--text'},
+    { name: 'טלפון 3', prop: 'phone3' ,searchable: true, class: 'primary white--text'},
+    { name: 'הגיע אלינו', prop: 'arrivedFrom' ,searchable: true, class: 'primary white--text'},
+    { name: 'תאריך פתיחה', prop: '_action', actionName:'issueDate' ,searchable: true, class: 'primary white--text'},
+    { name: 'פעולות', prop: '_action', actionName: 'actionCommon' ,searchable: true, class: 'primary white--text'},
 ]
 
 export const CUSTOMER_HEADERS_VD = [
-    { text: 'Customer ID', value: 'customerId' , align:'end'},
-    { text: 'Full Name', value: 'fullName', actionName:'name' , align:'end'},
-    { text: 'Address', value: 'address', align:'end' },
-    { text: 'City', value: 'city' , align:'end'},
-    { text: 'Phone 1', value: 'phone1' , align:'end'},
-    { text: 'Phone 2', value: 'phone2' , align:'end'},
-    { text: 'Phone 3', value: 'phone3' , align:'end'},
+    { text: 'מס לקוח', value: 'customerId' , align:'end', class: 'primary white--text'},
+    { text: 'שם לקוח', value: 'fullName', actionName:'name' , align:'end', class: 'primary white--text'},
+    { text: 'כתובת', value: 'address', align:'end', class: 'primary white--text' },
+    { text: 'עיר', value: 'city' , align:'end', class: 'primary white--text'},
+    { text: 'טלפון 1', value: 'phone1' , align:'end', class: 'primary white--text'},
+    { text: 'טלפון 2', value: 'phone2' , align:'end', class: 'primary white--text'},
+    { text: 'טלפון 3', value: 'phone3' , align:'end', class: 'primary white--text'},
     // { text: 'Arrived from', value: 'arrivedFrom' , align:'end'},
     // { text: 'Issue Date', value: 'issueDate', align:'end'},
     // { text: 'Controls', value: 'controls', align:'end'},
 ]
+
+export const TABLE_HEADERS = [
+    { text: "מספר",           value: "table_id", class: 'primary white--text'},
+    { text: "קוד",         value: "table_code", class: 'primary white--text'},
+    { text: "תאור",  value: "description", align:'end', class: 'primary white--text'},
+    { text: "פעולות",     value: "actions", class: 'primary white--text'},
+  ]
 
 export const NEW_TICKET = {
     ticketId: '',
@@ -72,4 +79,12 @@ export const NEW_TICKET = {
     fixDate: null,
     exitDate: null,
     remarks: '',
+}
+
+export const isMobile = () => {
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        return true;
+    } else {
+        return false;
+    }
 }

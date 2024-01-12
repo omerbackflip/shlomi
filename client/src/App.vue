@@ -33,16 +33,16 @@ import Navbar from './components/Common/Navbar.vue';
 }
 
 .theme--dark.v-app-bar.v-toolbar.v-sheet {
-    background-color: #99480d;
+    background-color: #1371ce;
 }
 .v-application .primary {
-    background-color: #63300c !important;
-    border-color: #b15f25 !important;
+    background-color: #1e0571 !important;
+    border-color: #1976d2 !important;
 }
 
 #app > div > nav > nav {
-    background-color: #63300c !important;
-    border-color: #b15f25 !important;
+    background-color: #1e0571 !important;
+    border-color: #1976d2 !important;
 }
 .p-3{
 	padding: 12px;

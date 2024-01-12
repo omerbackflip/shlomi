@@ -5,7 +5,7 @@
 			<v-row no-gutters>
 				<v-col v-for="item in imports" :key="item.type" cols="12" sm="4">
 					<v-card class="ml-3">
-						<v-card-title class="text-h5 color-primary">
+						<v-card-title class="text-h5 primary">
 							{{ item.title }}
 						</v-card-title>
 						<v-card-text> Year data will be overwritten </v-card-text>
@@ -13,7 +13,7 @@
 						<v-divider></v-divider>
 						<v-card-actions>
 							<v-spacer></v-spacer>
-							<v-btn :disabled = "!file" :loading="loading" class="bordered-button" color="primary" text @click="submitFile(item.type)"> Submit </v-btn>
+							<v-btn :disabled = "!file" :loading="loading" text @click="submitFile(item.type)"> Submit </v-btn>
 						</v-card-actions>
 					</v-card>
 				</v-col>
@@ -102,14 +102,5 @@ export default {
 <style scoped>
 	.ml-3{
 		margin: 5px;
-	}
-	.color-primary{
-		color: white;
-		background: #99480d;
-	}
-	.bordered-button{
-		border: 1px solid;
-		background: #99480d;
-		color: white !important;
 	}
 </style>

@@ -13,7 +13,7 @@
             <v-container>
                 <v-row style="justify-content: center; direction: rtl;">
                     <!-- ------------------- Customer Area  ------------------- -->
-                    <v-col cols="10">
+                    <v-col cols="12">
                         <div class="v-area">
                             <h6 class="area-header">Customer Area</h6>
                             <v-row no-gutters>
@@ -48,36 +48,15 @@
                             </v-row>
                         </div>
                     </v-col>
-                    <!-- ------------------- Treatment Area  ------------------- -->
-                    <v-col sm="6">
-                        <div class="v-areaMiddle">
-                            <h6 class="area-header">Treatment Area</h6>
-                            <v-row no-gutters>
-                                <v-col class="px-2" cols="12">
-                                    <v-combobox v-model="ticket.defectFound" :items="defectFoundList" label="תקלות שאובחנו" multiple></v-combobox>
-                                </v-col>
-                                <v-col class="px-2" cols="12">
-                                    <v-combobox v-model="ticket.defectFixes" :items="defectFixesList" label="תאור ביצוע העבודה" multiple></v-combobox>
-                                </v-col>
-                                <v-col class="px-2" cols="4">
-                                    <v-menu v-model="menu1" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
-                                        <template v-slot:activator="{ on, attrs }">
-                                            <v-text-field v-model="ticket.fixDate" v-bind="attrs" v-on="on" label="תאריך תיקון" readonly></v-text-field>
-                                        </template>
-                                        <v-date-picker v-model="ticket.fixDate" @input="menu1 = false"></v-date-picker>
-                                    </v-menu>
-                                </v-col>
-                            </v-row>
-                        </div>
-                    </v-col>
                     <!-- ------------------- Item Area  ------------------- -->
-                    <v-col sm="6">
+                    <v-col cols="12" sm="6">
                         <div class=" v-areaMiddle">
                             <h6 class="area-header">Item Area</h6>
                             <v-row no-gutters>
                                 <v-col class="px-2" cols="6">
                                     <v-combobox v-model="ticket.item" :items="itemList" label="שם המכשיר" />
                                 </v-col>
+                                <v-col cols="2"></v-col>
                                 <v-col class="px-2" cols="4">
                                     <v-menu v-model="menu2" :close-on-content-click="false" nudge-right="40" transition="scale-transition" offset-y min-width="auto">
                                         <template v-slot:activator="{ on, attrs }">
@@ -94,6 +73,28 @@
                                 </v-col>
                                 <v-col class="px-2" cols="6">
                                     <v-combobox v-model="ticket.accessories" :items="accessoriesList" label="אביזר נוסף" multiple />
+                                </v-col>
+                            </v-row>
+                        </div>
+                    </v-col>
+                    <!-- ------------------- Treatment Area  ------------------- -->
+                    <v-col cols="12" sm="6">
+                        <div class="v-areaMiddle">
+                            <h6 class="area-header">Treatment Area</h6>
+                            <v-row no-gutters>
+                                <v-col class="px-2" cols="12">
+                                    <v-combobox v-model="ticket.defectFound" :items="defectFoundList" label="תקלות שאובחנו" multiple></v-combobox>
+                                </v-col>
+                                <v-col class="px-2" cols="12">
+                                    <v-combobox v-model="ticket.defectFixes" :items="defectFixesList" label="תאור ביצוע העבודה" multiple></v-combobox>
+                                </v-col>
+                                <v-col class="px-2" cols="4">
+                                    <v-menu v-model="menu1" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-text-field v-model="ticket.fixDate" v-bind="attrs" v-on="on" label="תאריך תיקון" readonly></v-text-field>
+                                        </template>
+                                        <v-date-picker v-model="ticket.fixDate" @input="menu1 = false"></v-date-picker>
+                                    </v-menu>
                                 </v-col>
                             </v-row>
                         </div>
@@ -147,8 +148,10 @@
                                     <v-btn text value="Closed"   elevation='3' small>סגור</v-btn>
                                 </v-btn-toggle>
                                 <v-spacer></v-spacer>
-                                <v-btn @click="printForm(printExit = false)" small>קליטה</v-btn>
-                                <v-btn @click="printForm(printExit = true)" small>יציאה</v-btn>
+                                <div v-if="!isMobile()">
+                                    <v-btn @click="printForm(printExit = false)" small>קליטה</v-btn>
+                                    <v-btn @click="printForm(printExit = true)" small>יציאה</v-btn>
+                                </div>
                                 <v-spacer></v-spacer>
                                 <v-btn @click="sendMessage()" small color=success> <v-icon small class="pr-2"> mdi-whatsapp </v-icon> הודעה </v-btn>
                                 <v-btn @click="submitTicket()" :loading="loading" small> שמור </v-btn>
@@ -170,7 +173,7 @@
 </template>
 
 <script>
-import { TICKET_MODEL, TABLE_MODEL, CUSTOMER_MODEL, VAT_PERCENTAGE, NEW_TICKET, messageTemplate } from "../constants/constants";
+import { TICKET_MODEL, TABLE_MODEL, CUSTOMER_MODEL, VAT_PERCENTAGE, NEW_TICKET, messageTemplate, isMobile } from "../constants/constants";
 import apiService from "../services/apiService";
 import specificServiceEndPoints from '../services/specificServiceEndPoints';
 import CustomerForm from './CustomerForm.vue';
@@ -183,6 +186,7 @@ export default {
     components: { CustomerForm, PrintEntryVue, PrintExitVue },
     data() {
         return {
+            isMobile,
             ticket: {customerName:''},
 			dialog: false,
             dateModal : false,
@@ -377,6 +381,18 @@ export default {
                 const response = await apiService.getOne({model: CUSTOMER_MODEL, fullName:newFullName})
                 this.customerInfo = response.data
                 this.ticket.customerId = this.customerInfo.customerId
+            }
+        },
+
+        // Whenever ticketStatus is change - setup the corresponding date
+        async 'ticket.ticketStatus' (newStatus) {
+            switch (newStatus) {
+                case 'Fixed' :
+                    this.ticket.fixDate = new Date().toISOString().substr(0, 10);
+                    break;
+                case 'Closed' :
+                    this.ticket.exitDate = new Date().toISOString().substr(0, 10);
+                    break;                    
             }
         }
     },

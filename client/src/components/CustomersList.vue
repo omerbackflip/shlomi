@@ -20,7 +20,7 @@
 				>
 					<template v-slot:top>
 						<v-toolbar flat>
-							<v-toolbar-title>Customers - {{customers.length}}</v-toolbar-title>
+							<v-toolbar-title>לקוחות - {{customers.length}}</v-toolbar-title>
 							<v-spacer></v-spacer>
 							<v-text-field v-model="search" class="mx-4"	label="Search" clearable></v-text-field>
 							<v-radio-group v-model="hasTicket" row>
@@ -30,7 +30,7 @@
 							<v-spacer></v-spacer>
 							<v-btn @click="customerForm()" small class="mt-3">
 								<v-icon class="nav-icon" small >mdi-plus</v-icon>
-								Add Customer
+								<div v-if="!isMobile()"> Add Customer </div>
 							</v-btn>
 						</v-toolbar>
 					</template>
@@ -85,7 +85,7 @@
 
 
 <script>
-import { CUSTOMER_HEADERS, CUSTOMER_HEADERS_VD, CUSTOMER_MODEL } from "../constants/constants";
+import { CUSTOMER_HEADERS, CUSTOMER_HEADERS_VD, CUSTOMER_MODEL, isMobile } from "../constants/constants";
 import apiService from "../services/apiService";
 import CustomerForm from './CustomerForm.vue';
 import ConfirmDialog from './Common/ConfirmDialog.vue';
@@ -98,6 +98,7 @@ export default {
 	components: { CustomerForm, ConfirmDialog },
 	data() {
 		return {
+			isMobile,
 			customers: [],
 			showMessage: false,
 			message: '',
@@ -178,4 +179,9 @@ export default {
 .header-cell-inner[data-v-55a76cbe] {
     word-break: normal;
 }
+.v-toolbar__title {
+        white-space: pre-wrap !important;
+        font-size: smaller !important;
+    }
+
 </style>

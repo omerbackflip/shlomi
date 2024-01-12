@@ -13,7 +13,7 @@
           height="75vh"
           @click:row="filterTbl"
           dense
-          class="elevation-3 mr-2"
+          class="elevation-3"
 					:loading = "loading"
 					loader-height = "30"
 					mobile-breakpoint="0"
@@ -161,7 +161,7 @@
 
 
 <script>
-import { TABLE_MODEL } from "../constants/constants";
+import { TABLE_MODEL, TABLE_HEADERS } from "../constants/constants";
 import apiService from "../services/apiService";
 import TableForm from './TableForm.vue';
 
@@ -177,12 +177,7 @@ export default {
       currInvoice: null,
       currentIndex: -1,
       search: "",
-      headers: [
-        { text: "ID",           value: "table_id"},
-        { text: "CODE",         value: "table_code"},
-        { text: "Description",  value: "description", align:'end'},
-        { text: "Controls",     value: "actions"},
-      ],
+      headers: TABLE_HEADERS,
       loading: '',
       itemToEdit: "",
       tblFields: {

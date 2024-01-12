@@ -1,3 +1,9 @@
+Developmet
+1. npm tun dev
+2. cd client
+3. npm run serve:development
+
+Production:
 1. Open putty with IP 185.28.152.24
 2. Enter username root
 3. Enter password EliGadot3719123
