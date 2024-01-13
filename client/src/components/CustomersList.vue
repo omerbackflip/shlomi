@@ -24,13 +24,14 @@
 							<v-spacer></v-spacer>
 							<v-text-field v-model="search" class="mx-4"	label="Search" clearable></v-text-field>
 							<v-radio-group v-model="hasTicket" row>
-								<v-radio label="בעלי כרטיס" :value=true></v-radio>
-								<v-radio label="ללא כרטיס" :value=false></v-radio>
+								<v-radio label="בעלי כרטיס" ></v-radio>
+								<v-radio label="ללא כרטיס" ></v-radio>
+								<v-radio label="כולם" ></v-radio>
 							</v-radio-group>
 							<v-spacer></v-spacer>
 							<v-btn @click="customerForm()" small class="mt-3">
 								<v-icon class="nav-icon" small >mdi-plus</v-icon>
-								<div v-if="!isMobile()"> Add Customer </div>
+								<div v-if="!isMobile()"> הוסף לקוח חדש </div>
 							</v-btn>
 						</v-toolbar>
 					</template>
@@ -106,7 +107,7 @@ export default {
 			headersVD: CUSTOMER_HEADERS_VD,
 			search: '',
 			loading: false,
-			hasTicket: true,
+			hasTicket: 0, // 0=hasTicket   1=noTicket   2=all
 		}
 	},
 
@@ -114,7 +115,10 @@ export default {
 		async getCustomers() {
 			this.loading = true
 			try {
-				const response = await apiService.getMany({model: CUSTOMER_MODEL , hasTicket: this.hasTicket});
+				// const response = await apiService.getMany({model: CUSTOMER_MODEL , hasTicket: this.hasTicket});
+				const response = await apiService.getMany({model: CUSTOMER_MODEL , hasTicket: this.hasTicket === 0 ? true 
+																								: (this.hasTicket === 1 ? false 
+																								: [true,false])});
 				if(response.data) {
 					this.customers = response.data;
 				}

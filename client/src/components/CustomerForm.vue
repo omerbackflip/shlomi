@@ -59,9 +59,9 @@
             <v-card-actions>
                 <v-btn v-if="customer.hasTicket" color="primary" text @click="customerTickets"> פעילות לקוח </v-btn>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" text @click="deleteCustomer(customer._id)"> Delete </v-btn>
-                <v-btn color="primary" text @click="dialog = false"> Close </v-btn>
-                <v-btn color="primary" text @click="submitCustomer()" :disabled = "!customer.customerId"> Submit </v-btn>
+                <v-btn color="primary" text @click="deleteCustomer(customer._id)"> מחק </v-btn>
+                <v-btn color="primary" text @click="dialog = false"> סגור </v-btn>
+                <v-btn color="primary" text @click="submitCustomer()" :disabled = "!customer.customerId"> שמור </v-btn>
             </v-card-actions>
         </v-card>
 		<confirm-dialog ref="confirm"/>
