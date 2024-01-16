@@ -256,23 +256,24 @@ export default {
 			await this.$refs.tableForm.open(item, newTable);
 			this.retrieveTables();    
     },
-    addToTable() {
-      var data = {
-        table_id: this.tblFields._id,
-        table_code: this.tblFields.code,
-        description: this.tblFields.description,
-      };
-      apiService
-        .create(data, { model: TABLE_MODEL })
-        .then((response) => {
-          this.tblFields._id = response.data._id;
-          this.refreshList();
-          this.clearForm();
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
+    
+    // addToTable() {
+    //   var data = {
+    //     table_id: this.tblFields._id,
+    //     table_code: this.tblFields.code,
+    //     description: this.tblFields.description,
+    //   };
+    //   apiService
+    //     .create(data, { model: TABLE_MODEL })
+    //     .then((response) => {
+    //       this.tblFields._id = response.data._id;
+    //       this.refreshList();
+    //       this.clearForm();
+    //     })
+    //     .catch((e) => {
+    //       console.log(e);
+    //     });
+    // },
 
     filterTbl(row) {
       this.tableCode = this.tables.filter(

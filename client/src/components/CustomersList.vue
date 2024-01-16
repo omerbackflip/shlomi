@@ -23,13 +23,13 @@
 							<v-toolbar-title>לקוחות - {{customers.length}}</v-toolbar-title>
 							<v-spacer></v-spacer>
 							<v-text-field v-model="search" class="mx-4"	label="Search" clearable></v-text-field>
-							<v-radio-group v-model="hasTicket" row>
+							<v-radio-group v-model="hasTicket" row dense style="direction: rtl;">
 								<v-radio label="בעלי כרטיס" ></v-radio>
 								<v-radio label="ללא כרטיס" ></v-radio>
 								<v-radio label="כולם" ></v-radio>
 							</v-radio-group>
 							<v-spacer></v-spacer>
-							<v-btn @click="customerForm()" small class="mt-3">
+							<v-btn @click="customerForm()" x-small class="mt-3">
 								<v-icon class="nav-icon" small >mdi-plus</v-icon>
 								<div v-if="!isMobile()"> הוסף לקוח חדש </div>
 							</v-btn>
@@ -169,7 +169,9 @@ export default {
 </script>
 
 <style>
-
+.row {
+	cursor: pointer;
+}
 .field-margin{
 	margin: 12px;
 }
@@ -187,5 +189,11 @@ export default {
         white-space: pre-wrap !important;
         font-size: smaller !important;
     }
+.v-toolbar__content {
+	padding-right: 0px !important;
+}
+.v-label {
+	font-size: smaller !important;
+}
 
 </style>

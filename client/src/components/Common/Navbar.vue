@@ -46,6 +46,7 @@ export default {
                 {icon: 'mdi-account-multiple-check', text: 'לקוחות', route: '/customers'},
                 {icon: 'mdi-file-table-box-multiple', text: 'טבלאות', route: '/tables'},
                 {icon: 'mdi-cash-multiple', text: 'יבוא נתונים', route: '/import'},
+                {icon: 'mdi-cash-multiple', text: 'ספר טלפונים', route: '/phones'},
             ],
             dialog: false,
             ticketStatus: 'Open',

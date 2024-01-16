@@ -2,6 +2,7 @@ const db = require("../models");
 const Customer = db.customers;
 const Ticket = db.tickets;
 const Table = db.tables;
+const Phone = db.phones;
 const dbService = require("../services/db-service");
 const specificService = require("../services/specific-service");
 const XLSX = require('xlsx');
@@ -90,6 +91,25 @@ exports.saveDefectsBulk = async (req, res) => {
 	} catch (error) {
 		console.log(error)
 		res.status(500).send({ message: "Error saving defectsArray", error });
+	}
+};
+
+exports.savePhonesBulk = async (req, res) => {
+	try {
+        await Phone.deleteMany();
+		var workbook = XLSX.readFile(`uploads/${req.file.filename}`);
+		var sheet_name_list = workbook.SheetNames;
+		const data = transformCSVData(sheet_name_list , workbook);
+
+        let phones = specificService.getPhonesToSave(data[0]);
+        await dbService.insertMany(Phone,phones);
+
+        unLinkFile(`uploads/${req.file.filename}`);
+        return res.send({ success: true, message: `Total ${phones.length} phones successfully Imported`});
+
+	} catch (error) {
+		console.log(error)
+		res.status(500).send({ message: "Error saving phones", error });
 	}
 };
 

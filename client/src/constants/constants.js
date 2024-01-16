@@ -1,6 +1,7 @@
 export const CUSTOMER_MODEL = 'customers';
 export const TICKET_MODEL = 'tickets';
 export const TABLE_MODEL = 'tables';
+export const PHONE_MODEL = 'phones';
 
 export const printTicketTopPadding = '50px';
 export const printTicketRightPadding = '110px';
@@ -55,6 +56,17 @@ export const TABLE_HEADERS = [
     { text: "קוד",         value: "table_code", class: 'primary white--text'},
     { text: "תאור",  value: "description", align:'end', class: 'primary white--text'},
     { text: "פעולות",     value: "actions", class: 'primary white--text'},
+  ]
+
+export const PHONE_HEADERS = [
+    { text: "שם מלא",           value: "fullName", class: 'primary white--text'},
+    { text: "כתובת",         value: "address", class: 'primary white--text'},
+    { text: "טלפון 1",         value: "phone1", class: 'primary white--text'},
+    { text: "טלפון 2",         value: "phone2", class: 'primary white--text'},
+    { text: "טלפון 3",         value: "phone3", class: 'primary white--text'},
+    { text: "טלפון 4",         value: "phone4", class: 'primary white--text'},
+    { text: "קיבוץ",  value: "phoneType", align:'end', class: 'primary white--text'},
+    { text: "הערה",     value: "remark", class: 'primary white--text'},
   ]
 
 export const NEW_TICKET = {

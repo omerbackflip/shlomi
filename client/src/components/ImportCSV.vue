@@ -51,6 +51,9 @@ export default {
 			},{
 				type: 'defects',	
 				title: 'Import Defects'
+			},{
+				type: 'phones',	
+				title: 'Import Phones'
 			}],
 			loading: false,
 		};
@@ -78,6 +81,9 @@ export default {
 						break
 					case "defects" :
 						response = await SpecificServiceEndPoints.saveDefectsImport(this.file)
+						break
+					case "phones" :
+						response = await SpecificServiceEndPoints.savePhonesImport(this.file)
 						break
 				}
 

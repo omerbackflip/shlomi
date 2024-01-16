@@ -22,6 +22,8 @@ module.exports = mongoose => {
 			fixDate: Date,
 			exitDate: Date,
 			remarks: String,
+			fixTime: Date,
+			partsCost: Number, 
 		},
 		{ timestamps: true }
 	);

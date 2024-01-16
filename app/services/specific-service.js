@@ -55,6 +55,8 @@ exports.getTicketsToSave = (data) => {
                 // exitDate: !isNaN(Date.parse(item['Exit date'])) ? item['Exit date'] : ('0000-00-00'),
                 exitDate: !isNaN(Date.parse(item['Exit date'])) ? item['Exit date'] : null,
                 remarks: item['Remarks'],
+                fixTime: item['fixTime'],
+                remarks: item['partsCost'],
             }
 
             tickets.push(ticket);
@@ -125,6 +127,32 @@ exports.getDefectsToSave = (data) => {
         })
 
         return filteredList;
+
+    } catch (error) {
+        console.log(error)
+        throw error;
+    }
+}
+
+exports.getPhonesToSave = (data) => {
+    try {
+        let phones = [];
+        data.forEach(item => {
+            let phone = {
+                fullName: item['FULLNAME'],
+                address: item['ADDRESS'],
+                phone1: item['PHONE1'],				
+                phone2: item['PHONE2'],
+                phone3: item['PHONE3'],
+                phone4: item['PHONE4'],
+                phoneType: item['PHONETYPE'],
+                remark: item['REMARK'],
+            }
+
+            phones.push(phone);
+        });
+
+        return phones;
 
     } catch (error) {
         console.log(error)

@@ -26,5 +26,10 @@ export default new Router({
       name: "import-data",
       component: () => import("./components/ImportCSV")
     },
+    {
+      path: "/phones",
+      name: "phone-list",
+      component: () => import("./components/PhoneList")
+    },
   ]
 });

@@ -237,9 +237,10 @@ export default {
       border-collapse: collapse;
       width:   50%;
     }
-    .table th, .table td {
+    .table th {
       padding: 2px;
       border: 1px solid #c0bbbb;
+      font-size: larger !important;
     }
     .table-payment th, .table-payment td {
       padding: 2px;
@@ -249,6 +250,8 @@ export default {
         padding: 0px !important;
         margin: 0 !important; 
         line-height: 1.5 !important;
+        text-align: right !important;
+        border: 1px solid #c0bbbb;
     }
 
     .field-text{

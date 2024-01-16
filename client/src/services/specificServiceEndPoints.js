@@ -42,6 +42,16 @@ class SpecificServiceEndPoints {
 		});
 	}
 
+	async savePhonesImport(file) {
+		var formData = new FormData();
+		formData.append("file", file);
+		return await axios.post(`${baseUrl}/specific/save-phones`, formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			}
+		});
+	}
+
 	async searchCustomers(params) {
 		return await axios.get(`${baseUrl}/specific/search-customers`,{params});
 	}
