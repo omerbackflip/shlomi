@@ -121,7 +121,7 @@
                                     <v-text-field @input="onTotalChange" v-model="ticket.total" label="סה'כ" reverse @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="3" sm="2">
-                                    <v-text-field  label="יתרה לתשלום" reverse></v-text-field>
+                                    <v-text-field  label="יתרה-לתשלום" reverse></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="3" sm="2">
                                     <v-text-field v-model="ticket.invoice" label="חשבונית" reverse @focus="$event.target.select()"></v-text-field>
