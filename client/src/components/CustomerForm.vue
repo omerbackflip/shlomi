@@ -7,7 +7,7 @@
         :style="{ zIndex: options.zIndex }"
         @keydown.esc="dialog = false"
     >
-        <v-card>
+        <v-card class="hebrew">
             <v-card-title class="text-h5 grey lighten-2">
                 {{!(Object.keys(customer).length) ? 'New' : 'Update'}} Customer
             </v-card-title>
@@ -16,33 +16,33 @@
             </div>
             <v-row class="pa-3 overflow-hidden">
                 <v-col cols="4">
-                    <v-text-field type="number" v-model="customer.customerId" label="Customer ID" readonly></v-text-field>
+                    <v-text-field type="number" v-model="customer.customerId" label="מס' לקוח" readonly reverse></v-text-field>
                 </v-col>
                 <v-col cols="4">
-                    <v-text-field v-model="customer.fullName" label="Name"></v-text-field>
+                    <v-text-field v-model="customer.fullName" label="שם לקוח מלא" reverse></v-text-field>
                 </v-col>      
                 <v-col cols="4">
-                    <v-text-field v-model="customer.address" label="Address"></v-text-field>
+                    <v-text-field v-model="customer.address" label="כתובת" reverse></v-text-field>
                 </v-col>
                 <v-col cols="4">
-                    <v-text-field v-model="customer.city" label="City"></v-text-field>
+                    <v-text-field v-model="customer.city" label="עיר" reverse></v-text-field>
                 </v-col>
                 <v-col cols="4">
-                    <v-text-field v-model="customer.phone1" label="Phone 1"></v-text-field>
+                    <v-text-field v-model="customer.phone1" label="טלפון 1" reverse></v-text-field>
                 </v-col>
                 <v-col cols="4">
-                    <v-text-field v-model="customer.phone2" label="Phone 2"></v-text-field>
+                    <v-text-field v-model="customer.phone2" label="טלפון 2" reverse></v-text-field>
                 </v-col>
                 <v-col cols="4">
-                    <v-text-field v-model="customer.phone3" label="Phone 3"></v-text-field>
+                    <v-text-field v-model="customer.phone3" label="טלפון 3" reverse></v-text-field>
                 </v-col>
                 <v-col cols="4">
-                    <v-combobox v-model="customer.arrivedFrom" :items="arrivedFromList" label="Arrived From" reverse/>
+                    <v-combobox v-model="customer.arrivedFrom" :items="arrivedFromList" label="הגיע אלינו דרך..." reverse/>
                 </v-col>
                 <v-col cols="4">
                     <v-dialog ref="dialog" v-model="dateModal" :return-value.sync="customer.issueDate" persistent width="290px">
                         <template v-slot:activator="{ on, attrs }">
-                            <v-text-field v-model="customer.issueDate" label="Issue date" readonly v-bind="attrs" v-on="on" ></v-text-field>
+                            <v-text-field v-model="customer.issueDate" label="תאריך" readonly reverse v-bind="attrs" v-on="on" ></v-text-field>
                         </template> 
                         <v-date-picker v-model="customer.issueDate" scrollable>
                             <v-spacer></v-spacer>
@@ -173,5 +173,10 @@ export default {
 <style scoped>
 .overflow-hidden{
     overflow: hidden;
+}
+.hebrew {
+  direction: rtl;
+  /* text-align: right; */
+  text-align-last: right !important
 }
 </style>

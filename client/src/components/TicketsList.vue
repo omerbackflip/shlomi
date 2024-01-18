@@ -1,9 +1,9 @@
 <template>
 	<div class="list row no-print">
 		<v-layout class="mt-1" row wrap>
-			<v-card class="p-3 m-3">
+			<!-- <v-card class="p-3 m-3"> -->
 				<v-data-table
-					:headers="headers"
+					:headers="getHeaders()"
 					disable-pagination
 					hide-default-footer
 					fixed-header
@@ -15,6 +15,7 @@
 					:loading = "loading"
 					loader-height = "30"
 					dense
+					class="elevation-3 hebrew"
 					@click:row="updateTicket"
 				>
 					<template v-slot:top>
@@ -31,6 +32,7 @@
 						</v-toolbar>
 					</template>
 					<template v-slot:[`item.entryDate`]="{ item }">
+						<!-- <span>{{ item.entryDate ? new Date(item.entryDate).toLocaleDateString('sv-SE',shortDate) : '-'}}</span> -->
 						<span>{{ item.entryDate ? new Date(item.entryDate).toLocaleDateString('sv-SE') : '-'}}</span>
 					</template>
 					<template v-slot:[`item.fixDate`]="{ item }">
@@ -48,12 +50,12 @@
 					<template v-slot:[`item.controls`]="{ item }">
 						<td @click.stop>
 							<v-btn @click="deleteTicket(item._id)" x-small>
-								<v-icon small>mdi-delete</v-icon>
+								<v-icon x-small>mdi-delete</v-icon>
 							</v-btn>
 						</td>
 					</template>
 				</v-data-table>
-			</v-card>
+			<!-- </v-card> -->
 		</v-layout>
 		<!-- <ticket-form @openPrint="handlePrint" ref="ticketForm"/> -->
 		<ticket-form ref="ticketForm"/>
@@ -64,7 +66,7 @@
 
 
 <script>
-import { TICKET_HEADERS, TICKET_MODEL, isMobile } from "../constants/constants";
+import { TICKET_WEB_HEADERS, TICKET_MOBILE_HEADERS, TICKET_MODEL, isMobile, SHORT_DATE } from "../constants/constants";
 import apiService from "../services/apiService";
 import TicketForm from './TicketForm.vue';
 import ConfirmDialog from './Common/ConfirmDialog.vue';
@@ -81,7 +83,7 @@ export default {
 			tickets: [],
 			showMessage: false,
 			header: '',
-			headers: TICKET_HEADERS,
+			headers: [],
 			customerInfo: null,
 			listOfItems: [],
 			search: '',
@@ -89,6 +91,7 @@ export default {
 			ticketsFilter: 'Open',
 			ticketType: 'STATUS',
 			loading: '',
+			shortDate: SHORT_DATE,
 		}
 	},
 
@@ -142,6 +145,13 @@ export default {
 				console.log(error);		
 			}
 		},
+		getHeaders() {
+			if (this.isMobile()) {
+				return TICKET_MOBILE_HEADERS;
+			} else {
+				return TICKET_WEB_HEADERS;
+			}
+		},
 	},
 
 	mounted() {
@@ -179,5 +189,10 @@ export default {
     .no-print {
         display: none;
     }
+}
+.hebrew {
+  direction: rtl;
+  /* text-align: right; */
+  text-align-last: right !important
 }
 </style>

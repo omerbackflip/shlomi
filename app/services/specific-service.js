@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 exports.getCustomersToSave = (data) => {
     try {
         let customers = [];
@@ -13,7 +15,7 @@ exports.getCustomersToSave = (data) => {
                 phone2: item['Phone 2'],
                 phone3: item['Phone 3'],
                 arrivedFrom: item['Arrived from'],
-                issueDate: !isNaN(Date.parse(item['issue date'])) ? item['issue date'] : new Date(),
+                issueDate: !isNaN(Date.parse(item['issue date'])) ? moment(item['issue date']).add(1,'days') : new Date(),
                 // hasTicket: item['hasTicket'],  // there is dedicated bach to run after loading
                 remark: item['remark'],
             }
@@ -28,7 +30,6 @@ exports.getCustomersToSave = (data) => {
         throw error;
     }
 }
-
 exports.getTicketsToSave = (data) => {
     try {
         let tickets = [];
@@ -45,18 +46,17 @@ exports.getTicketsToSave = (data) => {
                 defectDescription: item['Defect Description'],
                 prepaid: item['pre-paied'],
                 prepaidInvoice: item['Pre-paied Invoice'],
+                amount: item['amount'],
                 vat: item['vat'],
-                invoice: item['Invoice'],
                 total: item['total'],
+                invoice: item['Invoice'],
                 year: item['Year'],
-                entryDate: !isNaN(Date.parse(item['Entry Date'])) ? item['Entry Date'] : null,
-                // fixDate: !isNaN(Date.parse(item['fix date'])) ? item['fix date'] : ('0000-00-00'),
-                fixDate: !isNaN(Date.parse(item['fix date'])) ? item['fix date'] : null,
-                // exitDate: !isNaN(Date.parse(item['Exit date'])) ? item['Exit date'] : ('0000-00-00'),
-                exitDate: !isNaN(Date.parse(item['Exit date'])) ? item['Exit date'] : null,
+                entryDate: !isNaN(Date.parse(item['Entry Date'])) ? moment(item['Entry Date']).add(1,'days') : null,
+                fixDate: !isNaN(Date.parse(item['fix date'])) ? moment(item['fix date']).add(1,'days') : null,
+                exitDate: !isNaN(Date.parse(item['Exit date'])) ? moment(item['Exit date']).add(1,'days') : null,
                 remarks: item['Remarks'],
                 fixTime: item['fixTime'],
-                remarks: item['partsCost'],
+                partsCost: item['partsCost'],
             }
 
             tickets.push(ticket);

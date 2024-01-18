@@ -36,7 +36,8 @@ exports.saveCustomersBulk = async (req, res) => {
 exports.saveTicketsBulk = async (req, res) => {
 	try {
         await Ticket.deleteMany();
-		var workbook = XLSX.readFile(`uploads/${req.file.filename}`,{type: 'binary', cellDates: true, dateNF: 'yyyy/mm/dd;@'});
+		// var workbook = XLSX.readFile(`uploads/${req.file.filename}`,{type: 'binary', cellDates: true, dateNF: 'yyyy/mm/dd;@'});
+		var workbook = XLSX.readFile(`uploads/${req.file.filename}`,{type: 'binary', cellDates: true, dateNF: 'dd/mm/yyyy;@'});
 		var sheet_name_list = workbook.SheetNames;
 		const data = transformCSVData(sheet_name_list , workbook);
 

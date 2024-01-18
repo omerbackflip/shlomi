@@ -2,7 +2,7 @@
   <div class="list row">
 		<v-container class="bg-surface-variant">
 			<v-row no-gutters>
-        <v-col>
+        <!-- <v-col> -->
         <v-data-table
           :headers="headers"
           :items="phones"
@@ -16,6 +16,7 @@
 					:loading = "loading"
 					loader-height = "30"
 					mobile-breakpoint="0"
+					@click:row="updatePhone"
         >
           <template v-slot:top>
             <v-toolbar flat>
@@ -30,7 +31,7 @@
             </v-toolbar>
           </template>
         </v-data-table>
-        </v-col>
+        <!-- </v-col> -->
       </v-row>
     </v-container>
     <phone-form ref="phoneForm"/>
@@ -84,7 +85,7 @@ export default {
     async updatePhone(item) {
 			let newPhone = item ? false : true;
 			await this.$refs.phoneForm.open(item, newPhone);
-			this.retrieveTables();    
+			this.retrievePhones();    
     },
 
   },

@@ -11,11 +11,11 @@
                 <v-btn @click="dialog = false" small><v-icon small> mdi-close </v-icon> </v-btn>
             </v-card-title>
             <v-container>
-                <v-row style="justify-content: center; direction: rtl;">
+                <v-row style="justify-content: center; direction: rtl; padding: 0px">
                     <!-- ------------------- Customer Area  ------------------- -->
-                    <v-col cols="12">
+                    <v-col cols="12" style="padding: 0px">
                         <div class="v-area">
-                            <h6 class="area-header">Customer Area</h6>
+                            <h6 class="area-header">פרטי לקוח</h6>
                             <v-row no-gutters>
                                 <v-col cols="6" sm="3">
                                     <v-autocomplete
@@ -49,18 +49,18 @@
                         </div>
                     </v-col>
                     <!-- ------------------- Item Area  ------------------- -->
-                    <v-col cols="12" sm="6">
+                    <v-col cols="12" sm="6" style="padding: 0px">
                         <div class=" v-areaMiddle">
-                            <h6 class="area-header">Item Area</h6>
+                            <h6 class="area-header">פרטי מכשיר</h6>
                             <v-row no-gutters>
                                 <v-col class="px-2" cols="6">
-                                    <v-combobox v-model="ticket.item" :items="itemList" label="שם המכשיר" />
+                                    <v-combobox v-model="ticket.item" :items="itemList" label="שם המכשיר" reverse />
                                 </v-col>
                                 <v-col cols="2"></v-col>
                                 <v-col class="px-2" cols="4">
                                     <v-menu v-model="menu2" :close-on-content-click="false" nudge-right="40" transition="scale-transition" offset-y min-width="auto">
                                         <template v-slot:activator="{ on, attrs }">
-                                            <v-text-field v-model="ticket.entryDate" v-bind="attrs" v-on="on" label="תאריך כניסה" readonly></v-text-field>
+                                            <v-text-field v-model="ticket.entryDate" v-bind="attrs" v-on="on" label="תאריך כניסה" reverse readonly></v-text-field>
                                         </template>
                                         <v-date-picker v-model="ticket.entryDate" @input="menu2 = false"></v-date-picker>
                                     </v-menu>
@@ -78,60 +78,64 @@
                         </div>
                     </v-col>
                     <!-- ------------------- Treatment Area  ------------------- -->
-                    <v-col cols="12" sm="6">
+                    <v-col cols="12" sm="6" style="padding: 0px">
                         <div class="v-areaMiddle">
-                            <h6 class="area-header">Treatment Area</h6>
-                            <v-row no-gutters>
+                            <h6 class="area-header">פרטי טיפול</h6>
+                            <v-row no-gutters style="justify-content: left;">
+                                <v-col class="px-2" cols="4">
+                                    <v-menu v-model="menu1" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-text-field v-model="ticket.fixDate" v-bind="attrs" v-on="on" label="תאריך תיקון" reverse readonly></v-text-field>
+                                        </template>
+                                        <v-date-picker v-model="ticket.fixDate" @input="menu1 = false"></v-date-picker>
+                                    </v-menu>
+                                </v-col>
                                 <v-col class="px-2" cols="12">
                                     <v-combobox v-model="ticket.defectFound" :items="defectFoundList" label="תקלות שאובחנו" multiple></v-combobox>
                                 </v-col>
                                 <v-col class="px-2" cols="12">
                                     <v-combobox v-model="ticket.defectFixes" :items="defectFixesList" label="תאור ביצוע העבודה" multiple></v-combobox>
                                 </v-col>
-                                <v-col class="px-2" cols="4">
-                                    <v-menu v-model="menu1" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
-                                        <template v-slot:activator="{ on, attrs }">
-                                            <v-text-field v-model="ticket.fixDate" v-bind="attrs" v-on="on" label="תאריך תיקון" readonly></v-text-field>
-                                        </template>
-                                        <v-date-picker v-model="ticket.fixDate" @input="menu1 = false"></v-date-picker>
-                                    </v-menu>
-                                </v-col>
+
                             </v-row>
                         </div>
                     </v-col>
                     <!-- ------------------- Payment Area  ------------------- -->
-                    <v-col cols="12">
+                    <v-col cols="12" style="padding: 0px">
                         <div class=" v-area">
-                            <h6 class="area-header">Payment Area</h6>
+                            <h6 class="area-header">פרטי תשלום</h6>
                             <v-row no-gutters>
-                                <v-col class="px-2" cols="6" sm="2">
-                                    <v-text-field v-model="ticket.prepaid" label="שולם מראש" @focus="$event.target.select()"></v-text-field>
+                                <v-col class="px-2" cols="6" sm="1">
+                                    <v-text-field v-model="ticket.prepaid" label="שולם מראש" reverse @focus="$event.target.select()"></v-text-field>
                                 </v-col>
-                                <v-col class="px-2" cols="6" sm="2">
-                                    <v-text-field v-model="ticket.prepaidInvoice" label="חשבונית מראש" @focus="$event.target.select()"></v-text-field>
-                                </v-col>
-                                <v-col class="px-2" cols="3" sm="2">
-                                    <v-text-field @input="onAmountChange" v-model="ticket.amount" label="סכום" @focus="$event.target.select()"></v-text-field>
+                                <v-col class="px-2" cols="6" sm="1">
+                                    <v-text-field v-model="ticket.prepaidInvoice" label="חשבונית מראש" reverse @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="3" sm="2">
-                                    <v-text-field v-model="ticket.vat" label="מע'מ" @focus="$event.target.select()"></v-text-field>
+                                    <v-text-field @input="onAmountChange" v-model="ticket.amount" label="סכום" reverse @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="3" sm="2">
-                                    <v-text-field @input="onTotalChange" v-model="ticket.total" label="סה'ב" @focus="$event.target.select()"></v-text-field>
+                                    <v-text-field v-model="ticket.vat" label="מע'מ" reverse @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="3" sm="2">
-                                    <v-text-field v-model="ticket.invoice" label="חשבונית" @focus="$event.target.select()"></v-text-field>
+                                    <v-text-field @input="onTotalChange" v-model="ticket.total" label="סה'כ" reverse @focus="$event.target.select()"></v-text-field>
+                                </v-col>
+                                <v-col class="px-2" cols="3" sm="2">
+                                    <v-text-field  label="יתרה לתשלום" reverse></v-text-field>
+                                </v-col>
+                                <v-col class="px-2" cols="3" sm="2">
+                                    <v-text-field v-model="ticket.invoice" label="חשבונית" reverse @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="4">
                                     <v-menu v-model="menu" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
                                         <template v-slot:activator="{ on, attrs }">
-                                            <v-text-field v-model="ticket.exitDate" v-bind="attrs" v-on="on" label="תאריך יציאה" readonly/>
+                                            <v-text-field v-model="ticket.exitDate" v-bind="attrs" v-on="on" label="תאריך יציאה" reverse readonly/>
                                         </template>
                                         <v-date-picker v-model="ticket.exitDate" @input="menu = false"/>
                                     </v-menu>
                                 </v-col>
                                 <v-col class="px-2" cols="8">
-                                    <v-combobox v-model="ticket.remarks" :items="remarkList" label="הערות" reverse/>
+                                    <v-combobox v-model="ticket.remarks" :items="remarkList" label="הערות להדפסה" reverse/>
                                 </v-col>
                             </v-row>
                         </div>
@@ -149,8 +153,8 @@
                                 </v-btn-toggle>
                                 <v-spacer></v-spacer>
                                 <div v-if="!isMobile()">
-                                    <v-btn @click="printForm(printExit = false)" small>קליטה</v-btn>
-                                    <v-btn @click="printForm(printExit = true)" small>יציאה</v-btn>
+                                    <v-btn @click="printForm(printExit = false)" small>הדפס כניסה</v-btn>
+                                    <v-btn @click="printForm(printExit = true)" small>הדפס יציאה</v-btn>
                                 </div>
                                 <v-spacer></v-spacer>
                                 <v-btn @click="sendMessage()" small color=success> <v-icon small class="pr-2"> mdi-whatsapp </v-icon> הודעה </v-btn>
@@ -413,16 +417,12 @@ export default {
         overflow: auto;
     }
     .v-area{
-        border: 1px solid black;
+        border: 1px solid blue;
         border-radius: 0px;
-        padding: 0px;
-        margin: 0px;
     }
     .v-areaMiddle{
-        border: 1px solid black;
+        border: 1px solid blue;
         border-radius: 0px;
-        padding: 0px;
-        margin: 0px;
         height:300px;
     }
 

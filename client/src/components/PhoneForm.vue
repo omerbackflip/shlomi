@@ -81,23 +81,13 @@ export default {
     methods: {
         async submitPhone() {
 			try {
-				let response;
 				if(this.newPhone) {
-					response = await apiService.create({...this.phone} , {model:PHONE_MODEL});
+					await apiService.create({...this.phone} , {model:PHONE_MODEL});
 				} else {
-					response = await apiService.update(this.phone._id , { ...this.phone } , {model:PHONE_MODEL});
+					await apiService.update(this.phone._id , { ...this.phone } , {model:PHONE_MODEL});
 				}
-
-                if(response.data && response.data.data) {
-					this.message = 'Phone successfully created/updated!';
-				}
-                this.showMessage = true;
-                setTimeout(() => {
-                    this.dialog = false;
-                    this.showMessage = false;
-                    this.resolve(true);
-                }, 2000);
-
+                this.dialog = false;
+                this.resolve(true);
 			} catch (error) {
 				console.log(error);
 			}

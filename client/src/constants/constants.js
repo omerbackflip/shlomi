@@ -2,6 +2,7 @@ export const CUSTOMER_MODEL = 'customers';
 export const TICKET_MODEL = 'tickets';
 export const TABLE_MODEL = 'tables';
 export const PHONE_MODEL = 'phones';
+export const SHORT_DATE = { day: 'numeric', month: 'numeric' };
 
 export const printTicketTopPadding = '50px';
 export const printTicketRightPadding = '110px';
@@ -10,7 +11,7 @@ export const VAT_PERCENTAGE = 17;
 
 export const messageTemplate = `__name__ היקר, המכשיר __itemName__ תוקן הנך מתבקש לסור למעבדה לקחתו. תודה, מעבדת ישראל.`;
 
-export const TICKET_HEADERS = [
+export const TICKET_WEB_HEADERS = [
     { text: 'מס כרטיס', value: 'ticketId', align:'end', class: 'primary white--text' },
     { text: 'שנה', value: 'year', align:'end', class: 'primary white--text' },
     { text: 'תאריך כניסה', value: 'entryDate', align:'end', class: 'primary white--text' },
@@ -23,6 +24,14 @@ export const TICKET_HEADERS = [
     { text: 'תאריך תיקון', value: 'fixDate', align:'end', class: 'primary white--text' },
     { text: 'תאריך יציאה', value: 'exitDate', align:'end', class: 'primary white--text' },
     { text: '', value: 'controls', class: 'primary white--text' },
+]
+
+export const TICKET_MOBILE_HEADERS = [
+    { text: 'מס כרטיס', value: 'ticketId', align:'end', class: 'primary white--text' },
+    { text: 'כניסה', value: 'entryDate', align:'end', class: 'primary white--text' },
+    { text: 'שם לקוח', value: 'customerName', align:'end', class: 'primary white--text' },
+    { text: 'מכשיר', value: 'item', align:'end', class: 'primary white--text' },
+    { text: 'תאור תקלה', value: 'defectDescription', align:'end', class: 'primary white--text' },
 ]
 
 export const CUSTOMER_HEADERS = [  // used for vue-virtual-table
