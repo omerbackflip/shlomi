@@ -24,6 +24,7 @@ export const TICKET_WEB_HEADERS = [
     { text: 'תאריך תיקון', value: 'fixDate', align:'end', class: 'primary white--text' },
     { text: 'תאריך יציאה', value: 'exitDate', align:'end', class: 'primary white--text' },
     { text: '', value: 'controls', class: 'primary white--text' },
+    // { text: 'REMARK2222', value: 'customerRemark', class: 'primary white--text' },
 ]
 
 export const TICKET_MOBILE_HEADERS = [
@@ -55,6 +56,7 @@ export const CUSTOMER_HEADERS_VD = [
     { text: 'טלפון 1', value: 'phone1' , align:'end', class: 'primary white--text'},
     { text: 'טלפון 2', value: 'phone2' , align:'end', class: 'primary white--text'},
     { text: 'טלפון 3', value: 'phone3' , align:'end', class: 'primary white--text'},
+    { text: 'הערות לקוח', value: 'remark' , align:'end', class: 'primary white--text'},
     // { text: 'Arrived from', value: 'arrivedFrom' , align:'end'},
     // { text: 'Issue Date', value: 'issueDate', align:'end'},
     // { text: 'Controls', value: 'controls', align:'end'},

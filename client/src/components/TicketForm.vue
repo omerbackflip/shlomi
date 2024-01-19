@@ -91,10 +91,10 @@
                                     </v-menu>
                                 </v-col>
                                 <v-col class="px-2" cols="12">
-                                    <v-combobox v-model="ticket.defectFound" :items="defectFoundList" label="תקלות שאובחנו" multiple></v-combobox>
+                                    <v-combobox v-model="ticket.defectFound" :items="defectFoundList" label="תקלות שאובחנו" multiple dense></v-combobox>
                                 </v-col>
                                 <v-col class="px-2" cols="12">
-                                    <v-combobox v-model="ticket.defectFixes" :items="defectFixesList" label="תאור ביצוע העבודה" multiple></v-combobox>
+                                    <v-combobox v-model="ticket.defectFixes" :items="defectFixesList" label="תאור ביצוע העבודה" multiple dense></v-combobox>
                                 </v-col>
 
                             </v-row>
@@ -121,7 +121,7 @@
                                     <v-text-field @input="onTotalChange" v-model="ticket.total" label="סה'כ" reverse @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="3" sm="2">
-                                    <v-text-field  label="יתרה-לתשלום" reverse></v-text-field>
+                                    <v-text-field  v-model="yitra" label="יתרה לתשלום" disabled reverse></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="3" sm="2">
                                     <v-text-field v-model="ticket.invoice" label="חשבונית" reverse @focus="$event.target.select()"></v-text-field>
@@ -213,6 +213,7 @@ export default {
             menu1: false,
             menu2: false,
             printExit: false,
+            yitra: '',
         };
     },
 
@@ -357,6 +358,7 @@ export default {
                 this.ticket.vat = 0;
                 this.ticket.total = 0;
             }
+            this.yitra = this.ticket.total-this.ticket.prepaid;
         },
 
         onTotalChange() {
@@ -369,6 +371,7 @@ export default {
                 this.ticket.vat = 0;
                 this.ticket.total = 0;
             }
+            this.yitra = this.ticket.total-this.ticket.prepaid;
         }
     },
     watch: {

@@ -119,6 +119,12 @@ export default {
 				
 				if(response.data) {
 					this.tickets = response.data;
+					// let customer = '';
+					// this.tickets = this.tickets.map(async (item) =>{
+					// 	customer = await apiService.getOne({model: CUSTOMER_MODEL, customerId: item.customerId})
+					// 	this.tickets.customerRemark = customer.remark
+					// 	return (this.tickets)
+					// })
 				}
 			} catch (error) {
 				console.log(error);
