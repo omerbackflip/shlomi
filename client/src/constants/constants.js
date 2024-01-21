@@ -4,7 +4,7 @@ export const TABLE_MODEL = 'tables';
 export const PHONE_MODEL = 'phones';
 export const SHORT_DATE = { day: 'numeric', month: 'numeric' };
 
-export const printTicketTopPadding = '50px';
+export const printTicketTopPadding = '80px';
 export const printTicketRightPadding = '110px';
 
 export const VAT_PERCENTAGE = 17;
@@ -24,7 +24,6 @@ export const TICKET_WEB_HEADERS = [
     { text: 'תאריך תיקון', value: 'fixDate', align:'end', class: 'primary white--text' },
     { text: 'תאריך יציאה', value: 'exitDate', align:'end', class: 'primary white--text' },
     { text: '', value: 'controls', class: 'primary white--text' },
-    // { text: 'REMARK2222', value: 'customerRemark', class: 'primary white--text' },
 ]
 
 export const TICKET_MOBILE_HEADERS = [
@@ -102,6 +101,9 @@ export const NEW_TICKET = {
     fixDate: null,
     exitDate: null,
     remarks: '',
+    ticketRemark: '',
+    fixTime: Date,
+    partsCost: '', 
 }
 
 export const isMobile = () => {

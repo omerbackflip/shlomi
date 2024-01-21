@@ -96,7 +96,11 @@
                                 <v-col class="px-2" cols="12">
                                     <v-combobox v-model="ticket.defectFixes" :items="defectFixesList" label="תאור ביצוע העבודה" multiple dense></v-combobox>
                                 </v-col>
-
+                                <v-row style="justify-content: right;">
+                                    <v-col class="px-2" cols="6">
+                                        <v-combobox v-model="ticket.ticketRemark" :items="ticketRemarkList" label="הערה לכרטיס"/>
+                                    </v-col>
+                                </v-row>
                             </v-row>
                         </div>
                     </v-col>
@@ -111,19 +115,21 @@
                                 <v-col class="px-2" cols="6" sm="1">
                                     <v-text-field v-model="ticket.prepaidInvoice" label="חשבונית מראש" reverse @focus="$event.target.select()"></v-text-field>
                                 </v-col>
-                                <v-col class="px-2" cols="3" sm="2">
+                                <v-col cols="6" sm="2"></v-col>
+                                <v-col class="px-2" cols="3" sm="1">
                                     <v-text-field @input="onAmountChange" v-model="ticket.amount" label="סכום" reverse @focus="$event.target.select()"></v-text-field>
                                 </v-col>
-                                <v-col class="px-2" cols="3" sm="2">
-                                    <v-text-field v-model="ticket.vat" label="מע'מ" reverse @focus="$event.target.select()"></v-text-field>
+                                <v-col class="px-2" cols="3" sm="1">
+                                    <v-text-field v-model="ticket.vat" label="מע'מ" disabled reverse @focus="$event.target.select()"></v-text-field>
                                 </v-col>
-                                <v-col class="px-2" cols="3" sm="2">
+                                <v-col class="px-2" cols="3" sm="1">
                                     <v-text-field @input="onTotalChange" v-model="ticket.total" label="סה'כ" reverse @focus="$event.target.select()"></v-text-field>
                                 </v-col>
-                                <v-col class="px-2" cols="3" sm="2">
+                                <v-col cols="6" sm="2"></v-col>
+                                <v-col class="px-2" cols="3" sm="1">
                                     <v-text-field  v-model="yitra" label="יתרה לתשלום" disabled reverse></v-text-field>
                                 </v-col>
-                                <v-col class="px-2" cols="3" sm="2">
+                                <v-col class="px-2" cols="3" sm="1">
                                     <v-text-field v-model="ticket.invoice" label="חשבונית" reverse @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="4">
@@ -177,7 +183,7 @@
 </template>
 
 <script>
-import { TICKET_MODEL, TABLE_MODEL, CUSTOMER_MODEL, VAT_PERCENTAGE, NEW_TICKET, messageTemplate, isMobile } from "../constants/constants";
+import { TICKET_MODEL, TABLE_MODEL, CUSTOMER_MODEL, NEW_TICKET, messageTemplate, isMobile } from "../constants/constants";
 import apiService from "../services/apiService";
 import specificServiceEndPoints from '../services/specificServiceEndPoints';
 import CustomerForm from './CustomerForm.vue';
@@ -191,7 +197,7 @@ export default {
     data() {
         return {
             isMobile,
-            ticket: {customerName:''},
+            ticket: {customerName:'', ticketStatus:''},
 			dialog: false,
             dateModal : false,
             dateModal2 : false,
@@ -205,6 +211,7 @@ export default {
             entryConditionList: [],
             defectFoundList: [],
             defectFixesList: [],
+            ticketRemarkList: [],
             customers: [],
             remarkList: '',
             customerInfo: '',
@@ -213,7 +220,7 @@ export default {
             menu1: false,
             menu2: false,
             printExit: false,
-            yitra: '',
+            yitra: 0,
         };
     },
 
@@ -250,6 +257,9 @@ export default {
                 let lastTicket = await apiService.getMany({model: TICKET_MODEL , sort: {ticketId: -1 } , limit: 1});
                 const { ticketId } = lastTicket.data[0];
                 this.ticket.ticketId = ticketId+1
+                let vatTable = await apiService.getOne({model: TABLE_MODEL, table_id: 102}) // get the current vat %
+                this.ticket.vat = vatTable.data.table_code;
+                this.yitra = 0;
             } else {
                 this.customers.push(ticket.customerName);
                 const response = await apiService.getOne({model: CUSTOMER_MODEL, fullName:ticket.customerName})
@@ -257,6 +267,7 @@ export default {
                 this.ticket.exitDate ? this.ticket.exitDate = new Date(this.ticket.exitDate).toISOString().substr(0, 10) : ''
                 this.ticket.entryDate ? this.ticket.entryDate = new Date(this.ticket.entryDate).toISOString().substr(0, 10) : ''
                 this.ticket.fixDate ? this.ticket.fixDate = new Date(this.ticket.fixDate).toISOString().substr(0, 10) : ''
+                this.yitra = this.ticket.prepaid ? this.ticket.total-this.ticket.prepaid : 0;
             }
             this.dialog = true;
             return new Promise((resolve) => {
@@ -348,14 +359,22 @@ export default {
             });
         },
 
+        async getTicketRemarksList() {
+            let response = await apiService.getMany({model: TABLE_MODEL , table_id: 16} );
+            this.ticketRemarkList = response.data.map((item) => {
+                return (item.description)
+            });
+        },
+
         onAmountChange() {
             let { amount } = this.ticket;
             if(amount && amount >= 0) {
-                this.ticket.vat = ((parseFloat(amount) * VAT_PERCENTAGE)/100)
-                this.ticket.total = (this.ticket.vat + parseFloat(amount)).toFixed(0);
+                // this.ticket.vat = ((parseFloat(amount) * VAT_PERCENTAGE)/100)
+                // this.ticket.total = (this.ticket.vat + parseFloat(amount)).toFixed(0);
+                this.ticket.total = (parseFloat(amount) * (1 + this.ticket.vat/100 )).toFixed(0);
             } else {
                 this.ticket.amount = 0;
-                this.ticket.vat = 0;
+                // this.ticket.vat = 0;
                 this.ticket.total = 0;
             }
             this.yitra = this.ticket.total-this.ticket.prepaid;
@@ -364,11 +383,11 @@ export default {
         onTotalChange() {
             let { total } = this.ticket;
             if(total && total >= 0) {
-                this.ticket.amount = (parseFloat(total)/(1+VAT_PERCENTAGE/100)).toFixed(0);
-                this.ticket.vat = (parseFloat(total)- this.ticket.amount).toFixed(0);
+                this.ticket.amount = (parseFloat(total)/(1+this.ticket.vat/100)).toFixed(0);
+                // this.ticket.vat = (parseFloat(total)- this.ticket.amount).toFixed(0);
             } else {
                 this.ticket.amount = 0;
-                this.ticket.vat = 0;
+                // this.ticket.vat = 0;
                 this.ticket.total = 0;
             }
             this.yitra = this.ticket.total-this.ticket.prepaid;
@@ -411,6 +430,8 @@ export default {
 		this.getDefectFoundList();
 		this.getDefectFixesList();
         this.getRemarkList();
+        this.getTicketRemarksList();
+        this.yitra = 0;
 	},
 };
 </script>

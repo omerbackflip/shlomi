@@ -40,7 +40,7 @@
                         <span><b>סוג המכשיר : </b>{{ticket.item}}</span>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <span><b>נכנס לתיקון : </b>{{ticket.entryDate}}</span>
+                        <span><b>נכנס לתיקון : </b>{{new Date(ticket.entryDate).toLocaleDateString('en-GB')}}</span>
                     </p>    
                     <br>
                     <p class="field-text"><b>אביזר נוסף : </b>{{ticket.accessories && ticket.accessories.join('')}}</p>
@@ -67,6 +67,8 @@
             </v-container>
 
             <br>
+            <br>
+
 
             <v-card-title class="text-h5 text-center">
                שובר הזמנת תיקון מס'  - {{ticket.ticketId}}
@@ -103,7 +105,7 @@
                         <span><b>סוג המכשיר : </b>{{ticket.item}}</span>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <span><b>נכנס לתיקון : </b>{{ticket.entryDate}}</span>
+                        <span><b>נכנס לתיקון : </b>{{new Date(ticket.entryDate).toLocaleDateString('en-GB')}}</span>
                     </p>    
                     <br>
                     <p class="field-text"><b>אביזר נוסף : </b>{{ticket.accessories && ticket.accessories.join('')}}</p>

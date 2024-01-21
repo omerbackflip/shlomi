@@ -33,13 +33,21 @@
 					</template>
 					<template v-slot:[`item.entryDate`]="{ item }">
 						<!-- <span>{{ item.entryDate ? new Date(item.entryDate).toLocaleDateString('sv-SE',shortDate) : '-'}}</span> -->
-						<span>{{ item.entryDate ? new Date(item.entryDate).toLocaleDateString('sv-SE') : '-'}}</span>
+						<span>{{ item.entryDate ? new Date(item.entryDate).toLocaleDateString('en-GB') : '-'}}</span>
 					</template>
 					<template v-slot:[`item.fixDate`]="{ item }">
-						<span>{{ item.fixDate ? new Date(item.fixDate).toLocaleDateString('sv-SE') : '-'}}</span>
+						<span>{{ item.fixDate ? new Date(item.fixDate).toLocaleDateString('en-GB') : '-'}}</span>
+					</template>
+					<template v-slot:[`item.customerName`]="{ item }">
+						<v-tooltip bottom>
+							<template v-slot:activator="{ on }">
+								<span v-on="on" :class="{custRmk: item.customerRemark}">{{ item.customerName }}</span>
+							</template>
+							<span>{{item.customerRemark}}</span>
+						</v-tooltip>
 					</template>
 					<template v-slot:[`item.exitDate`]="{ item }">
-						<span>{{ item.exitDate ? new Date(item.exitDate).toLocaleDateString('sv-SE') : '-'}}</span>
+						<span>{{ item.exitDate ? new Date(item.exitDate).toLocaleDateString('en-GB') : '-'}}</span>
 					</template>					
 					<template v-slot:[`item.total`]="{ item }">
 						<span>{{ item.total ? item.total.toLocaleString() : '' }}</span>
@@ -66,7 +74,8 @@
 
 
 <script>
-import { TICKET_WEB_HEADERS, TICKET_MOBILE_HEADERS, TICKET_MODEL, isMobile, SHORT_DATE } from "../constants/constants";
+import { TICKET_WEB_HEADERS, TICKET_MOBILE_HEADERS, TICKET_MODEL, isMobile, SHORT_DATE, CUSTOMER_MODEL } from "../constants/constants";
+// import { TICKET_WEB_HEADERS, TICKET_MOBILE_HEADERS, TICKET_MODEL, isMobile, SHORT_DATE } from "../constants/constants";
 import apiService from "../services/apiService";
 import TicketForm from './TicketForm.vue';
 import ConfirmDialog from './Common/ConfirmDialog.vue';
@@ -119,12 +128,11 @@ export default {
 				
 				if(response.data) {
 					this.tickets = response.data;
-					// let customer = '';
-					// this.tickets = this.tickets.map(async (item) =>{
-					// 	customer = await apiService.getOne({model: CUSTOMER_MODEL, customerId: item.customerId})
-					// 	this.tickets.customerRemark = customer.remark
-					// 	return (this.tickets)
-					// })
+					let customer = '';
+					this.tickets = await Promise.all(response.data.map(async(item) =>{
+						customer = await apiService.getOne({model: CUSTOMER_MODEL, customerId: item.customerId})
+						return ({...item , customerRemark: customer.data.remark })
+					}))
 				}
 			} catch (error) {
 				console.log(error);
@@ -200,5 +208,8 @@ export default {
   direction: rtl;
   /* text-align: right; */
   text-align-last: right !important
+}
+.custRmk{
+	background-color: yellow;
 }
 </style>

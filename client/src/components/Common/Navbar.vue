@@ -7,7 +7,7 @@
                 <div v-else>            {{local ? 'Local Host' : 'Production'}} </div>
             </div>
             <v-spacer></v-spacer>
-            <v-btn-toggle v-if="isTicketsList" v-model="ticketStatus" @change="onFilterChange" group mandatory>
+            <v-btn-toggle v-if="isTicketsList" v-model="ticketStatus" @change="onFilterChange" group >
                 <v-btn text value="Open"     elevation='3' small> פתוח </v-btn>
                 <v-btn text value="Checked"  elevation='3' small> נבדק </v-btn>
                 <v-btn text value="Fixed"    elevation='3' small> תוקן </v-btn>
@@ -68,8 +68,11 @@ export default {
             }
         },
         onFilterChange(filter) {
-            let type = isNaN(filter) ? "STATUS" : "YEAR"
-            this.$root.$emit('filterChange',filter, type);
+            if (filter) { // to avoide case when filetr is "undefine" (when dobule select)
+                let type = isNaN(filter) ? "STATUS" : "YEAR"
+                if (type === "YEAR") this.ticketStatus = null  // un-select the status
+                this.$root.$emit('filterChange',filter, type);
+            }
         },
 
         async getDatabaseInformation() {

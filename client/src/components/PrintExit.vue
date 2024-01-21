@@ -48,7 +48,7 @@
                         </div>
                         <div class="row mr-200">
                             <div class="col" >
-                                <p class="field-text"><b>נכנס לתיקון : </b>{{ticket.entryDate}}</p>
+                                <p class="field-text"><b>נכנס לתיקון : </b>{{new Date(ticket.entryDate).toLocaleDateString('en-GB')}}</p>
                             </div>
                             <div class="col" v-if="ticket.entryCondition != ''">
                                 <p class="field-text"><b>מצב המכשיר : </b>{{ticket.entryCondition && ticket.entryCondition.join('')}}</p>
@@ -103,7 +103,7 @@
                     <p class="field-text">{{ticket.remarks}}</p>
                     <p class="heading"><span class="underline">תנאי אחריות</span></p>
                     <p>מעבדת ישראל אחראית על התיקון שבוצע בלבד כמפורט בכרטיס תיקון</p>
-                    <p style="direction: rtl;">למשך 3 חודשים החל מתאריך - {{ ticket.exitDate }} </p>
+                    <p style="direction: rtl;">למשך 3 חודשים החל מתאריך - {{ new Date(ticket.exitDate).toLocaleDateString('en-GB') }} </p>
                     <p>האחריות לא תחול בשל אחד או יותר מהתנאים הבאים</p>
                     <div class="list">
                         <li>ליקוי אחר במכשיר אשר לא פורט בכרטיס השרות</li>

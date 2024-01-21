@@ -22,6 +22,7 @@ module.exports = mongoose => {
 			fixDate: Date,
 			exitDate: Date,
 			remarks: String,
+			ticketRemark: String,
 			fixTime: Date,
 			partsCost: Number, 
 		},
