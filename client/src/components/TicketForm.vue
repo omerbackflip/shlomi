@@ -6,9 +6,9 @@
     >
         <v-card >
             <v-card-title class="text-h6 grey lighten-2">
-                כרטיס תיקון - {{ticket.ticketId}}
-                <v-spacer></v-spacer>
                 <v-btn @click="dialog = false" small><v-icon small> mdi-close </v-icon> </v-btn>
+                <v-spacer></v-spacer>
+                כרטיס תיקון - {{ticket.ticketId}}
             </v-card-title>
             <v-container>
                 <v-row style="justify-content: center; direction: rtl; padding: 0px">
@@ -98,7 +98,7 @@
                                 </v-col>
                                 <v-row style="justify-content: right;">
                                     <v-col class="px-2" cols="6">
-                                        <v-combobox v-model="ticket.ticketRemark" :items="ticketRemarkList" label="הערה לכרטיס"/>
+                                        <v-combobox v-model="ticket.ticketRemark" :items="ticketRemarkList" label="הערה לכרטיס"></v-combobox>
                                     </v-col>
                                 </v-row>
                             </v-row>
@@ -250,6 +250,9 @@ export default {
         }, 500),
 
         async open(ticket, newTicket) {
+            // console.log(ticket.ticketStatus)
+            this.loading = true;
+            this.dialog = true;
             this.newTicket = newTicket;
             this.ticket = newTicket ? NEW_TICKET : {...ticket};
             if(newTicket) {
@@ -269,7 +272,7 @@ export default {
                 this.ticket.fixDate ? this.ticket.fixDate = new Date(this.ticket.fixDate).toISOString().substr(0, 10) : ''
                 this.yitra = this.ticket.prepaid ? this.ticket.total-this.ticket.prepaid : 0;
             }
-            this.dialog = true;
+            this.loading = false;
             return new Promise((resolve) => {
                 this.resolve = resolve;
             });

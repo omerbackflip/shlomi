@@ -70,7 +70,9 @@ export default {
         onFilterChange(filter) {
             if (filter) { // to avoide case when filetr is "undefine" (when dobule select)
                 let type = isNaN(filter) ? "STATUS" : "YEAR"
-                if (type === "YEAR") this.ticketStatus = null  // un-select the status
+                if (type === "YEAR") {
+                    this.ticketStatus = null
+                } else this.ticketYear=''; // un-select the status
                 this.$root.$emit('filterChange',filter, type);
             }
         },
