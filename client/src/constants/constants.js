@@ -4,8 +4,8 @@ export const TABLE_MODEL = 'tables';
 export const PHONE_MODEL = 'phones';
 export const SHORT_DATE = { day: 'numeric', month: 'numeric' };
 
-export const printTicketTopPadding = '80px';
-export const printTicketRightPadding = '110px';
+export const printTicketTopPadding = '85px';
+export const printTicketRightPadding = '100px';
 
 export const VAT_PERCENTAGE = 17;
 
@@ -20,7 +20,7 @@ export const TICKET_WEB_HEADERS = [
     { text: 'תאור תקלה', value: 'defectDescription', align:'end', class: 'primary white--text' },
     { text: 'סה-כ', value: 'total', align:'end', class: 'primary white--text' },
     { text: 'חשבונית', value: 'invoice', align:'end', class: 'primary white--text' },
-    { text: 'הערות', value: 'remarks', align:'right', class: 'primary white--text' },
+    { text: 'הערה לכרטיס', value: 'ticketRemark', align:'right', class: 'primary white--text' },
     { text: 'תאריך תיקון', value: 'fixDate', align:'end', class: 'primary white--text' },
     { text: 'תאריך יציאה', value: 'exitDate', align:'end', class: 'primary white--text' },
     { text: '', value: 'controls', class: 'primary white--text' },

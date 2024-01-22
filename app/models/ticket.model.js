@@ -21,7 +21,7 @@ module.exports = mongoose => {
 			entryDate: Date,
 			fixDate: Date,
 			exitDate: Date,
-			remarks: String,
+			remarks: [String],
 			ticketRemark: String,
 			fixTime: Date,
 			partsCost: Number, 

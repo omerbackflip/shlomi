@@ -66,13 +66,15 @@
                                     </v-menu>
                                 </v-col>
                                 <v-col class="px-2" cols="12">
-                                    <v-combobox v-model="ticket.defectDescription" :items="defectList" label="תאור התקלה" multiple dense/>
+                                    <v-combobox v-model="ticket.defectDescription" :items="defectList" label="תאור התקלה" multiple 
+                                    :menu-props="{ minWidth: '250', maxHeight: '300' }" dense/>
                                 </v-col>
                                 <v-col class="px-2" cols="12">
-                                    <v-combobox v-model="ticket.entryCondition" :items="entryConditionList" label="מצב המכשיר" multiple dense/>
+                                    <v-combobox v-model="ticket.entryCondition" :items="entryConditionList" label="מצב המכשיר" multiple 
+                                    :menu-props="{ minWidth: '250', maxHeight: '300' }" dense/>
                                 </v-col>
                                 <v-col class="px-2" cols="6">
-                                    <v-combobox v-model="ticket.accessories" :items="accessoriesList" label="אביזר נוסף" multiple />
+                                    <v-combobox v-model="ticket.accessories" :items="accessoriesList" label="אביזר נוסף" multiple dense/>
                                 </v-col>
                             </v-row>
                         </div>
@@ -91,14 +93,16 @@
                                     </v-menu>
                                 </v-col>
                                 <v-col class="px-2" cols="12">
-                                    <v-combobox v-model="ticket.defectFound" :items="defectFoundList" label="תקלות שאובחנו" multiple dense></v-combobox>
+                                    <v-combobox v-model="ticket.defectFound" :items="defectFoundList" label="תקלות שאובחנו" multiple 
+                                    :menu-props="{ minWidth: '250', maxHeight: '300' }" dense/>
                                 </v-col>
                                 <v-col class="px-2" cols="12">
-                                    <v-combobox v-model="ticket.defectFixes" :items="defectFixesList" label="תאור ביצוע העבודה" multiple dense></v-combobox>
+                                    <v-combobox v-model="ticket.defectFixes" :items="defectFixesList" label="תאור ביצוע העבודה" multiple 
+                                    :menu-props="{ minWidth: '250', maxHeight: '300' }" dense></v-combobox>
                                 </v-col>
                                 <v-row style="justify-content: right;">
                                     <v-col class="px-2" cols="6">
-                                        <v-combobox v-model="ticket.ticketRemark" :items="ticketRemarkList" label="הערה לכרטיס"></v-combobox>
+                                        <v-combobox v-model="ticket.ticketRemark" :items="ticketRemarkList" label="הערה לכרטיס" dense></v-combobox>
                                     </v-col>
                                 </v-row>
                             </v-row>
@@ -132,7 +136,7 @@
                                 <v-col class="px-2" cols="3" sm="1">
                                     <v-text-field v-model="ticket.invoice" label="חשבונית" reverse @focus="$event.target.select()"></v-text-field>
                                 </v-col>
-                                <v-col class="px-2" cols="4">
+                                <v-col class="px-2" cols="2">
                                     <v-menu v-model="menu" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
                                         <template v-slot:activator="{ on, attrs }">
                                             <v-text-field v-model="ticket.exitDate" v-bind="attrs" v-on="on" label="תאריך יציאה" reverse readonly/>
@@ -140,8 +144,10 @@
                                         <v-date-picker v-model="ticket.exitDate" @input="menu = false"/>
                                     </v-menu>
                                 </v-col>
-                                <v-col class="px-2" cols="8">
-                                    <v-combobox v-model="ticket.remarks" :items="remarkList" label="הערות להדפסה" reverse/>
+                                <v-col cols="6" sm="5"></v-col>
+                                <v-col class="px-2" cols="5">
+                                    <v-combobox v-model="ticket.remarks" :items="remarkList" label="הערות להדפסה" multiple 
+                                    :menu-props="{ minWidth: '250', maxHeight: '300' }" dense></v-combobox>
                                 </v-col>
                             </v-row>
                         </div>

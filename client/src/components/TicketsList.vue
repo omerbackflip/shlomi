@@ -53,7 +53,7 @@
 						<span>{{ item.total ? item.total.toLocaleString() : '' }}</span>
 					</template>	
 					<template v-slot:[`item.remarks`]="{ item }">
-						<div style="direction: rtl;"> {{ item.remarks }} </div>
+						<div style="direction: rtl;"> {{ item.remarks[0] }} </div>
 					</template>	
 					<template v-slot:[`item.controls`]="{ item }">
 						<td @click.stop>

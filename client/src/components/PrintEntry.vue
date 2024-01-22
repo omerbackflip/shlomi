@@ -50,10 +50,10 @@
                     <p class="field-text" v-if="ticket.entryCondition != ''"><b>מצב המכשיר : </b>{{ticket.entryCondition && ticket.entryCondition.join('')}}</p>
                     <br>
                     <p class="field-text">
-                        <span><b>מחיר בדיקה (במידה ולא יתוקן) : </b> 190 </span>
+                        <span><b>מחיר בדיקה (במידה ולא יתוקן) : </b> 190  ש"ח</span>
                     </p>
                     <p class="field-text">
-                        <span><b>שולם ע"ח : </b>{{ ticket.prepaid }}</span>
+                        <span><b>שולם ע"ח : </b>{{ ticket.prepaid }} ש"ח</span>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <span><b> ח/ק :     </b>{{ ticket.prepaidInvoice }}</span> 
                     </p>
@@ -115,10 +115,10 @@
                     <p class="field-text" v-if="ticket.entryCondition != ''"><b>מצב המכשיר : </b>{{ticket.entryCondition && ticket.entryCondition.join('')}}</p>
                     <br>
                     <p class="field-text">
-                        <span><b>מחיר בדיקה (במידה ולא יתוקן) : </b> 190 </span>
+                        <span><b>מחיר בדיקה (במידה ולא יתוקן) : </b> 190  ש"ח</span>
                     </p>
                     <p class="field-text">
-                        <span><b>שולם ע"ח : </b>{{ ticket.prepaid }}</span>
+                        <span><b>שולם ע"ח : </b>{{ ticket.prepaid }} ש"ח</span>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <span><b> ח/ק :     </b>{{ ticket.prepaidInvoice }}</span> 
                     </p>

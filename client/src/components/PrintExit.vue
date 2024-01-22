@@ -87,12 +87,12 @@
                     <v-col class="mb--20" cols="12">
                         <div class=" v-area">
                             <table class="table-payment">
-                                <tbody style="text-align-last: right;">
-                                    <tr><td>{{ ticket.amount ? ticket.amount.toLocaleString() : '' }}</td><td>מחיר</td></tr>
-                                    <tr><td>{{ ticket.vat }}</td><td>מע"מ</td></tr>
-                                    <tr><td>{{ ticket.total ? ticket.total.toLocaleString() : '' }}</td><td>סה"כ לתשלום</td></tr>
-                                    <tr><td>{{ ticket.prepaid }}</td><td>שולם ע"ח  ({{ ticket.prepaidInvoice }}) </td></tr>
-                                    <tr><td>{{ (ticket.total - ticket.prepaid).toLocaleString()}}</td><td><b>סה"כ נותר לתשלום</b></td></tr>
+                                <tbody style="text-align-last: right; direction: rtl;">
+                                    <tr><td>{{ ticket.amount ? ticket.amount.toLocaleString() : '' }} ש"ח</td><td>מחיר</td></tr>
+                                    <tr><td>{{ ticket.vat }} ש"ח</td><td>מע"מ</td></tr>
+                                    <tr><td>{{ ticket.total ? ticket.total.toLocaleString() : '' }} ש"ח</td><td>סה"כ לתשלום</td></tr>
+                                    <tr><td>{{ ticket.prepaid }} ש"ח</td><td>שולם ע"ח  ({{ ticket.prepaidInvoice }}) </td></tr>
+                                    <tr style="font-size: large;"><td><b>{{ (ticket.total - ticket.prepaid).toLocaleString()}} ש"ח</b></td><td><b>סה"כ נותר לתשלום</b></td></tr>
                                 </tbody>
                                 {{ ticket.invoice }} -  חשבונית
                             </table>
@@ -113,7 +113,7 @@
                         <li>חדירת נוזלים לתוך המכשיר</li>
                     </div>
                     <p style="direction: rtl; text-align-last: center;">
-                        <span>מאשר קבלת המכשיר בתאריך {{ ticket.exitDate }}</span>
+                        <span>מאשר קבלת המכשיר בתאריך {{ new Date(ticket.exitDate).toLocaleDateString('en-GB') }}</span>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <span>חתימת הלקוח ______________</span></p>
                     <p class="bold-text">מעבדת ישראל - לשרותך תמיד !</p>
@@ -173,7 +173,7 @@ export default {
         width: 850px !important;
         max-height: 100% !important;
         height: 100% !important;
-        font-size: 12px !important;
+        font-size: 15px !important;
         overflow: hidden !important;
         box-shadow: none !important;
     }
@@ -197,7 +197,7 @@ export default {
 
     .container {
         padding-bottom: 0px !important;
-        font-size: small;
+        /* font-size: small; */
     }
     @media screen {
         div.divHeader, div.divFooter{
