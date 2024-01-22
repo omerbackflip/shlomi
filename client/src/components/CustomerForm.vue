@@ -9,7 +9,7 @@
     >
         <v-card class="hebrew">
             <v-card-title class="text-h5 grey lighten-2">
-                {{!(Object.keys(customer).length) ? 'New' : 'Update'}} Customer
+                כרטיס לקוח
             </v-card-title>
             <div class="field-margin" v-show="showMessage">
                 {{message}}

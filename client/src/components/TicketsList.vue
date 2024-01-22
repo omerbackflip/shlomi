@@ -111,7 +111,7 @@ export default {
 			try {
 				switch (this.ticketType) {
 					case 'YEAR':
-						response = await apiService.getMany({model: TICKET_MODEL, year: this.ticketsFilter });
+						response = await apiService.getMany({model: TICKET_MODEL, year: this.ticketsFilter, limit:300 });
 						this.header = "סה'כ לשנה " + this.ticketsFilter 
 						break;
 					case 'CUSTOMER':

@@ -17,6 +17,7 @@
 					loader-height = "30"
 					@click:row="customerForm"
 					dense
+					:item-class="itemRowBackground"
 				>
 					<template v-slot:top>
 						<v-toolbar flat>
@@ -86,7 +87,7 @@
 
 
 <script>
-import { CUSTOMER_HEADERS, CUSTOMER_HEADERS_VD, CUSTOMER_MODEL, isMobile } from "../constants/constants";
+import { CUSTOMER_HEADERS_VD, CUSTOMER_MODEL, isMobile } from "../constants/constants";
 import apiService from "../services/apiService";
 import CustomerForm from './CustomerForm.vue';
 import ConfirmDialog from './Common/ConfirmDialog.vue';
@@ -103,11 +104,11 @@ export default {
 			customers: [],
 			showMessage: false,
 			message: '',
-			headers: CUSTOMER_HEADERS,
+			// headers: CUSTOMER_HEADERS,
 			headersVD: CUSTOMER_HEADERS_VD,
 			search: '',
 			loading: false,
-			hasTicket: 0, // 0=hasTicket   1=noTicket   2=all
+			hasTicket: 2, // 0=hasTicket   1=noTicket   2=all
 		}
 	},
 
@@ -115,10 +116,10 @@ export default {
 		async getCustomers() {
 			this.loading = true
 			try {
-				// const response = await apiService.getMany({model: CUSTOMER_MODEL , hasTicket: this.hasTicket});
-				const response = await apiService.getMany({model: CUSTOMER_MODEL , hasTicket: this.hasTicket === 0 ? true 
-																								: (this.hasTicket === 1 ? false 
-																								: [true,false])});
+				const response = await apiService.getMany({model: CUSTOMER_MODEL});
+				// const response = await apiService.getMany({model: CUSTOMER_MODEL , hasTicket: this.hasTicket === 0 ? true 
+				// 																				: (this.hasTicket === 1 ? false 
+				// 																				: [true,false])});
 				if(response.data) {
 					this.customers = response.data;
 				}
@@ -150,7 +151,16 @@ export default {
 
 		async updateHasTickets() {
 			await specificServiceEndPoints.hasTicketsBulk()
-		}
+		},
+
+		//Background of row if added to Book table
+		itemRowBackground(item) {
+			let classes = item.hasTicket ? "bg-green" : "";
+			if (this.isMobile()) {
+				classes = `${classes} mobile-items`;
+			}
+			return classes;
+		},
 	},
 
 	mounted() {
@@ -194,6 +204,9 @@ export default {
 }
 .v-label {
 	font-size: smaller !important;
+}
+.bg-green {
+  background-color: lightgreen !important;
 }
 
 </style>
