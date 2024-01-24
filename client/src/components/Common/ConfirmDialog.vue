@@ -24,14 +24,14 @@
                     text
                     class="body-2 font-weight-bold"
                     @click.native="cancel">
-                Cancel
+                בטל
                 </v-btn>
                 <v-btn
                     color="primary"
                     class="body-2 font-weight-bold"
                     outlined
                     @click.native="agree">
-                OK
+                בחר
                 </v-btn>
             </v-card-actions>
         </v-card>

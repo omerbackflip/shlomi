@@ -26,6 +26,11 @@
                 <v-icon class="nav-icon" small >mdi-plus</v-icon>
                 Add Table
               </v-btn>
+              <export-excel :data="tables" type="xlsx" name="tables">
+								<v-btn small class="btn btn-danger mt-1" :loading="loading">
+									<v-icon >mdi-download</v-icon>
+								</v-btn>
+							</export-excel>
             </v-toolbar>
           </template>
           <template v-slot:[`item.actions`]="{ item }">
@@ -164,7 +169,9 @@
 import { TABLE_MODEL, TABLE_HEADERS } from "../constants/constants";
 import apiService from "../services/apiService";
 import TableForm from './TableForm.vue';
-
+import excel from "vue-excel-export";
+import Vue from "vue";
+Vue.use(excel);
 export default {
   name: "table-list",
   components: { TableForm },
@@ -207,7 +214,7 @@ export default {
     async retrieveTables() {
 			this.loading = true
       await apiService
-        .getMany({ model: TABLE_MODEL, limit:9999 })
+        .getMany({ model: TABLE_MODEL})
         .then((response) => {
           this.tables = response.data;
           this.tableID = response.data.filter((item) => item.table_id === 99);

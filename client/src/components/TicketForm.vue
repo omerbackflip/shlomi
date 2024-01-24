@@ -101,8 +101,9 @@
                                     :menu-props="{ minWidth: '250', maxHeight: '300' }" dense></v-combobox>
                                 </v-col>
                                 <v-row style="justify-content: right;">
-                                    <v-col class="px-2" cols="6">
-                                        <v-combobox v-model="ticket.ticketRemark" :items="ticketRemarkList" label="הערה לכרטיס" dense></v-combobox>
+                                    <v-col class="px-2" cols="9">
+                                        <v-combobox v-model="ticket.ticketRemark" :items="ticketRemarkList" label="הערה לכרטיס" multiple 
+                                    :menu-props="{ minWidth: '250', maxHeight: '300' }" dense></v-combobox>
                                     </v-col>
                                 </v-row>
                             </v-row>

@@ -1,8 +1,7 @@
 <template>
 	<div class="list row">
 		<v-layout class="mt-1" row wrap>
-			<v-card class="p-3 m-3">
-
+			<v-card class="p-3 m-3" max-width="50%">
 				<v-data-table
 					:headers="headersVD"
 					disable-pagination
@@ -17,8 +16,9 @@
 					loader-height = "30"
 					@click:row="customerForm"
 					dense
-					:item-class="itemRowBackground"
+					class="elevation-3 hebrew"
 				>
+					<!-- :item-class="itemRowBackground" -->
 					<template v-slot:top>
 						<v-toolbar flat>
 							<v-toolbar-title>לקוחות - {{customers.length}}</v-toolbar-title>
@@ -34,19 +34,16 @@
 								<v-icon class="nav-icon" small >mdi-plus</v-icon>
 								<div v-if="!isMobile()"> הוסף לקוח חדש </div>
 							</v-btn>
+							<export-excel :data="customers" type="xlsx" name="customers">
+								<v-btn small class="btn btn-danger mt-1" :loading="loading">
+									<v-icon >mdi-download</v-icon>
+								</v-btn>
+							</export-excel>
 						</v-toolbar>
 					</template>
-					<!-- <template v-slot:[`item.issueDate`]="{ item }">
-						<span>{{ item.issueDate ? new Date(item.issueDate).toDateString() : ''}}</span>
+					<template v-slot:[`item.fullName`]="{ item }">
+						<div :class="{custRmk: item.hasTicket}">{{ item.fullName}}</div>
 					</template>
-					<template v-slot:[`item.controls`]="{ item }">
-						<v-btn @click="customerForm(item)" x-small>
-							<v-icon small>mdi-pencil</v-icon>
-						</v-btn>
-						<v-btn  @click="deleteCustomer(item._id)" x-small>
-							<v-icon small>mdi-delete</v-icon>
-						</v-btn>
-					</template> -->
 				</v-data-table>
 
 				<!-- <vue-virtual-table
@@ -77,6 +74,9 @@
 					</template>
 				</vue-virtual-table> -->
 				<v-btn @click="updateHasTickets" :loading="loading">Run HasTicket Script</v-btn>
+				{{customers.remark}}
+			</v-card>
+			<v-card class="p-3 m-3" max-width="46%">
 			</v-card>
 		</v-layout>
 		<customer-form ref="customerForm"/>
@@ -88,12 +88,15 @@
 
 <script>
 import { CUSTOMER_HEADERS_VD, CUSTOMER_MODEL, isMobile } from "../constants/constants";
+// import { CUSTOMER_HEADERS, CUSTOMER_MODEL, isMobile } from "../constants/constants";
 import apiService from "../services/apiService";
 import CustomerForm from './CustomerForm.vue';
 import ConfirmDialog from './Common/ConfirmDialog.vue';
 import specificServiceEndPoints from '../services/specificServiceEndPoints';
 // import VueVirtualTable from 'vue-virtual-table'
-
+import excel from "vue-excel-export";
+import Vue from "vue";
+Vue.use(excel);
 export default {
 	name: "customers-list",
 	// components: { CustomerForm, ConfirmDialog,VueVirtualTable },
@@ -152,15 +155,6 @@ export default {
 		async updateHasTickets() {
 			await specificServiceEndPoints.hasTicketsBulk()
 		},
-
-		//Background of row if added to Book table
-		itemRowBackground(item) {
-			let classes = item.hasTicket ? "bg-green" : "";
-			if (this.isMobile()) {
-				classes = `${classes} mobile-items`;
-			}
-			return classes;
-		},
 	},
 
 	mounted() {
@@ -205,8 +199,12 @@ export default {
 .v-label {
 	font-size: smaller !important;
 }
-.bg-green {
-  background-color: lightgreen !important;
+.custRmk{
+	background-color: lightgreen;
 }
-
+.hebrew {
+  direction: rtl;
+  /* text-align: right; */
+  text-align-last: right !important
+}
 </style>

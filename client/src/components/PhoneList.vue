@@ -28,6 +28,11 @@
                 <v-icon class="nav-icon" small >mdi-plus</v-icon>
                 Add Phone
               </v-btn>
+              <export-excel :data="phones" type="xlsx" name="phones">
+								<v-btn small class="btn btn-danger mt-1" :loading="loading">
+									<v-icon >mdi-download</v-icon>
+								</v-btn>
+							</export-excel>
             </v-toolbar>
           </template>
         </v-data-table>
@@ -42,7 +47,9 @@
 import { PHONE_MODEL, PHONE_HEADERS  } from "../constants/constants";
 import apiService from "../services/apiService";
 import PhoneForm from './PhoneForm.vue';
-
+import excel from "vue-excel-export";
+import Vue from "vue";
+Vue.use(excel);
 export default {
   name: "phone-list",
   components: { PhoneForm },
@@ -87,7 +94,6 @@ export default {
 			await this.$refs.phoneForm.open(item, newPhone);
 			this.retrievePhones();    
     },
-
   },
 
   computed: {},

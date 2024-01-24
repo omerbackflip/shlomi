@@ -25,10 +25,15 @@
 							<v-spacer></v-spacer>
 							<v-text-field v-model="search" class="mx-4"	label="Search" clearable></v-text-field>
 							<v-spacer></v-spacer>
-							<v-btn @click="updateTicket()" small class="mt-3 mr-2">
+							<v-btn @click="updateTicket()" small class="mt-3 m-2">
 								<v-icon class="nav-icon" small >mdi-plus</v-icon>
 								<div v-if="!isMobile()"> כרטיס חדש </div>
 							</v-btn>
+							<export-excel :fetch="fetchData" type="xlsx" name="tickets">
+								<v-btn small class="btn btn-danger mt-1" :loading="loading">
+									<v-icon >mdi-download</v-icon>
+								</v-btn>
+							</export-excel>
 						</v-toolbar>
 					</template>
 					<template v-slot:[`item.entryDate`]="{ item }">
@@ -41,7 +46,7 @@
 					<template v-slot:[`item.customerName`]="{ item }">
 						<v-tooltip bottom>
 							<template v-slot:activator="{ on }">
-								<span v-on="on" :class="{custRmk: item.customerRemark}">{{ item.customerName }}</span>
+								<div v-on="on" :class="{custRmk: item.customerRemark}">{{ item.customerName }}</div>
 							</template>
 							<span>{{item.customerRemark}}</span>
 						</v-tooltip>
@@ -81,7 +86,9 @@ import TicketForm from './TicketForm.vue';
 import ConfirmDialog from './Common/ConfirmDialog.vue';
 // import PrintExitVue from './PrintExit.vue';
 // import PrintEntryVue from './PrintEntry.vue';
-
+import excel from "vue-excel-export";
+import Vue from "vue";
+Vue.use(excel);
 export default {
 	name: "ticket-list",
 	// components: { TicketForm, ConfirmDialog, PrintExitVue, PrintEntryVue },
@@ -101,6 +108,33 @@ export default {
 			ticketType: 'STATUS',
 			loading: '',
 			shortDate: SHORT_DATE,
+			////////////////////////////////////
+			// json_fields: {
+			//     'Name': 'name',
+			//     'City': 'city',
+			// 	'Country': 'country',
+			//     'phone' : {
+			//         field: 'phone',
+			//         callback: (value) => {
+			//             return `${value}`;
+			//         }
+			//     },
+			// },
+			// json_data: [
+			//     {
+			//         'name': 'Tony Peña',
+			//         'city': 'New York',
+			//         'country': 'United States',
+			//         'phone': ['STR1', 'STR2', 'STR3']
+			//     },
+			//     {
+			//         'name': 'Thessaloniki',
+			//         'city': 'Athens',
+			//         'country': 'Greece',
+			//         'phone': ['STR4', 'STR6', 'STR5']
+			//     }
+			// ],
+			////////////////////////////////////
 		}
 	},
 
@@ -166,6 +200,12 @@ export default {
 				return TICKET_WEB_HEADERS;
 			}
 		},
+		async fetchData(){
+            this.loading = true;
+            const response = await apiService.getMany({model:TICKET_MODEL})
+            this.loading = false;
+            return response.data;
+        },
 	},
 
 	mounted() {

@@ -100,7 +100,10 @@
                     </v-col>
                 </v-row>
                 <div class="footer-content right-align">
-                    <p class="field-text">{{ticket.remarks}}</p>
+                    <span v-for="index in maxRemarkRows" :key="index">
+                        <p class="field-text">{{ticket.remarks[index-1]}}</p>
+                    </span>
+                    <!-- <span class="field-text">{{ticket.remarks}}</span> -->
                     <p class="heading"><span class="underline">תנאי אחריות</span></p>
                     <p>מעבדת ישראל אחראית על התיקון שבוצע בלבד כמפורט בכרטיס תיקון</p>
                     <p style="direction: rtl;">למשך 3 חודשים החל מתאריך - {{ new Date(ticket.exitDate).toLocaleDateString('en-GB') }} </p>
@@ -160,6 +163,10 @@ export default {
         maxRows() {
             let length = Math.max(  this.ticket.defectFound && this.ticket.defectFound.length || 0, 
                                     this.ticket.defectFixes && this.ticket.defectFixes.length || 0) ;
+            return  length >= 0 ? length : 0;
+        },
+        maxRemarkRows() {
+            let length = Math.max(  this.ticket.remarks && this.ticket.remarks.length || 0) ;
             return  length >= 0 ? length : 0;
         },
     },

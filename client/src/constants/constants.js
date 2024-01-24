@@ -36,15 +36,16 @@ export const TICKET_MOBILE_HEADERS = [
 
 export const CUSTOMER_HEADERS = [  // used for vue-virtual-table
     { name: 'מס לקוח', prop: 'customerId' ,searchable: true, class: 'primary white--text'},
-    { name: 'שם לקוח', prop: '_action', actionName:'name' ,searchable: true, class: 'primary white--text'},
-    { name: 'כתובת', prop: 'address',searchable: true, class: 'primary white--text' },
-    { name: 'עיר', prop: 'city' ,searchable: true, class: 'primary white--text'},
+    { name: 'שם לקוח', prop: 'fullName', actionName:'name' ,searchable: true, class: 'primary white--text'},
+    // { name: 'כתובת', prop: 'address',searchable: true, class: 'primary white--text' },
+    // { name: 'עיר', prop: 'city' ,searchable: true, class: 'primary white--text'},
     { name: 'טלפון 1', prop: 'phone1' ,searchable: true, class: 'primary white--text'},
     { name: 'טלפון 2', prop: 'phone2' ,searchable: true, class: 'primary white--text'},
     { name: 'טלפון 3', prop: 'phone3' ,searchable: true, class: 'primary white--text'},
-    { name: 'הגיע אלינו', prop: 'arrivedFrom' ,searchable: true, class: 'primary white--text'},
-    { name: 'תאריך פתיחה', prop: '_action', actionName:'issueDate' ,searchable: true, class: 'primary white--text'},
-    { name: 'פעולות', prop: '_action', actionName: 'actionCommon' ,searchable: true, class: 'primary white--text'},
+    { name: 'הערה לקוח', prop: 'remark' , class: 'primary white--text'},
+    // { name: 'הגיע אלינו', prop: 'arrivedFrom' ,searchable: true, class: 'primary white--text'},
+    // { name: 'תאריך פתיחה', prop: 'issueDate', actionName:'issueDate' ,searchable: true, class: 'primary white--text'},
+    // { name: 'פעולות', prop: 'controls', actionName: 'actionCommon' ,searchable: true, class: 'primary white--text'},
 ]
 
 export const CUSTOMER_HEADERS_VD = [
@@ -52,10 +53,10 @@ export const CUSTOMER_HEADERS_VD = [
     { text: 'שם לקוח', value: 'fullName', actionName:'name' , align:'end', class: 'primary white--text'},
     // { text: 'כתובת', value: 'address', align:'end', class: 'primary white--text' },
     // { text: 'עיר', value: 'city' , align:'end', class: 'primary white--text'},
-    { text: 'טלפון 1', value: 'phone1' , align:'end', class: 'primary white--text'},
-    { text: 'טלפון 2', value: 'phone2' , align:'end', class: 'primary white--text'},
-    { text: 'טלפון 3', value: 'phone3' , align:'end', class: 'primary white--text'},
-    { text: 'הערה לקוח', value: 'remark' , align:'end', class: 'primary white--text'},
+    { text: 'טלפון 1', value: 'phone1' , align:'end', class: 'primary white--text', width: '13%'},
+    { text: 'טלפון 2', value: 'phone2' , align:'end', class: 'primary white--text', width: '13%'},
+    { text: 'טלפון 3', value: 'phone3' , align:'end', class: 'primary white--text', width: '13%'},
+    { text: 'הערה לקוח', value: 'remark' , align:'end', class: 'primary white--text', width: '50%'},
     // { text: 'Arrived from', value: 'arrivedFrom' , align:'end'},
     // { text: 'Issue Date', value: 'issueDate', align:'end'},
     // { text: 'Controls', value: 'controls', align:'end'},
