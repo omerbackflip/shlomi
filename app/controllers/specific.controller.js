@@ -144,6 +144,16 @@ exports.hasTicketsBulk = async (req,res) => {
 	}
 };
 
+exports.getNoClose = async (req,res) => {
+	try {
+		let data = await Ticket.find({ticketStatus: {$ne: 'Closed'}})
+		return res.send (data)
+	} catch (error) {
+		console.log(error)
+		res.status(500).send({ message: "Error hasTicketsBulk", error });
+	}
+};
+
 exports.getDbInfo = (req,res) => {
 	try {
 		const local = url.includes('localhost');

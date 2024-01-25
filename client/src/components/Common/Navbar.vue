@@ -16,6 +16,7 @@
                 <v-btn text value="Open"     elevation='3' small> פתוח </v-btn>
                 <v-btn text value="Checked"  elevation='3' small> נבדק </v-btn>
                 <v-btn text value="Fixed"    elevation='3' small> תוקן </v-btn>
+                <v-btn text value="ALL"    elevation='3' small> הכל </v-btn>
             </v-btn-toggle>
             <v-select v-if="isTicketsList" :items="years" v-model="ticketYear" @change="onFilterChange" label="Year"/>
         </v-app-bar>

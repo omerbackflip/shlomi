@@ -1,6 +1,34 @@
 <template>
-	<div class="list row">
+	<div class="list row no-print">
 		<v-layout class="mt-1" row wrap>
+			<v-card class="p-3 m-3" max-width="46%">
+				<v-data-table
+					:headers="ticketHeaders"
+					disable-pagination
+					hide-default-footer
+					fixed-header
+					height="45vh"
+					:items="tickets"
+					item-key="_id"
+					mobile-breakpoint="0"
+					:loading = "loading"
+					loader-height = "30"
+					@click:row="updateTicket"
+					dense
+					class="elevation-3 hebrew"
+				>
+					<!-- :item-class="itemRowBackground" -->
+					<template v-slot:top>
+						<v-toolbar flat style="font-size: xx-large;">
+							<v-toolbar-title>{{ customerName }}</v-toolbar-title>
+						</v-toolbar>
+					</template>
+					<template v-slot:[`item.entryDate`]="{ item }">
+						<span>{{ item.entryDate ? new Date(item.entryDate).toLocaleDateString('en-GB') : '-'}}</span>
+					</template>
+				</v-data-table>
+			</v-card>
+
 			<v-card class="p-3 m-3" max-width="50%">
 				<v-data-table
 					:headers="headersVD"
@@ -14,14 +42,14 @@
 					:search="search"
 					:loading = "loading"
 					loader-height = "30"
-					@click:row="customerForm"
+					@click:row="customerTicjetsList"
 					dense
 					class="elevation-3 hebrew"
 				>
 					<!-- :item-class="itemRowBackground" -->
 					<template v-slot:top>
 						<v-toolbar flat>
-							<v-toolbar-title>לקוחות - {{customers.length}}</v-toolbar-title>
+							<!-- <v-toolbar-title>{{customers.length}}</v-toolbar-title> -->
 							<v-spacer></v-spacer>
 							<v-text-field v-model="search" class="mx-4"	label="Search" clearable></v-text-field>
 							<v-radio-group v-model="hasTicket" row dense style="direction: rtl;">
@@ -76,21 +104,21 @@
 				<v-btn @click="updateHasTickets" :loading="loading">Run HasTicket Script</v-btn>
 				{{customers.remark}}
 			</v-card>
-			<v-card class="p-3 m-3" max-width="46%">
-			</v-card>
 		</v-layout>
 		<customer-form ref="customerForm"/>
 		<confirm-dialog ref="confirm"/>
+		<ticket-form ref="ticketForm"/>
 	</div>
 </template>
 
 
 
 <script>
-import { CUSTOMER_HEADERS_VD, CUSTOMER_MODEL, isMobile } from "../constants/constants";
+import { CUSTOMER_HEADERS_VD, CUSTOMER_MODEL, isMobile, TICKET_MODEL, TICKET_SHORT_HEADERS} from "../constants/constants";
 // import { CUSTOMER_HEADERS, CUSTOMER_MODEL, isMobile } from "../constants/constants";
 import apiService from "../services/apiService";
 import CustomerForm from './CustomerForm.vue';
+import TicketForm from './TicketForm.vue';
 import ConfirmDialog from './Common/ConfirmDialog.vue';
 import specificServiceEndPoints from '../services/specificServiceEndPoints';
 // import VueVirtualTable from 'vue-virtual-table'
@@ -100,11 +128,12 @@ Vue.use(excel);
 export default {
 	name: "customers-list",
 	// components: { CustomerForm, ConfirmDialog,VueVirtualTable },
-	components: { CustomerForm, ConfirmDialog },
+	components: { CustomerForm, ConfirmDialog, TicketForm },
 	data() {
 		return {
 			isMobile,
 			customers: [],
+			tickets: [],
 			showMessage: false,
 			message: '',
 			// headers: CUSTOMER_HEADERS,
@@ -112,6 +141,8 @@ export default {
 			search: '',
 			loading: false,
 			hasTicket: 2, // 0=hasTicket   1=noTicket   2=all
+			ticketHeaders: TICKET_SHORT_HEADERS,
+			customerName: '',
 		}
 	},
 
@@ -138,6 +169,16 @@ export default {
 			this.getCustomers();
 		},
 
+		async customerTicjetsList(item) {
+			if (item.hasTicket) {
+				let tickets = await apiService.getMany({model: TICKET_MODEL, customerId:item.customerId})
+				this.tickets = tickets.data
+				this.customerName = item.fullName
+			} else {
+				this.customerName = '';
+			}
+		},
+
 		async deleteCustomer(id) {
 			try {
 				if(id) {
@@ -155,6 +196,12 @@ export default {
 		async updateHasTickets() {
 			await specificServiceEndPoints.hasTicketsBulk()
 		},
+
+		async updateTicket(item) {
+			// let newTicket = item ? false : true;
+			await this.$refs.ticketForm.open(item, false);
+			// this.getTickets();
+		},
 	},
 
 	mounted() {
@@ -165,14 +212,14 @@ export default {
 	},
 
 	watch: {
-		hasTicket() {
-			this.getCustomers();
-		},
+		// hasTicket() {
+		// 	this.getCustomers();
+		// },
 	},
 };
 </script>
 
-<style>
+<style scoped>
 .row {
 	cursor: pointer;
 }
@@ -195,6 +242,8 @@ export default {
     }
 .v-toolbar__content {
 	padding-right: 0px !important;
+	font-size: xxx-large !important;
+    place-content: center !important;
 }
 .v-label {
 	font-size: smaller !important;
@@ -206,5 +255,10 @@ export default {
   direction: rtl;
   /* text-align: right; */
   text-align-last: right !important
+}
+@media print {  /* Very important to remove background in print mode */
+    .no-print {
+        display: none;
+    }
 }
 </style>

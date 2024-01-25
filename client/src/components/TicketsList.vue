@@ -57,6 +57,9 @@
 					<template v-slot:[`item.total`]="{ item }">
 						<span>{{ item.total ? item.total.toLocaleString() : '' }}</span>
 					</template>	
+					<template v-slot:[`item.item`]="{ item }">
+						<div :class="{custRmk: item.ticketStatus==='Fixed'}">{{ item.item }}</div>
+					</template>
 					<template v-slot:[`item.remarks`]="{ item }">
 						<div style="direction: rtl;"> {{ item.remarks[0] }} </div>
 					</template>	
@@ -88,6 +91,7 @@ import ConfirmDialog from './Common/ConfirmDialog.vue';
 // import PrintEntryVue from './PrintEntry.vue';
 import excel from "vue-excel-export";
 import Vue from "vue";
+import specificServiceEndPoints from '../services/specificServiceEndPoints';
 Vue.use(excel);
 export default {
 	name: "ticket-list",
@@ -153,7 +157,9 @@ export default {
 						this.header = "סה'כ ללקוח " + this.ticketsFilter 
 						break;
 					case 'STATUS':
-						response = await apiService.getMany({model: TICKET_MODEL, ticketStatus: this.ticketsFilter });
+						if (this.ticketsFilter != 'ALL') {
+							response = await apiService.getMany({model: TICKET_MODEL, ticketStatus: this.ticketsFilter });
+						} else response = await specificServiceEndPoints.getNoClose();
 						this.header = this.ticketsFilter 
 						break;
 					default:

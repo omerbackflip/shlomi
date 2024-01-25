@@ -67,6 +67,11 @@ class SpecificServiceEndPoints {
 	async sendMessageToUser(body) {
 		return await axios.post(`${baseUrl}/specific/send-message`,body);
 	}
+
+	async getNoClose() {
+		return await axios.get(`${baseUrl}/specific/get-no-close`);
+	}
+
 }
 
 export default new SpecificServiceEndPoints();

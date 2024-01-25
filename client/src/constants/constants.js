@@ -34,6 +34,13 @@ export const TICKET_MOBILE_HEADERS = [
     { text: 'תאור תקלה', value: 'defectDescription', align:'end', class: 'primary white--text' },
 ]
 
+export const TICKET_SHORT_HEADERS = [
+    { text: 'מס כרטיס', value: 'ticketId', align:'end', class: 'primary white--text' },
+    { text: 'כניסה', value: 'entryDate', align:'end', class: 'primary white--text' },
+    { text: 'מכשיר', value: 'item', align:'end', class: 'primary white--text' },
+    { text: 'תאור תקלה', value: 'defectDescription', align:'end', class: 'primary white--text' },
+]
+
 export const CUSTOMER_HEADERS = [  // used for vue-virtual-table
     { name: 'מס לקוח', prop: 'customerId' ,searchable: true, class: 'primary white--text'},
     { name: 'שם לקוח', prop: 'fullName', actionName:'name' ,searchable: true, class: 'primary white--text'},
