@@ -57,13 +57,13 @@ export const CUSTOMER_HEADERS = [  // used for vue-virtual-table
 
 export const CUSTOMER_HEADERS_VD = [
     // { text: 'מס לקוח', value: 'customerId' , align:'end', class: 'primary white--text'},
-    { text: 'שם לקוח', value: 'fullName', actionName:'name' , align:'end', class: 'primary white--text'},
+    { text: 'שם לקוח', value: 'fullName', actionName:'name' , align:'end', class: 'primary white--text', width: '20%'},
     // { text: 'כתובת', value: 'address', align:'end', class: 'primary white--text' },
     // { text: 'עיר', value: 'city' , align:'end', class: 'primary white--text'},
-    { text: 'טלפון 1', value: 'phone1' , align:'end', class: 'primary white--text', width: '13%'},
-    { text: 'טלפון 2', value: 'phone2' , align:'end', class: 'primary white--text', width: '13%'},
-    { text: 'טלפון 3', value: 'phone3' , align:'end', class: 'primary white--text', width: '13%'},
-    { text: 'הערה לקוח', value: 'remark' , align:'end', class: 'primary white--text', width: '50%'},
+    { text: 'טלפון 1', value: 'phone1' , align:'end', class: 'primary white--text', width: '15%'},
+    { text: 'טלפון 2', value: 'phone2' , align:'end', class: 'primary white--text', width: '15%'},
+    { text: 'טלפון 3', value: 'phone3' , align:'end', class: 'primary white--text', width: '15%'},
+    // { text: 'הערה לקוח', value: 'remark' , align:'end', class: 'primary white--text', width: '50%'},
     // { text: 'Arrived from', value: 'arrivedFrom' , align:'end'},
     // { text: 'Issue Date', value: 'issueDate', align:'end'},
     // { text: 'Controls', value: 'controls', align:'end'},

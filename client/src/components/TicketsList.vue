@@ -1,5 +1,5 @@
 <template>
-	<div class="list row no-print">
+	<div class="row no-print">
 		<v-layout class="mt-1" row wrap>
 			<!-- <v-card class="p-3 m-3"> -->
 				<v-data-table

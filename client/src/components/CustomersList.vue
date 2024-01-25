@@ -1,35 +1,7 @@
 <template>
-	<div class="list row no-print">
+	<div class="row no-print">
 		<v-layout class="mt-1" row wrap>
-			<v-card class="p-3 m-3" max-width="46%">
-				<v-data-table
-					:headers="ticketHeaders"
-					disable-pagination
-					hide-default-footer
-					fixed-header
-					height="45vh"
-					:items="tickets"
-					item-key="_id"
-					mobile-breakpoint="0"
-					:loading = "loading"
-					loader-height = "30"
-					@click:row="updateTicket"
-					dense
-					class="elevation-3 hebrew"
-				>
-					<!-- :item-class="itemRowBackground" -->
-					<template v-slot:top>
-						<v-toolbar flat style="font-size: xx-large;">
-							<v-toolbar-title>{{ customerName }}</v-toolbar-title>
-						</v-toolbar>
-					</template>
-					<template v-slot:[`item.entryDate`]="{ item }">
-						<span>{{ item.entryDate ? new Date(item.entryDate).toLocaleDateString('en-GB') : '-'}}</span>
-					</template>
-				</v-data-table>
-			</v-card>
-
-			<v-card class="p-3 m-3" max-width="50%">
+			<v-card class="p-3 m-3" max-width="40%">
 				<v-data-table
 					:headers="headersVD"
 					disable-pagination
@@ -70,7 +42,10 @@
 						</v-toolbar>
 					</template>
 					<template v-slot:[`item.fullName`]="{ item }">
-						<div :class="{custRmk: item.hasTicket}">{{ item.fullName}}</div>
+						<div :class="{custTkt: item.hasTicket}">
+							<span>{{ item.fullName }}</span>
+							<span v-show="item.remark" class="custRmk">{{' - ' + item.remark }}</span>
+						</div>
 					</template>
 				</v-data-table>
 
@@ -103,6 +78,33 @@
 				</vue-virtual-table> -->
 				<v-btn @click="updateHasTickets" :loading="loading">Run HasTicket Script</v-btn>
 				{{customers.remark}}
+			</v-card>
+			<v-card class="p-3 m-3" max-width="40%">
+				<v-data-table
+					:headers="ticketHeaders"
+					disable-pagination
+					hide-default-footer
+					fixed-header
+					height="45vh"
+					:items="tickets"
+					item-key="_id"
+					mobile-breakpoint="0"
+					:loading = "loading"
+					loader-height = "30"
+					@click:row="updateTicket"
+					dense
+					class="elevation-3 hebrew"
+				>
+					<!-- :item-class="itemRowBackground" -->
+					<template v-slot:top>
+						<v-toolbar flat style="font-size: xx-large;">
+							<v-toolbar-title>{{ customerName }}</v-toolbar-title>
+						</v-toolbar>
+					</template>
+					<template v-slot:[`item.entryDate`]="{ item }">
+						<span>{{ item.entryDate ? new Date(item.entryDate).toLocaleDateString('en-GB') : '-'}}</span>
+					</template>
+				</v-data-table>
 			</v-card>
 		</v-layout>
 		<customer-form ref="customerForm"/>
@@ -143,6 +145,7 @@ export default {
 			hasTicket: 2, // 0=hasTicket   1=noTicket   2=all
 			ticketHeaders: TICKET_SHORT_HEADERS,
 			customerName: '',
+			customerRemark: '',
 		}
 	},
 
@@ -174,8 +177,10 @@ export default {
 				let tickets = await apiService.getMany({model: TICKET_MODEL, customerId:item.customerId})
 				this.tickets = tickets.data
 				this.customerName = item.fullName
+				this.customerRemark = item.remark
 			} else {
 				this.customerName = '';
+				this.customerRemark = '';
 			}
 		},
 
@@ -222,6 +227,7 @@ export default {
 <style scoped>
 .row {
 	cursor: pointer;
+	direction: rtl;
 }
 .field-margin{
 	margin: 12px;
@@ -248,8 +254,14 @@ export default {
 .v-label {
 	font-size: smaller !important;
 }
-.custRmk{
+.custTkt{
 	background-color: lightgreen;
+	text-align: justify;
+}
+.custRmk{
+	color: red;
+	font-size: smaller;
+	text-align: justify;
 }
 .hebrew {
   direction: rtl;
