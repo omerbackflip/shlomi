@@ -1,7 +1,7 @@
 <template>
     <v-dialog
         v-model="dialog"
-        width="1200"
+        width="1000"
         @keydown.esc="dialog = false"
     >
         <v-card >
@@ -457,16 +457,20 @@ export default {
     .v-areaMiddle{
         border: 1px solid blue;
         border-radius: 0px;
-        height:300px;
+        height:250px;
     }
 
     .area-header {
         color: blue;
         font-size: large;
         font-style:italic;
+        margin-bottom: 0px !important;
     }
 
     .container {
         padding-bottom: 0px !important;
+    }
+    .h6.area-header {
+        margin-bottom: 0px !important;
     }
 </style>

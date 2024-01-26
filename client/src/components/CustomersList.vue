@@ -14,7 +14,7 @@
 					:search="search"
 					:loading = "loading"
 					loader-height = "30"
-					@click:row="customerTicjetsList"
+					@click:row="customerTicketsList"
 					dense
 					class="elevation-3 hebrew"
 				>
@@ -22,23 +22,22 @@
 					<template v-slot:top>
 						<v-toolbar flat>
 							<!-- <v-toolbar-title>{{customers.length}}</v-toolbar-title> -->
-							<v-spacer></v-spacer>
 							<v-text-field v-model="search" class="mx-4"	label="Search" clearable></v-text-field>
-							<v-radio-group v-model="hasTicket" row dense style="direction: rtl;">
+							<!-- <v-radio-group v-model="hasTicket" row dense style="direction: rtl;">
 								<v-radio label="בעלי כרטיס" ></v-radio>
 								<v-radio label="ללא כרטיס" ></v-radio>
 								<v-radio label="כולם" ></v-radio>
-							</v-radio-group>
+							</v-radio-group> -->
 							<v-spacer></v-spacer>
-							<v-btn @click="customerForm()" x-small class="mt-3">
-								<v-icon class="nav-icon" small >mdi-plus</v-icon>
-								<div v-if="!isMobile()"> הוסף לקוח חדש </div>
-							</v-btn>
 							<export-excel :data="customers" type="xlsx" name="customers">
-								<v-btn small class="btn btn-danger mt-1" :loading="loading">
+								<v-btn small class="btn btn-danger mt-1 ml-3" :loading="loading">
 									<v-icon >mdi-download</v-icon>
 								</v-btn>
 							</export-excel>
+							<v-btn @click="customerForm()" small class="mt-1">
+								<v-icon class="nav-icon" small >mdi-plus</v-icon>
+								<div v-if="!isMobile()"> הוסף לקוח חדש </div>
+							</v-btn>
 						</v-toolbar>
 					</template>
 					<template v-slot:[`item.fullName`]="{ item }">
@@ -76,8 +75,7 @@
 						</v-btn>
 					</template>
 				</vue-virtual-table> -->
-				<v-btn @click="updateHasTickets" :loading="loading">Run HasTicket Script</v-btn>
-				{{customers.remark}}
+				<!-- <v-btn @click="updateHasTickets" :loading="loading">Run HasTicket Script</v-btn> -->
 			</v-card>
 			<v-card class="p-3 m-3" max-width="40%">
 				<v-data-table
@@ -85,7 +83,7 @@
 					disable-pagination
 					hide-default-footer
 					fixed-header
-					height="45vh"
+					height="75vh"
 					:items="tickets"
 					item-key="_id"
 					mobile-breakpoint="0"
@@ -172,7 +170,7 @@ export default {
 			this.getCustomers();
 		},
 
-		async customerTicjetsList(item) {
+		async customerTicketsList(item) {
 			if (item.hasTicket) {
 				let tickets = await apiService.getMany({model: TICKET_MODEL, customerId:item.customerId})
 				this.tickets = tickets.data
@@ -187,7 +185,7 @@ export default {
 		async deleteCustomer(id) {
 			try {
 				if(id) {
-					if(await this.$refs.confirm.open( "Confirm", "Are you sure to delete this customer?")){
+					if(await this.$refs.confirm.open( "Confirm", "בטוח שאתה רוצה למחוק את הלקוח הזה")){
 						let params = {model:CUSTOMER_MODEL, id:id}
 						await apiService.deleteOne(params)
 						this.getCustomers();
@@ -226,6 +224,7 @@ export default {
 
 <style scoped>
 .row {
+	justify-content: space-around;
 	cursor: pointer;
 	direction: rtl;
 }

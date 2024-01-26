@@ -13,17 +13,17 @@ export const messageTemplate = `__name__ היקר, המכשיר __itemName__ ת�
 
 export const TICKET_WEB_HEADERS = [
     { text: 'מס כרטיס', value: 'ticketId', align:'end', class: 'primary white--text' },
-    { text: 'שנה', value: 'year', align:'end', class: 'primary white--text' },
+    // { text: 'שנה', value: 'year', align:'end', class: 'primary white--text' },
     { text: 'תאריך כניסה', value: 'entryDate', align:'end', class: 'primary white--text' },
     { text: 'שם לקוח', value: 'customerName', align:'end', class: 'primary white--text' },
     { text: 'מכשיר', value: 'item', align:'end', class: 'primary white--text' },
     { text: 'תאור תקלה', value: 'defectDescription', align:'end', class: 'primary white--text' },
-    { text: 'סה-כ', value: 'total', align:'end', class: 'primary white--text' },
-    { text: 'חשבונית', value: 'invoice', align:'end', class: 'primary white--text' },
-    { text: 'הערה לכרטיס', value: 'ticketRemark', align:'right', class: 'primary white--text' },
-    { text: 'תאריך תיקון', value: 'fixDate', align:'end', class: 'primary white--text' },
-    { text: 'תאריך יציאה', value: 'exitDate', align:'end', class: 'primary white--text' },
-    { text: '', value: 'controls', class: 'primary white--text' },
+    // { text: 'סה-כ', value: 'total', align:'end', class: 'primary white--text' },
+    // { text: 'חשבונית', value: 'invoice', align:'end', class: 'primary white--text' },
+    // { text: 'הערה לכרטיס', value: 'ticketRemark', align:'right', class: 'primary white--text' },
+    // { text: 'תאריך תיקון', value: 'fixDate', align:'end', class: 'primary white--text' },
+    // { text: 'תאריך יציאה', value: 'exitDate', align:'end', class: 'primary white--text' },
+    // { text: '', value: 'controls', class: 'primary white--text' },
 ]
 
 export const TICKET_MOBILE_HEADERS = [
@@ -70,10 +70,10 @@ export const CUSTOMER_HEADERS_VD = [
 ]
 
 export const TABLE_HEADERS = [
-    { text: "מספר",           value: "table_id", class: 'primary white--text'},
-    { text: "קוד",         value: "table_code", class: 'primary white--text'},
-    { text: "תאור",  value: "description", align:'end', class: 'primary white--text'},
-    { text: "פעולות",     value: "actions", class: 'primary white--text'},
+    { text: "מספר",     value: "table_id",      class: 'primary white--text'},
+    { text: "קוד",      value: "table_code",    class: 'primary white--text'},
+    { text: "תאור",     value: "description",   class: 'primary white--text'},
+    { text: "פעולות",   value: "actions",       class: 'primary white--text'},
   ]
 
 export const PHONE_HEADERS = [

@@ -7,21 +7,21 @@
     >
         <v-card>
             <v-card-title class="text-h5 grey lighten-2">
-                {{!table ? 'New' : 'Update'}} Table
+                הוספה לטבלה
             </v-card-title>
             <div class="field-margin" v-show="showMessage">
                 {{message}}
             </div>
 
                    <v-row class="p-3 overflow-hidden">
-                        <v-col cols="4" sm="6" md="4">
-                            <v-text-field v-model="table.table_id" label="ID"></v-text-field>
+                        <v-col cols="2">
+                            <v-text-field disabled v-model="table.table_id" label="ID"></v-text-field>
                         </v-col>
-                        <v-col cols="4">
-                            <v-text-field v-model="table.table_code" label="Code"></v-text-field>
+                        <v-col cols="2">
+                            <v-text-field v-show="table.table_id===99" v-model="table.table_code" label="Code"></v-text-field>
                         </v-col>
-                        <v-col cols="4">
-                            <v-text-field v-model="table.description" label="Description"></v-text-field>
+                        <v-col cols="8">
+                            <v-text-field v-model="table.description" label="תאור"></v-text-field>
                         </v-col>          
                     </v-row>
 
@@ -49,7 +49,6 @@ export default {
 			dialog: false,
             resolve: null,  
 			showMessage: false,
-            newTable: false,
 			message: '',
             options: {
                 color: "grey lighten-3",
@@ -62,12 +61,7 @@ export default {
         async submitTable() {
 			try {
 				let response;
-				if(this.newTable) {
-					response = await apiService.create({...this.table} , {model:TABLE_MODEL});
-				} else {
-					response = await apiService.update(this.table._id , { ...this.table } , {model:TABLE_MODEL});
-				}
-
+				response = await apiService.create({...this.table} , {model:TABLE_MODEL});
                 if(response.data && response.data.data) {
 					this.message = 'Table successfully created/updated!';
 				}
@@ -82,9 +76,8 @@ export default {
 				console.log(error);
 			}
 		},
-        open(table, newTable) {
-            this.newTable = newTable;
-            this.table = newTable ? {} : {...table};
+        open(newTable_id) {
+            this.table.table_id = newTable_id;
             this.dialog = true;
             return new Promise((resolve) => {
                 this.resolve = resolve;

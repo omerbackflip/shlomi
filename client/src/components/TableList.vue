@@ -2,7 +2,8 @@
   <div class="list row">
 		<v-container class="bg-surface-variant">
 			<v-row no-gutters>
-        <v-col>
+        <!-- Main table_id = 99 -->
+        <v-card class="p-3 m-3" max-width="40%">
         <v-data-table
           :headers="headers"
           :items="tableID"
@@ -22,91 +23,18 @@
             <v-toolbar flat>
             <v-toolbar-title>DATA - {{tables.length}}</v-toolbar-title>
               <v-spacer></v-spacer>
-              <v-btn @click="updateTable()" small class="mt-3">
-                <v-icon class="nav-icon" small >mdi-plus</v-icon>
-                Add Table
-              </v-btn>
               <export-excel :data="tables" type="xlsx" name="tables">
-								<v-btn small class="btn btn-danger mt-1" :loading="loading">
+								<v-btn small class="btn btn-danger mt-3 ml-3" :loading="loading">
 									<v-icon >mdi-download</v-icon>
 								</v-btn>
 							</export-excel>
+              <v-btn @click="addToTable('new')" small class="mt-3">
+                <v-icon class="nav-icon" small >mdi-plus</v-icon>
+                פתח טבלה חדשה
+              </v-btn>
             </v-toolbar>
           </template>
           <template v-slot:[`item.actions`]="{ item }">
-            <!-- <v-icon small @click="editOne(item._id)">mdi-pencil</v-icon> -->
-            <div>
-              <v-icon
-                small
-                @click="
-                  itemToEdit === item._id ? updateOne(item) : setEdit(item)
-                "
-              >
-                {{ itemToEdit === item._id ? "mdi-floppy" : "mdi-pencil" }}
-              </v-icon>
-              <v-icon small @click="deleteOne(item._id)">mdi-delete</v-icon>
-            </div>
-          </template>
-          <template v-slot:[`item.description`]="{ item }">
-            <div v-if="itemToEdit === item._id">
-              <v-text-field
-                v-model="item.description"
-                :id="`itemEdit-${item._id}`"
-              />
-            </div>
-            <!-- <div v-else @click="setEdit(item)"> -->
-            <div v-else>
-              <span> {{ item.description }}</span>
-            </div>
-          </template>
-          <template v-slot:[`item.table_id`]="{ item }">
-            <div v-if="itemToEdit === item._id">
-              <v-text-field
-                v-model="item.table_id"
-                :id="`itemEdit-${item._id}`"
-              />
-              <!-- @blur="updateOne(item)"/> -->
-            </div>
-            <div v-else>
-              <span> {{ item.table_id }}</span>
-            </div>
-          </template>
-          <template v-slot:[`item.table_code`]="{ item }">
-            <div v-if="itemToEdit === item._id">
-              <v-text-field
-                v-model="item.table_code"
-                :id="`itemEdit-${item._id}`"
-              />
-            </div>
-            <div v-else>
-              <span> {{ item.table_code }}</span>
-            </div>
-          </template>
-        </v-data-table>
-        </v-col>
-        <v-col>
-        <v-data-table
-          :headers="headers"
-          :items="tableCode"
-          disable-pagination
-          dense
-          hide-default-footer
-          fixed-header
-          height="75vh"
-          class="elevation-3"
-					mobile-breakpoint="0"
-        >
-        <template v-slot:top>
-            <v-toolbar flat>
-            <v-toolbar-title>{{ tableTitle ? tableTitle + ' - ' + tableCode.length: "Title" }}</v-toolbar-title>
-              <v-spacer></v-spacer>
-              <v-btn @click="updateTable()" small class="mt-3">
-                <v-icon class="nav-icon" small >mdi-plus</v-icon>
-                Add Table
-              </v-btn>
-            </v-toolbar>
-        </template>
-        <template v-slot:[`item.actions`]="{ item }">
             <!-- <v-icon small @click="editOne(item._id)">mdi-pencil</v-icon> -->
             <div>
               <v-icon
@@ -156,7 +84,82 @@
             </div>
           </template>
         </v-data-table>
-        </v-col>
+        </v-card>
+
+        <!-- second table_id = 1,2,... -->
+        <v-card class="p-3 m-3" max-width="40%">
+        <v-data-table
+          :headers="headers"
+          :items="tableCode"
+          disable-pagination
+          dense
+          hide-default-footer
+          fixed-header
+          height="75vh"
+          class="elevation-3"
+					mobile-breakpoint="0"
+        >
+          <template v-slot:top>
+              <v-toolbar flat>
+              <v-toolbar-title>{{ tableTitle ? tableTitle + ' - ' + tableCode.length: "Title" }}</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn v-show="newTable_id && newTable_id < 99" @click="addToTable()" small class="mt-3">
+                  <v-icon class="nav-icon" small >mdi-plus</v-icon>
+                  הוסף לטבלה
+                </v-btn>
+              </v-toolbar>
+          </template>
+          <template v-slot:[`item.actions`]="{ item }">
+            <!-- <v-icon small @click="editOne(item._id)">mdi-pencil</v-icon> -->
+            <div>
+              <v-icon
+                small
+                @click="
+                  itemToEdit === item._id ? updateOne(item) : setEdit(item)
+                "
+              >
+                {{ itemToEdit === item._id ? "mdi-floppy" : "mdi-pencil" }}
+              </v-icon>
+              <v-icon small @click="deleteOne(item._id)">mdi-delete</v-icon>
+            </div>
+          </template>
+          <template v-slot:[`item.description`]="{ item }">
+            <div v-if="itemToEdit === item._id">
+              <v-text-field
+                v-model="item.description"
+                :id="`itemEdit-${item._id}`"
+              />
+            </div>
+            <!-- <div v-else @click="setEdit(item)"> -->
+            <div v-else  class="hebrew">
+              <span> {{ item.description }}</span>
+            </div>
+          </template>
+          <template v-slot:[`item.table_id`]="{ item }">
+            <div v-if="itemToEdit === item._id">
+              <v-text-field
+                v-model="item.table_id"
+                :id="`itemEdit-${item._id}`"
+              />
+              <!-- @blur="updateOne(item)"/> -->
+            </div>
+            <div v-else>
+              <span> {{ item.table_id }}</span>
+            </div>
+          </template>
+          <template v-slot:[`item.table_code`]="{ item }">
+            <div v-if="itemToEdit === item._id">
+              <v-text-field
+                v-model="item.table_code"
+                :id="`itemEdit-${item._id}`"
+              />
+            </div>
+            <div v-else>
+              <span> {{ item.table_code }}</span>
+            </div>
+          </template>
+        </v-data-table>
+        </v-card>
       </v-row>
     </v-container>
     <table-form ref="tableForm"/>
@@ -192,7 +195,7 @@ export default {
         code: "",
         description: "",
       },
-      fldRules: [(v) => !!v || "Field is required"],
+      newTable_id: "",
     };
   },
 
@@ -218,6 +221,9 @@ export default {
         .then((response) => {
           this.tables = response.data;
           this.tableID = response.data.filter((item) => item.table_id === 99);
+          this.tableID.sort((a,b) => {
+            return (a.table_code - b.table_code)
+          })  
         })
         .catch((e) => {
           console.log(e);
@@ -258,9 +264,10 @@ export default {
         document.getElementById(`itemEdit-${item._id}`).focus();
       }, 1);
     },
-    async updateTable(item) {
-			let newTable = item ? false : true;
-			await this.$refs.tableForm.open(item, newTable);
+    async addToTable(type) {
+			if (type === 'new') {this.newTable_id = 99}
+			await this.$refs.tableForm.open(this.newTable_id);
+      this.newTable_id = '';
 			this.retrieveTables();    
     },
     
@@ -287,6 +294,7 @@ export default {
         (item) => item.table_id === row.table_code
       );
       this.tableTitle = row.description;
+      this.newTable_id = row.table_code; // used for create new record for this table_id
     },
   },
 
@@ -303,6 +311,11 @@ export default {
   text-align: left;
   max-width: auto;
   margin: auto;
+}
+.row {
+  justify-content: space-around;
+  cursor: pointer;
+	direction: rtl;
 }
 .mr-2{
   margin-right: 15px;
