@@ -23,7 +23,8 @@ module.exports = mongoose => {
 			exitDate: Date,
 			remarks: [String],
 			ticketRemark: [String],
-			fixTime: Date,
+			fixHour: Number,
+			fixMin: Number,
 			partsCost: Number, 
 		},
 		{ timestamps: true }

@@ -52,6 +52,15 @@ class SpecificServiceEndPoints {
 		});
 	}
 
+	async saveFixTimeImport(file) {
+		var formData = new FormData();
+		formData.append("file", file);
+		return await axios.post(`${baseUrl}/specific/save-fixTime`, formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			}
+		});
+	}
 	async searchCustomers(params) {
 		return await axios.get(`${baseUrl}/specific/search-customers`,{params});
 	}

@@ -114,6 +114,32 @@ exports.savePhonesBulk = async (req, res) => {
 	}
 };
 
+exports.saveFixTimeBulk = async (req, res) => {
+	try {
+		var workbook = XLSX.readFile(`uploads/${req.file.filename}`);
+		var sheet_name_list = workbook.SheetNames;
+		const data = transformCSVData(sheet_name_list , workbook);
+
+        let fixTimeArray = specificService.getFixTimeToSave(data[0]);
+		fixTimeArray.map(async (item) => {
+			let ticket = dbService.getSingleItem(Ticket,{ticketId: item.ticketId})
+			ticket.fixHour = item.fixHour
+			ticket.fixMin = item.fixMin
+			await dbService.updateItem(Ticket,{ticketId:item.ticketId}, ticket)
+		})
+		
+        unLinkFile(`uploads/${req.file.filename}`);
+        return res.send({ success: true, message: `Total ${fixTimeArray.length} fixTimeArray successfully Imported`});
+
+	} catch (error) {
+		console.log(error)
+		res.status(500).send({ message: "Error saving fixTimeArray", error });
+	}
+};
+
+
+
+
 exports.searchCustomer = async (req, res) => {
 	try {
 		const { customer } = req.query;

@@ -110,7 +110,8 @@ export const NEW_TICKET = {
     exitDate: null,
     remarks: '',
     ticketRemark: '',
-    fixTime: Date,
+    fixHour: Number,
+    fixMin: Number,
     partsCost: '', 
 }
 

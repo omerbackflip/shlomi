@@ -92,6 +92,16 @@
                                         <v-date-picker v-model="ticket.fixDate" @input="menu1 = false"></v-date-picker>
                                     </v-menu>
                                 </v-col>
+                                <!-- <v-col class="px-2" cols="1">
+                                    <v-text-field v-model="fixTime" reverse @focus="$event.target.select()"></v-text-field>
+                                </v-col>
+                                :
+                                <v-col class="px-2" cols="1">
+                                    <v-text-field v-model="fixTime" reverse @focus="$event.target.select()"></v-text-field>
+                                </v-col>
+                                <v-col class="px-2" cols="2">
+                                    <v-text-field v-model="ticket.partsCost" label="חלפים" reverse @focus="$event.target.select()"></v-text-field>
+                                </v-col> -->
                                 <v-col class="px-2" cols="12">
                                     <v-combobox v-model="ticket.defectFound" :items="defectFoundList" label="תקלות שאובחנו" multiple 
                                     :menu-props="{ minWidth: '250', maxHeight: '300' }" dense/>
@@ -102,7 +112,7 @@
                                 </v-col>
                                 <v-row style="justify-content: right;">
                                     <v-col class="px-2" cols="9">
-                                        <v-combobox v-model="ticket.ticketRemark" :items="ticketRemarkList" label="הערה לכרטיס" multiple 
+                                        <v-combobox v-model="ticket.ticketRemark" :items="ticketRemarkList" label="הערה לכרטיס - לא מודפס" multiple 
                                     :menu-props="{ minWidth: '250', maxHeight: '300' }" dense></v-combobox>
                                     </v-col>
                                 </v-row>

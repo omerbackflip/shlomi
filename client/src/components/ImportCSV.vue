@@ -54,7 +54,9 @@ export default {
 			},{
 				type: 'phones',	
 				title: 'Import Phones'
-			}],
+			},{
+				type: 'fixTime',	
+				title: 'Import Fix Time'			}],
 			loading: false,
 		};
 	},
@@ -84,6 +86,9 @@ export default {
 						break
 					case "phones" :
 						response = await SpecificServiceEndPoints.savePhonesImport(this.file)
+						break
+					case "fixTime" :
+						response = await SpecificServiceEndPoints.saveFixTimeImport(this.file)
 						break
 				}
 

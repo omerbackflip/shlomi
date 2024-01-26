@@ -1,7 +1,7 @@
 <template>
 	<div class="row no-print">
 		<v-layout class="mt-1" row wrap>
-			<v-card class="p-3 m-3" max-width="40%">
+			<v-card class="p-3 m-3" max-width="50%">
 				<v-data-table
 					:headers="headersVD"
 					disable-pagination

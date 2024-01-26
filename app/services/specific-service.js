@@ -134,6 +134,27 @@ exports.getDefectsToSave = (data) => {
     }
 }
 
+exports.getFixTimeToSave = (data) => {
+    try {
+        let fixTimeArray = [];
+        data.forEach(item => {
+            let fixTime = {
+                ticketId: item['ticketId'],
+                fixHour: item['fixHour'],
+                fixMin: item['fixMin'],
+            }
+
+            fixTimeArray.push(fixTime);
+        });
+
+        return fixTimeArray;
+
+    } catch (error) {
+        console.log(error)
+        throw error;
+    }
+}
+
 exports.getPhonesToSave = (data) => {
     try {
         let phones = [];
