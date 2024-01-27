@@ -2,7 +2,29 @@
 	<div class="row no-print">
 		<v-layout class="mt-1" row wrap>
 			<v-card class="p-3 m-3" max-width="50%">
-				<v-data-table
+			<v-toolbar class="width" style="max-height: 50px;">
+				<v-text-field class="ma-3" flat label="Search" prepend-inner-icon="search"  
+								v-model="search" clearable></v-text-field>
+			</v-toolbar>
+			<v-list style="max-height: 700px; overflow-y: auto;">
+				<template>
+					<v-list-item  v-for="(item) in filteredItems" :key="item.customerId" @click="customerTicketsList(item)">
+						<v-list-item-content style="text-align-last: right;">
+						<v-list-item-title>{{ item.fullName }} </v-list-item-title>
+						<v-list-item-subtitle>{{(item.phone1 ? item.phone1 : '') +
+												(item.phone2 ? ' / ' + item.phone2 : '') +
+												(item.phone3 ? ' / ' + item.phone3 : '') }}
+						</v-list-item-subtitle>
+						<v-list-item-subtitle>{{ (item.remark ? item.remark : '') }}</v-list-item-subtitle>
+					</v-list-item-content>
+					<v-list-item-action>
+                      <v-icon v-if="item.hasTicket" color="grey lighten-1"> mdi-arrow-left-bold </v-icon>
+                    </v-list-item-action>
+					</v-list-item>
+				</template>
+			</v-list>
+
+				<!-- <v-data-table
 					:headers="headersVD"
 					disable-pagination
 					hide-default-footer
@@ -18,16 +40,9 @@
 					dense
 					class="elevation-3 hebrew"
 				>
-					<!-- :item-class="itemRowBackground" -->
 					<template v-slot:top>
 						<v-toolbar flat>
-							<!-- <v-toolbar-title>{{customers.length}}</v-toolbar-title> -->
 							<v-text-field v-model="search" class="mx-4"	label="Search" clearable></v-text-field>
-							<!-- <v-radio-group v-model="hasTicket" row dense style="direction: rtl;">
-								<v-radio label="בעלי כרטיס" ></v-radio>
-								<v-radio label="ללא כרטיס" ></v-radio>
-								<v-radio label="כולם" ></v-radio>
-							</v-radio-group> -->
 							<v-spacer></v-spacer>
 							<export-excel :data="customers" type="xlsx" name="customers">
 								<v-btn small class="btn btn-danger mt-1 ml-3" :loading="loading">
@@ -40,15 +55,13 @@
 							</v-btn>
 						</v-toolbar>
 					</template>
-						<template v-slot:[`item.fullName`]="{ item }">
-						<!-- <td @click.stop> -->
-						<div :class="{custTkt: item.hasTicket}" @click="customerForm(item)">
+					<template v-slot:[`item.fullName`]="{ item }">
+						<div :class="{custTkt: item.hasTicket}">
 							<span>{{ item.fullName }}</span>
 							<span v-show="item.remark" class="custRmk">{{' - ' + item.remark }}</span>
 						</div>
-						<!-- </td> -->
-						</template>
-				</v-data-table>
+					</template>
+				</v-data-table> -->
 
 				<!-- <vue-virtual-table
 					:config="headers"
@@ -209,6 +222,23 @@ export default {
 		},
 	},
 
+	computed: {
+		filteredItems() {
+			return (this.customers.filter(item => {
+				if(!this.search) {
+					return this.customers;
+				} else {
+					return (
+						(item.fullName ? item.fullName.toLowerCase().includes(this.search.toLowerCase()) : '') ||
+						(item.phone1 ? item.phone1.includes(this.search) : '') ||
+						(item.phone2 ? item.phone2.includes(this.search) : '') ||
+						(item.phone3 ? item.phone3.includes(this.search) : '')
+						);
+				}
+			}));
+		}
+	},
+
 	mounted() {
 		this.getCustomers();
 		// this.$root.$on("newCustomer", () => {
@@ -273,5 +303,18 @@ export default {
     .no-print {
         display: none;
     }
+}
+.v-card {
+  display: flex !important;
+  flex-direction: column;
+}
+
+.v-card__text {
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.width {
+	width: max-content !important;
 }
 </style>
