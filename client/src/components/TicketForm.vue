@@ -15,7 +15,7 @@
                     <!-- ------------------- Customer Area  ------------------- -->
                     <v-col cols="12" style="padding: 0px">
                         <div class="v-area">
-                            <h6 class="area-header">פרטי לקוח</h6>
+                            <!-- <h6 class="area-header">פרטי לקוח</h6> -->
                             <v-row no-gutters>
                                 <v-col cols="6" sm="3">
                                     <v-autocomplete
@@ -34,17 +34,21 @@
                                 </v-col>
                                 <v-col class="px-2" cols="6" sm="3">
                                     <!-- <v-text-field type="text" v-model="customerInfo.address" label="כתובת" readonly single-line reverse></v-text-field> -->
-                                    <v-text-field type="text" :value="customerInfo.address +' '+ customerInfo.city" readonly reverse></v-text-field>
+                                    <v-text-field type="text" :value="customerInfo.address +' '+ customerInfo.city" readonly reverse hide-details></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="4" sm="2">
-                                    <v-text-field type="text" :value="customerInfo.phone1" readonly></v-text-field>
+                                    <v-text-field type="text" :value="customerInfo.phone1" readonly hide-details></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="4" sm="2">
-                                    <v-text-field type="text" :value="customerInfo.phone2" readonly></v-text-field>
+                                    <v-text-field type="text" :value="customerInfo.phone2" readonly hide-details></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="4" sm="2">
-                                    <v-text-field type="text" :value="customerInfo.phone3" readonly></v-text-field>
+                                    <v-text-field type="text" :value="customerInfo.phone3" readonly hide-details></v-text-field>
                                 </v-col>
+                            </v-row>
+                            <v-row class="px-4" dense style="font-size: smaller; color: red; margin: 0px;"> 
+                                <!-- <v-text-field type="text" :value="customerInfo.remark" readonly hide-details></v-text-field> -->
+                                {{customerInfo.remark}}
                             </v-row>
                         </div>
                     </v-col>
@@ -150,14 +154,14 @@
                                 <v-col class="px-2" cols="2">
                                     <v-menu v-model="menu" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
                                         <template v-slot:activator="{ on, attrs }">
-                                            <v-text-field v-model="ticket.exitDate" v-bind="attrs" v-on="on" label="תאריך יציאה" reverse readonly/>
+                                            <v-text-field v-model="ticket.exitDate" v-bind="attrs" v-on="on" label="תאריך יציאה" reverse readonly hide-details/>
                                         </template>
                                         <v-date-picker v-model="ticket.exitDate" @input="menu = false"/>
                                     </v-menu>
                                 </v-col>
-                                <v-col cols="6" sm="5"></v-col>
-                                <v-col class="px-2" cols="5">
-                                    <v-combobox v-model="ticket.remarks" :items="remarkList" label="הערות להדפסה" multiple 
+                                <!-- <v-col cols="6" sm="5"></v-col> -->
+                                <v-col class="px-2" cols="10">
+                                    <v-combobox v-model="ticket.remarks" :items="remarkList" label="הערות להדפסה" multiple hide-details
                                     :menu-props="{ minWidth: '250', maxHeight: '300' }" dense></v-combobox>
                                 </v-col>
                             </v-row>

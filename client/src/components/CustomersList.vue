@@ -203,9 +203,7 @@ export default {
 		},
 
 		async updateTicket(item) {
-			// let newTicket = item ? false : true;
-			await this.$refs.ticketForm.open(item, false);
-			// this.getTickets();
+			if (this.customerName) await this.$refs.ticketForm.open(item, false);
 		},
 	},
 

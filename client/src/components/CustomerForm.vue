@@ -52,7 +52,7 @@
                     </v-dialog>
                 </v-col>
                 <v-col cols="12">
-                    <v-text-field v-model="customer.remark" label="הערה" reverse></v-text-field>
+                    <v-textarea v-model="customer.remark" label="הערה" reverse rows="3"></v-textarea>
                 </v-col>
             </v-row>
             <v-divider></v-divider>
@@ -106,12 +106,8 @@ export default {
                 if(response.data && response.data.data) {
 					this.message = 'Customer successfully created/updated!';
 				}
-                this.showMessage = true;
-                setTimeout(() => {
-                    this.dialog = false;
-                    this.showMessage = false;
-                    this.resolve(this.customer.fullName);
-                }, 2000);
+                this.dialog = false;
+                this.resolve(this.customer.fullName);
 
 			} catch (error) {
 				console.log(error);
@@ -173,6 +169,7 @@ export default {
 <style scoped>
 .overflow-hidden{
     overflow: hidden;
+    margin: 0px;
 }
 .hebrew {
   direction: rtl;
