@@ -7,7 +7,7 @@
 					disable-pagination
 					hide-default-footer
 					fixed-header
-					height="75vh"
+					height="73vh"
 					:items="customers"
 					item-key="customerId"
 					mobile-breakpoint="0"
@@ -79,13 +79,13 @@
 				</vue-virtual-table> -->
 				<!-- <v-btn @click="updateHasTickets" :loading="loading">Run HasTicket Script</v-btn> -->
 			</v-card>
-			<v-card class="p-3 m-3" max-width="40%">
+			<v-card class="p-3 m-3" max-width="45%">
 				<v-data-table
 					:headers="ticketHeaders"
 					disable-pagination
 					hide-default-footer
 					fixed-header
-					height="75vh"
+					height="73vh"
 					:items="tickets"
 					item-key="_id"
 					mobile-breakpoint="0"
@@ -95,7 +95,6 @@
 					dense
 					class="elevation-3 hebrew"
 				>
-					<!-- :item-class="itemRowBackground" -->
 					<template v-slot:top>
 						<v-toolbar flat style="font-size: xx-large;">
 							<v-toolbar-title>{{ customerName }}</v-toolbar-title>
@@ -103,6 +102,9 @@
 					</template>
 					<template v-slot:[`item.entryDate`]="{ item }">
 						<span>{{ item.entryDate ? new Date(item.entryDate).toLocaleDateString('en-GB') : '-'}}</span>
+					</template>
+					<template v-slot:[`item.ticketStatus`]="{ item }">
+						<div :class="{custTkt: (item.ticketStatus!='Closed')}">{{ item.ticketStatus }}</div>
 					</template>
 				</v-data-table>
 			</v-card>

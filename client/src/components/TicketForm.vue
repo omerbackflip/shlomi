@@ -40,10 +40,10 @@
                                     <v-text-field type="text" :value="customerInfo.phone1" readonly hide-details></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="4" sm="2">
-                                    <v-text-field type="text" :value="customerInfo.phone2" readonly hide-details></v-text-field>
+                                    <v-text-field type="text" :value="customerInfo.phone3" readonly hide-details></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="4" sm="2">
-                                    <v-text-field type="text" :value="customerInfo.phone3" readonly hide-details></v-text-field>
+                                    <v-text-field type="text" :value="customerInfo.phone2" readonly hide-details></v-text-field>
                                 </v-col>
                             </v-row>
                             <v-row class="px-4" dense style="font-size: smaller; color: red; margin: 0px;"> 
@@ -60,8 +60,8 @@
                                 <v-col class="px-2" cols="6">
                                     <v-combobox v-model="ticket.item" :items="itemList" label="שם המכשיר" reverse />
                                 </v-col>
-                                <v-col cols="2"></v-col>
-                                <v-col class="px-2" cols="4">
+                                <v-col cols="3"></v-col>
+                                <v-col class="px-2" cols="3">
                                     <v-menu v-model="menu2" :close-on-content-click="false" nudge-right="40" transition="scale-transition" offset-y min-width="auto">
                                         <template v-slot:activator="{ on, attrs }">
                                             <v-text-field v-model="ticket.entryDate" v-bind="attrs" v-on="on" label="תאריך כניסה" reverse readonly></v-text-field>
@@ -87,8 +87,18 @@
                     <v-col cols="12" sm="6" style="padding: 0px">
                         <div class="v-areaMiddle">
                             <h6 class="area-header">פרטי טיפול</h6>
-                            <v-row no-gutters style="justify-content: left;">
-                                <v-col class="px-2" cols="4">
+                            <v-row no-gutters>
+                                <v-col class="px-2" cols="1">
+                                    <v-text-field v-model="ticket.fixMin" label="דקות" reverse @focus="$event.target.select()" prepend-icon></v-text-field>
+                                </v-col>
+                                <v-col class="px-2" cols="1">
+                                    <v-text-field v-model="ticket.fixHour" label="שעות" reverse @focus="$event.target.select()" prepend-icon></v-text-field>
+                                </v-col>
+                                <v-col class="px-2" cols="2">
+                                    <v-text-field v-model="ticket.partsCost" label="עלות חלפים" reverse @focus="$event.target.select()"></v-text-field>
+                                </v-col>
+                                <v-col cols="5"></v-col>
+                                <v-col class="px-2" cols="3">
                                     <v-menu v-model="menu1" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
                                         <template v-slot:activator="{ on, attrs }">
                                             <v-text-field v-model="ticket.fixDate" v-bind="attrs" v-on="on" label="תאריך תיקון" reverse readonly></v-text-field>
@@ -96,16 +106,6 @@
                                         <v-date-picker v-model="ticket.fixDate" @input="menu1 = false"></v-date-picker>
                                     </v-menu>
                                 </v-col>
-                                <!-- <v-col class="px-2" cols="1">
-                                    <v-text-field v-model="fixTime" reverse @focus="$event.target.select()"></v-text-field>
-                                </v-col>
-                                :
-                                <v-col class="px-2" cols="1">
-                                    <v-text-field v-model="fixTime" reverse @focus="$event.target.select()"></v-text-field>
-                                </v-col>
-                                <v-col class="px-2" cols="2">
-                                    <v-text-field v-model="ticket.partsCost" label="חלפים" reverse @focus="$event.target.select()"></v-text-field>
-                                </v-col> -->
                                 <v-col class="px-2" cols="12">
                                     <v-combobox v-model="ticket.defectFound" :items="defectFoundList" label="תקלות שאובחנו" multiple 
                                     :menu-props="{ minWidth: '250', maxHeight: '300' }" dense/>

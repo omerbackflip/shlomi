@@ -7,7 +7,7 @@
 					disable-pagination
 					hide-default-footer
 					fixed-header
-					height="75vh"
+					height="78vh"
 					:items="tickets"
 					:single-expand="true"
 					mobile-breakpoint="0"

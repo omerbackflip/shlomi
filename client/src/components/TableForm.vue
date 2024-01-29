@@ -30,8 +30,8 @@
 
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" text @click="dialog = false"> Close </v-btn>
-                <v-btn :disabled = "!table.table_id" color="primary" text @click="submitTable()"> Submit </v-btn>
+                <v-btn color="primary" text @click="dialog = false"> בטל </v-btn>
+                <v-btn :disabled = "!table.table_id" color="primary" text @click="submitTable()"> שמור </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -90,5 +90,6 @@ export default {
 <style scoped>
 .overflow-hidden{
     overflow: hidden;
+    margin: 0px;
 }
 </style>

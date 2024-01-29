@@ -28,13 +28,13 @@
                     <v-text-field v-model="customer.city" label="עיר" reverse></v-text-field>
                 </v-col>
                 <v-col cols="4">
-                    <v-text-field v-model="customer.phone1" label="טלפון 1" reverse></v-text-field>
+                    <v-text-field v-model="customer.phone1" label="בית 1" reverse></v-text-field>
                 </v-col>
                 <v-col cols="4">
-                    <v-text-field v-model="customer.phone2" label="טלפון 2" reverse></v-text-field>
+                    <v-text-field v-model="customer.phone3" label="נייד 3" reverse></v-text-field>
                 </v-col>
                 <v-col cols="4">
-                    <v-text-field v-model="customer.phone3" label="טלפון 3" reverse></v-text-field>
+                    <v-text-field v-model="customer.phone2" label="נוסף 2" reverse></v-text-field>
                 </v-col>
                 <v-col cols="4">
                     <v-combobox v-model="customer.arrivedFrom" :items="arrivedFromList" label="הגיע אלינו דרך..." reverse/>
