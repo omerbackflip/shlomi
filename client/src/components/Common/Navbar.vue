@@ -51,6 +51,7 @@ export default {
             links: [
                 {icon: 'mdi-briefcase-check', text: 'כרטיסי תיקון', route: '/'},
                 {icon: 'mdi-account-multiple-check', text: 'לקוחות', route: '/customers'},
+                {icon: 'mdi-account-multiple-check', text: 'לקוחות2', route: '/customers2'},
                 {icon: 'mdi-file-table-box-multiple', text: 'טבלאות', route: '/tables'},
                 {icon: 'mdi-cash-multiple', text: 'יבוא נתונים', route: '/import'},
                 {icon: 'mdi-cash-multiple', text: 'ספר טלפונים', route: '/phones'},

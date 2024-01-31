@@ -255,6 +255,9 @@ export default {
 				} else {
 					await apiService.update(this.ticket._id , { ...this.ticket } , {model:TICKET_MODEL});
 				}
+                console.log(this.customerInfo)
+                this.customerInfo.hasTicket = true
+                await apiService.update(this.customerInfo._id, {...this.customerInfo}, {model:CUSTOMER_MODEL});
                 this.dialog = false;
                 this.resolve(true);
 			} catch (error) {
@@ -294,9 +297,10 @@ export default {
                 this.yitra = this.ticket.prepaid ? this.ticket.total-this.ticket.prepaid : 0;
             }
             this.loading = false;
-            return new Promise((resolve) => {
-                this.resolve = resolve;
-            });
+            // return new Promise((resolve) => {
+            //     console.log("RESOLVE")
+            //     this.resolve = resolve;
+            // });
         },
 
         printForm(printExit) {

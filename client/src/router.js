@@ -17,6 +17,11 @@ export default new Router({
       component: () => import("./components/CustomersList")
     },
     {
+      path: "/customers2",
+      name: "customers-list2",
+      component: () => import("./components/CustomersList2")
+    },
+    {
       path: "/tables",
       name: "table-list",
       component: () => import("./components/TableList")

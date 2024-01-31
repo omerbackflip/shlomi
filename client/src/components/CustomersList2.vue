@@ -2,38 +2,15 @@
 	<div class="row no-print">
 		<v-layout class="mt-1" row wrap>
 			<v-card class="p-3 m-3" max-width="50%">
-			<v-toolbar class="width" style="max-height: 50px;">
-				<v-text-field class="ma-3" flat label="Search" prepend-inner-icon="search"  
-								v-model="search" clearable></v-text-field>
-			</v-toolbar>
-			<v-list style="max-height: 700px; overflow-y: auto;">
-				<template>
-					<v-list-item  v-for="(item) in filteredItems" :key="item.customerId" @click="customerTicketsList(item)">
-						<v-list-item-content style="text-align-last: right;">
-						<v-list-item-title>{{ item.fullName }} </v-list-item-title>
-						<v-list-item-subtitle>{{(item.phone1 ? item.phone1 : '') +
-												(item.phone2 ? ' / ' + item.phone2 : '') +
-												(item.phone3 ? ' / ' + item.phone3 : '') }}
-						</v-list-item-subtitle>
-						<v-list-item-subtitle>{{ (item.remark ? item.remark : '') }}</v-list-item-subtitle>
-					</v-list-item-content>
-					<v-list-item-action>
-                      <v-icon v-if="item.hasTicket" color="grey lighten-1"> mdi-arrow-left-bold </v-icon>
-                    </v-list-item-action>
-					</v-list-item>
-				</template>
-			</v-list>
-
-				<!-- <v-data-table
-					:headers="headersVD"
+				<v-data-table
+					:headers="headers"
+					:items="customers"
 					disable-pagination
 					hide-default-footer
 					fixed-header
-					height="75vh"
-					:items="customers"
+					height="73vh"
 					item-key="customerId"
 					mobile-breakpoint="0"
-					:search="search"
 					:loading = "loading"
 					loader-height = "30"
 					@click:row="customerTicketsList"
@@ -42,7 +19,13 @@
 				>
 					<template v-slot:top>
 						<v-toolbar flat>
-							<v-text-field v-model="search" class="mx-4"	label="Search" clearable></v-text-field>
+							<!-- <v-toolbar-title>{{customers.length}}</v-toolbar-title> -->
+							<!-- <v-text-field v-model="search" class="mx-4"	label="Search" clearable></v-text-field> -->
+							<!-- <v-radio-group v-model="hasTicket" row dense style="direction: rtl;">
+								<v-radio label="בעלי כרטיס" ></v-radio>
+								<v-radio label="ללא כרטיס" ></v-radio>
+								<v-radio label="כולם" ></v-radio>
+							</v-radio-group> -->
 							<v-spacer></v-spacer>
 							<export-excel :data="customers" type="xlsx" name="customers">
 								<v-btn small class="btn btn-danger mt-1 ml-3" :loading="loading">
@@ -55,16 +38,32 @@
 							</v-btn>
 						</v-toolbar>
 					</template>
-					<template v-slot:[`item.fullName`]="{ item }">
-						<div :class="{custTkt: item.hasTicket}">
-							<span>{{ item.fullName }}</span>
-							<span v-show="item.remark" class="custRmk">{{' - ' + item.remark }}</span>
-						</div>
+					<template v-slot:body.prepend>
+						<tr>
+							<td>
+								<v-text-field v-model="fullName" type="text" label="שם לקוח"></v-text-field>
+							</td>
+							<td>
+								<v-text-field v-model="phone1" type="text" label="בית1"></v-text-field>
+							</td>
+							<td>
+								<v-text-field v-model="phone2" type="text" label="נייד3"></v-text-field>
+							</td>
+							<td>
+								<v-text-field v-model="phone3" type="text" label="נוסף2"></v-text-field>
+							</td>
+						</tr>
 					</template>
-				</v-data-table> -->
-
+					<template v-slot:[`item.fullName`]="{ item }">
+					<div :class="{'bg-green': item.hasTicket}" @click="customerForm(item)">
+						<span>{{ item.fullName }}</span>
+						<span v-show="item.remark" class="custRmk">{{' - ' + item.remark }}</span>
+					</div>
+					</template>
+				</v-data-table>
+				<!-- <v-btn @click="updateHasTickets">Script</v-btn> -->
 				<!-- <vue-virtual-table
-					:config="headers"
+					:config="headersVD"
 					:data="customers"
 					:height="800"			
 					:itemHeight="55"
@@ -92,13 +91,13 @@
 				</vue-virtual-table> -->
 				<!-- <v-btn @click="updateHasTickets" :loading="loading">Run HasTicket Script</v-btn> -->
 			</v-card>
-			<v-card class="p-3 m-3" max-width="40%">
+			<v-card class="p-3 m-3" max-width="45%">
 				<v-data-table
 					:headers="ticketHeaders"
 					disable-pagination
 					hide-default-footer
 					fixed-header
-					height="75vh"
+					height="73vh"
 					:items="tickets"
 					item-key="_id"
 					mobile-breakpoint="0"
@@ -108,7 +107,6 @@
 					dense
 					class="elevation-3 hebrew"
 				>
-					<!-- :item-class="itemRowBackground" -->
 					<template v-slot:top>
 						<v-toolbar flat style="font-size: xx-large;">
 							<v-toolbar-title>{{ customerName }}</v-toolbar-title>
@@ -116,6 +114,9 @@
 					</template>
 					<template v-slot:[`item.entryDate`]="{ item }">
 						<span>{{ item.entryDate ? new Date(item.entryDate).toLocaleDateString('en-GB') : '-'}}</span>
+					</template>
+					<template v-slot:[`item.ticketStatus`]="{ item }">
+						<div :class="{'bg-green': (item.ticketStatus!='Closed')}">{{ item.ticketStatus }}</div>
 					</template>
 				</v-data-table>
 			</v-card>
@@ -129,7 +130,8 @@
 
 
 <script>
-import { CUSTOMER_HEADERS_VD, CUSTOMER_MODEL, isMobile, TICKET_MODEL, TICKET_SHORT_HEADERS} from "../constants/constants";
+// import { CUSTOMER_HEADERS, CUSTOMER_MODEL, isMobile, TICKET_MODEL, TICKET_SHORT_HEADERS} from "../constants/constants";
+import {CUSTOMER_MODEL, isMobile, TICKET_MODEL, TICKET_SHORT_HEADERS} from "../constants/constants";
 // import { CUSTOMER_HEADERS, CUSTOMER_MODEL, isMobile } from "../constants/constants";
 import apiService from "../services/apiService";
 import CustomerForm from './CustomerForm.vue';
@@ -141,7 +143,7 @@ import excel from "vue-excel-export";
 import Vue from "vue";
 Vue.use(excel);
 export default {
-	name: "customers-list",
+	name: "customers-list2",
 	// components: { CustomerForm, ConfirmDialog,VueVirtualTable },
 	components: { CustomerForm, ConfirmDialog, TicketForm },
 	data() {
@@ -152,13 +154,26 @@ export default {
 			showMessage: false,
 			message: '',
 			// headers: CUSTOMER_HEADERS,
-			headersVD: CUSTOMER_HEADERS_VD,
-			search: '',
+			// headersVD: CUSTOMER_HEADERS,
+			headers : [
+				{ text: 'שם לקוח', value: 'fullName', align:'end', class: 'primary white--text', width: '20%', 
+					filter: f => { return ( f + '' ).includes(this.fullName) }},
+				{ text: 'בית 1', value: 'phone1' , align:'end', class: 'primary white--text', width: '15%',
+					filter: f => { return ( f + '' ).includes(this.phone1) }},
+				{ text: 'נייד 3', value: 'phone3' , align:'end', class: 'primary white--text', width: '15%',
+					filter: f => { return ( f + '' ).includes(this.phone3) }},
+				{ text: 'נוסף 2', value: 'phone2' , align:'end', class: 'primary white--text', width: '15%',
+					filter: f => { return ( f + '' ).includes(this.phone2) }},
+			],
 			loading: false,
 			hasTicket: 2, // 0=hasTicket   1=noTicket   2=all
 			ticketHeaders: TICKET_SHORT_HEADERS,
 			customerName: '',
 			customerRemark: '',
+			fullName: '',
+			phone1: '',
+			phone2: '',
+			phone3: '',
 		}
 	},
 
@@ -216,27 +231,13 @@ export default {
 		},
 
 		async updateTicket(item) {
-			// let newTicket = item ? false : true;
-			await this.$refs.ticketForm.open(item, false);
-			// this.getTickets();
+			if (this.customerName) await this.$refs.ticketForm.open(item, false);
 		},
-	},
 
-	computed: {
-		filteredItems() {
-			return (this.customers.filter(item => {
-				if(!this.search) {
-					return this.customers;
-				} else {
-					return (
-						(item.fullName ? item.fullName.toLowerCase().includes(this.search.toLowerCase()) : '') ||
-						(item.phone1 ? item.phone1.includes(this.search) : '') ||
-						(item.phone2 ? item.phone2.includes(this.search) : '') ||
-						(item.phone3 ? item.phone3.includes(this.search) : '')
-						);
-				}
-			}));
-		}
+		itemRowBackground(item) {
+			let classes = item.hasTicket ? "bg-green" : ""
+			return classes
+		},
 	},
 
 	mounted() {
@@ -285,8 +286,8 @@ export default {
 .v-label {
 	font-size: smaller !important;
 }
-.custTkt{
-	background-color: lightgreen;
+.bg-green {
+  background-color: lightgreen !important;
 	text-align: justify;
 }
 .custRmk{
@@ -303,18 +304,5 @@ export default {
     .no-print {
         display: none;
     }
-}
-.v-card {
-  display: flex !important;
-  flex-direction: column;
-}
-
-.v-card__text {
-  flex-grow: 1;
-  overflow: auto;
-}
-
-.width {
-	width: max-content !important;
 }
 </style>

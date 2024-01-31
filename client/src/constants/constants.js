@@ -42,7 +42,7 @@ export const TICKET_SHORT_HEADERS = [
     { text: 'סטטוס', value: 'ticketStatus', align:'end', class: 'primary white--text' },
 ]
 
-export const CUSTOMER_HEADERS = [  // used for vue-virtual-table
+export const CUSTOMER_HEADERS_VD = [  // used for vue-virtual-table
     { name: 'מס לקוח', prop: 'customerId' ,searchable: true, class: 'primary white--text'},
     { name: 'שם לקוח', prop: 'fullName', actionName:'name' ,searchable: true, class: 'primary white--text'},
     // { name: 'כתובת', prop: 'address',searchable: true, class: 'primary white--text' },
@@ -56,9 +56,10 @@ export const CUSTOMER_HEADERS = [  // used for vue-virtual-table
     // { name: 'פעולות', prop: 'controls', actionName: 'actionCommon' ,searchable: true, class: 'primary white--text'},
 ]
 
-export const CUSTOMER_HEADERS_VD = [
+export const CUSTOMER_HEADERS = [
     // { text: 'מס לקוח', value: 'customerId' , align:'end', class: 'primary white--text'},
-    { text: 'שם לקוח', value: 'fullName', actionName:'name' , align:'end', class: 'primary white--text', width: '20%'},
+    { text: 'שם לקוח', value: 'fullName', actionName:'name' , align:'end', class: 'primary white--text', width: '55%'},
+    // { text: 'שם לקוח', value: 'fullName', filter: f => { return ( f + '' ).includes(this.fullName) }},
     // { text: 'כתובת', value: 'address', align:'end', class: 'primary white--text' },
     // { text: 'עיר', value: 'city' , align:'end', class: 'primary white--text'},
     { text: 'בית 1', value: 'phone1' , align:'end', class: 'primary white--text', width: '15%'},
@@ -111,8 +112,8 @@ export const NEW_TICKET = {
     exitDate: null,
     remarks: '',
     ticketRemark: '',
-    fixHour: Number,
-    fixMin: Number,
+    fixHour: '',
+    fixMin: '',
     partsCost: '', 
 }
 

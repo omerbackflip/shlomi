@@ -125,9 +125,10 @@ export default {
                 this.customer.issueDate = new Date(this.customer.issueDate).toISOString().substr(0, 10)
             }
             this.dialog = true;
-            return new Promise((resolve) => {
-                this.resolve = resolve;
-            });
+            // return new Promise((resolve) => {
+            //     console.log("Promise")
+            //     this.resolve = resolve;
+            // });
         },
         async deleteCustomer(id) {
 			try {

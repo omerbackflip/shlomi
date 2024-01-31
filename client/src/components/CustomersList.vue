@@ -3,12 +3,12 @@
 		<v-layout class="mt-1" row wrap>
 			<v-card class="p-3 m-3" max-width="50%">
 				<v-data-table
-					:headers="headersVD"
+					:headers="headers"
+					:items="customers"
 					disable-pagination
 					hide-default-footer
 					fixed-header
 					height="73vh"
-					:items="customers"
 					item-key="customerId"
 					mobile-breakpoint="0"
 					:search="search"
@@ -18,7 +18,6 @@
 					dense
 					class="elevation-3 hebrew"
 				>
-					<!-- :item-class="itemRowBackground" -->
 					<template v-slot:top>
 						<v-toolbar flat>
 							<!-- <v-toolbar-title>{{customers.length}}</v-toolbar-title> -->
@@ -40,18 +39,16 @@
 							</v-btn>
 						</v-toolbar>
 					</template>
-						<template v-slot:[`item.fullName`]="{ item }">
-						<!-- <td @click.stop> -->
-						<div :class="{custTkt: item.hasTicket}" @click="customerForm(item)">
-							<span>{{ item.fullName }}</span>
-							<span v-show="item.remark" class="custRmk">{{' - ' + item.remark }}</span>
-						</div>
-						<!-- </td> -->
-						</template>
+					<template v-slot:[`item.fullName`]="{ item }">
+					<div :class="{'bg-green': item.hasTicket}" @click="customerForm(item)">
+						<span>{{ item.fullName }}</span>
+						<span v-show="item.remark" class="custRmk">{{' - ' + item.remark }}</span>
+					</div>
+					</template>
 				</v-data-table>
-
+				<!-- <v-btn @click="updateHasTickets">Script</v-btn> -->
 				<!-- <vue-virtual-table
-					:config="headers"
+					:config="headersVD"
 					:data="customers"
 					:height="800"			
 					:itemHeight="55"
@@ -104,7 +101,7 @@
 						<span>{{ item.entryDate ? new Date(item.entryDate).toLocaleDateString('en-GB') : '-'}}</span>
 					</template>
 					<template v-slot:[`item.ticketStatus`]="{ item }">
-						<div :class="{custTkt: (item.ticketStatus!='Closed')}">{{ item.ticketStatus }}</div>
+						<div :class="{'bg-green': (item.ticketStatus!='Closed')}">{{ item.ticketStatus }}</div>
 					</template>
 				</v-data-table>
 			</v-card>
@@ -118,7 +115,7 @@
 
 
 <script>
-import { CUSTOMER_HEADERS_VD, CUSTOMER_MODEL, isMobile, TICKET_MODEL, TICKET_SHORT_HEADERS} from "../constants/constants";
+import { CUSTOMER_HEADERS, CUSTOMER_MODEL, isMobile, TICKET_MODEL, TICKET_SHORT_HEADERS} from "../constants/constants";
 // import { CUSTOMER_HEADERS, CUSTOMER_MODEL, isMobile } from "../constants/constants";
 import apiService from "../services/apiService";
 import CustomerForm from './CustomerForm.vue';
@@ -140,8 +137,8 @@ export default {
 			tickets: [],
 			showMessage: false,
 			message: '',
-			// headers: CUSTOMER_HEADERS,
-			headersVD: CUSTOMER_HEADERS_VD,
+			headers: CUSTOMER_HEADERS,
+			// headersVD: CUSTOMER_HEADERS,
 			search: '',
 			loading: false,
 			hasTicket: 2, // 0=hasTicket   1=noTicket   2=all
@@ -207,6 +204,11 @@ export default {
 		async updateTicket(item) {
 			if (this.customerName) await this.$refs.ticketForm.open(item, false);
 		},
+
+		itemRowBackground(item) {
+			let classes = item.hasTicket ? "bg-green" : ""
+			return classes
+		},
 	},
 
 	mounted() {
@@ -255,8 +257,8 @@ export default {
 .v-label {
 	font-size: smaller !important;
 }
-.custTkt{
-	background-color: lightgreen;
+.bg-green {
+  background-color: lightgreen !important;
 	text-align: justify;
 }
 .custRmk{
