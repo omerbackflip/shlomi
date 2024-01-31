@@ -7,7 +7,6 @@
         <v-data-table
           :headers="headers"
           :items="tableID"
-          :search="search"
           disable-pagination
           hide-default-footer
           fixed-header
@@ -98,10 +97,13 @@
           height="75vh"
           class="elevation-3"
 					mobile-breakpoint="0"
+          :search="search"
         >
           <template v-slot:top>
               <v-toolbar flat>
               <v-toolbar-title>{{ tableTitle ? tableTitle + ' - ' + tableCode.length: "Title" }}</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-text-field v-model="search" class="mx-4"	label="חיפוש" clearable></v-text-field>
                 <v-spacer></v-spacer>
                 <v-btn v-show="newTable_id && newTable_id < 99" @click="addToTable()" small class="mt-3">
                   <v-icon class="nav-icon" small >mdi-plus</v-icon>
