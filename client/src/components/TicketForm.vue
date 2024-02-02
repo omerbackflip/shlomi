@@ -439,16 +439,16 @@ export default {
         },
 
         // Whenever ticketStatus is change - setup the corresponding date
-        async 'ticket.ticketStatus' (newStatus) {
-            switch (newStatus) {
-                case 'Fixed' :
-                    this.ticket.fixDate = new Date().toISOString().substr(0, 10);
-                    break;
-                case 'Closed' :
-                    this.ticket.exitDate = new Date().toISOString().substr(0, 10);
-                    break;                    
-            }
-        }
+        // async 'ticket.ticketStatus' (newStatus) {
+        //     switch (newStatus) {
+        //         case 'Fixed' :
+        //             this.ticket.fixDate = new Date().toISOString().substr(0, 10);
+        //             break;
+        //         case 'Closed' :
+        //             this.ticket.exitDate = new Date().toISOString().substr(0, 10);
+        //             break;                    
+        //     }
+        // }
     },
     mounted() {
 		this.getDefectList();

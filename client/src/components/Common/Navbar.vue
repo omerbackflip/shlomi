@@ -38,7 +38,7 @@
 <script>
 
 import SpecificServiceEndPoints from "../../services/specificServiceEndPoints";
-import { isMobile } from '../../constants/constants';
+import { isMobile, ROUTE_LIST } from '../../constants/constants';
 
 export default {
     data() {
@@ -48,14 +48,14 @@ export default {
             local: false,
             production: false,
             loading: false,
-            links: [
-                {icon: 'mdi-briefcase-check', text: 'כרטיסי תיקון', route: '/'},
-                {icon: 'mdi-account-multiple-check', text: 'לקוחות', route: '/customers'},
-                {icon: 'mdi-account-multiple-check', text: 'לקוחות2', route: '/customers2'},
-                {icon: 'mdi-file-table-box-multiple', text: 'טבלאות', route: '/tables'},
-                {icon: 'mdi-cash-multiple', text: 'יבוא נתונים', route: '/import'},
-                {icon: 'mdi-cash-multiple', text: 'ספר טלפונים', route: '/phones'},
-            ],
+            // links: [
+            //     {icon: 'mdi-briefcase-check', text: 'כרטיסי תיקון', route: '/'},
+            //     {icon: 'mdi-account-multiple-check', text: 'לקוחות', route: '/customers'},
+            //     {icon: 'mdi-file-table-box-multiple', text: 'טבלאות', route: '/tables'},
+            //     {icon: 'mdi-cash-multiple', text: 'יבוא נתונים', route: '/import'},
+            //     {icon: 'mdi-cash-multiple', text: 'ספר טלפונים', route: '/phones'},
+            // ],
+            links : ROUTE_LIST,
             dialog: false,
             ticketStatus: 'Open',
             ticketYear: '',
