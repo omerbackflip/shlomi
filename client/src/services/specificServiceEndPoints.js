@@ -22,6 +22,16 @@ class SpecificServiceEndPoints {
 		});
 	}
 
+	async saveTicketsNewImport(file) {
+		var formData = new FormData();
+		formData.append("file", file);
+		return await axios.post(`${baseUrl}/specific/save-tickets-new`, formData ,{ 
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			}
+		});
+	}
+
 	async saveTablesImport(file) {
 		var formData = new FormData();
 		formData.append("file", file);

@@ -15,7 +15,6 @@
                     <!-- ------------------- Customer Area  ------------------- -->
                     <v-col cols="12" style="padding: 0px">
                         <div class="v-area">
-                            <!-- <h6 class="area-header">פרטי לקוח</h6> -->
                             <v-row no-gutters>
                                 <v-col cols="6" sm="3">
                                     <v-autocomplete
@@ -32,8 +31,7 @@
                                         :items="customers"
                                     ></v-autocomplete>
                                 </v-col>
-                                <v-col class="px-2" cols="6" sm="3">
-                                    <!-- <v-text-field type="text" v-model="customerInfo.address" label="כתובת" readonly single-line reverse></v-text-field> -->
+                                <v-col class="px-2" cols="6" sm="2">
                                     <v-text-field type="text" :value="customerInfo.address +' '+ customerInfo.city" readonly reverse hide-details></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="4" sm="2">
@@ -45,16 +43,18 @@
                                 <v-col class="px-2" cols="4" sm="2">
                                     <v-text-field type="text" :value="customerInfo.phone2" readonly hide-details></v-text-field>
                                 </v-col>
+                                <v-col>
+                                    <v-btn @click="openExsitingCustomerForm" style="margin-top: 15px;" x-small><v-icon small>mdi-pencil</v-icon></v-btn>
+                                </v-col>
                             </v-row>
                             <v-row class="px-4" dense style="font-size: smaller; color: red; margin: 0px;"> 
-                                <!-- <v-text-field type="text" :value="customerInfo.remark" readonly hide-details></v-text-field> -->
                                 {{customerInfo.remark}}
                             </v-row>
                         </div>
                     </v-col>
                     <!-- ------------------- Item Area  ------------------- -->
                     <v-col cols="12" sm="6" style="padding: 0px">
-                        <div class=" v-areaMiddle">
+                        <div class="v-areaMiddle">
                             <h6 class="area-header">פרטי מכשיר</h6>
                             <v-row no-gutters>
                                 <v-col class="px-2" cols="6">
@@ -117,7 +117,7 @@
                                 <v-row style="justify-content: right;">
                                     <v-col class="px-2" cols="9">
                                         <v-combobox v-model="ticket.ticketRemark" :items="ticketRemarkList" label="הערה לכרטיס - לא מודפס" multiple 
-                                    :menu-props="{ minWidth: '250', maxHeight: '300' }" dense></v-combobox>
+                                    :menu-props="{ minWidth: '250', maxHeight: '300' }" dense hide-details></v-combobox>
                                     </v-col>
                                 </v-row>
                             </v-row>
@@ -129,10 +129,10 @@
                             <h6 class="area-header">פרטי תשלום</h6>
                             <v-row no-gutters>
                                 <v-col class="px-2" cols="6" sm="1">
-                                    <v-text-field v-model="ticket.prepaid" label="שולם מראש" reverse @focus="$event.target.select()"></v-text-field>
+                                    <v-text-field v-model="ticket.prepaid" label="שולם מראש" reverse @focus="$event.target.select()" hide-details></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="6" sm="1">
-                                    <v-text-field v-model="ticket.prepaidInvoice" label="חשבונית מראש" reverse @focus="$event.target.select()"></v-text-field>
+                                    <v-text-field v-model="ticket.prepaidInvoice" label="חש' מראש" reverse @focus="$event.target.select()" hide-details></v-text-field>
                                 </v-col>
                                 <v-col cols="6" sm="2"></v-col>
                                 <v-col class="px-2" cols="3" sm="1">
@@ -154,7 +154,8 @@
                                 <v-col class="px-2" cols="2">
                                     <v-menu v-model="menu" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
                                         <template v-slot:activator="{ on, attrs }">
-                                            <v-text-field v-model="ticket.exitDate" v-bind="attrs" v-on="on" label="תאריך יציאה" reverse readonly hide-details/>
+                                            <v-text-field v-model="ticket.exitDate" v-bind="attrs" v-on="on" label="תאריך יציאה" reverse readonly hide-details
+                                                            style="padding-top: 0px; margin-top: 0px;"/>
                                         </template>
                                         <v-date-picker v-model="ticket.exitDate" @input="menu = false"/>
                                     </v-menu>
@@ -336,6 +337,10 @@ export default {
             this.customers.push(this.ticket.customerName);
         },
 
+        async openExsitingCustomerForm(){
+			await this.$refs.customerForm.open(this.customerInfo, false);
+        },
+
         async getDefectList() {
             let response = await apiService.getMany({model: TABLE_MODEL , table_id: 4} );
             this.defectList = response.data.map((item) => {
@@ -474,6 +479,7 @@ export default {
         border: 1px solid blue;
         border-radius: 0px;
         height:250px;
+        overflow-y: auto;
     }
 
     .area-header {

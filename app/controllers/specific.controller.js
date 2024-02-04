@@ -53,6 +53,26 @@ exports.saveTicketsBulk = async (req, res) => {
 	}
 };
 
+exports.saveTicketsNewBulk = async (req, res) => {
+	try {
+        await Ticket.deleteMany();
+		// var workbook = XLSX.readFile(`uploads/${req.file.filename}`,{type: 'binary', cellDates: true, dateNF: 'yyyy/mm/dd;@'});
+		var workbook = XLSX.readFile(`uploads/${req.file.filename}`,{type: 'binary', cellDates: true, dateNF: 'dd/mm/yyyy;@'});
+		var sheet_name_list = workbook.SheetNames;
+		const data = transformCSVData(sheet_name_list , workbook);
+
+        let tickets = specificService.getTicketsNewToSave(data[0]);
+        await dbService.insertMany(Ticket,tickets);
+
+        unLinkFile(`uploads/${req.file.filename}`);
+        return res.send({ success: true, message: `Total ${tickets.length} tickets successfully Imported`});
+
+	} catch (error) {
+		console.log(error)
+		res.status(500).send({ message: "Error saving tickets", error });
+	}
+};
+
 exports.saveTablesBulk = async (req, res) => {
 	try {
         await Table.deleteMany();

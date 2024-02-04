@@ -70,6 +70,50 @@ exports.getTicketsToSave = (data) => {
     }
 }
 
+exports.getTicketsNewToSave = (data) => {
+    try {
+        let tickets = [];
+        data.forEach(item => {
+            if(!(item['Ticket ID'])) return;
+            let ticket = {
+                ticketId: item['ticketId'],
+                ticketStatus: item['ticketStatus'],
+                customerId: item['customerId'],                				
+                customerName: item['customerName'],                				
+                item: item['item'],
+                entryCondition: item['entryCondition'],
+                accessories: item['accessories'],
+                defectDescription: item['defectDescription'],
+                defectFound: item[defectFound],
+                defectFixes: item[defectFixes],
+                prepaid: item['prepaid'],
+                prepaidInvoice: item['prepaidInvoice'],
+                amount: item['amount'],
+                vat: item['vat'],
+                total: item['total'],
+                invoice: item['invoice'],
+                year: item['year'],
+                entryDate: !isNaN(Date.parse(item['entryDate'])) ? moment(item['Entry Date']).add(1,'days') : null,
+                fixDate: !isNaN(Date.parse(item['fixDate'])) ? moment(item['fix date']).add(1,'days') : null,
+                exitDate: !isNaN(Date.parse(item['exitDate'])) ? moment(item['Exit date']).add(1,'days') : null,
+                remarks: item['remarks'],
+                ticketRemark: item['ticketRemark'],
+                fixHour: item['fixHour'],
+                fixMin: item['fixMin'],
+                partsCost: item['partsCost'],
+            }
+
+            tickets.push(ticket);
+        });
+
+        return tickets;
+
+    } catch (error) {
+        console.log(error)
+        throw error;
+    }
+}
+
 exports.getTablesToSave = (data) => {
     try {
         let tables = [];

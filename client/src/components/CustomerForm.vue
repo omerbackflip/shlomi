@@ -8,8 +8,8 @@
         @keydown.esc="dialog = false"
     >
         <v-card class="hebrew">
-            <v-card-title class="text-h5 grey lighten-2">
-                כרטיס לקוח
+            <v-card-title class="text-h6 grey lighten-2">
+                כרטיס לקוח - {{ customer.fullName }}
             </v-card-title>
             <div class="field-margin" v-show="showMessage">
                 {{message}}
