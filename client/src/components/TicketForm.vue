@@ -450,8 +450,8 @@ export default {
         // Whenever the Item is piked - fatch the corresponding fixPrice from the table (placed in table_code field)
         async 'ticket.item' (item) {
             const response = await apiService.getOne({model: TABLE_MODEL, description:item})
-            this.ticket.fixPrice = response.data.table_code                
-            console.log(this.ticket.fixPrice) // although this console is updated we don't see this update in the DOM (ticket) 
+            this.ticket.fixPrice = response.data.table_code
+            this.$forceUpdate();            
         },
     },
 
