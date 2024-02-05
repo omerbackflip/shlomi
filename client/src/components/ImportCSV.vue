@@ -60,6 +60,12 @@ export default {
 			},{
 				type: 'ticketNew',	
 				title: 'Import Tickets New'
+			},{
+				type: 'customerNew',
+				title: 'Import Customers New',
+			},{
+				type: 'tableNew',
+				title: 'Import Tables Mew',
 			}],
 			loading: false,
 		};
@@ -96,6 +102,12 @@ export default {
 						break
 					case "ticketNew" :
 						response = await SpecificServiceEndPoints.saveTicketsNewImport(this.file)
+						break
+					case "customerNew" :
+						response = await SpecificServiceEndPoints.saveCustomersNewImport(this.file)
+						break
+					case "tableNew" :
+						response = await SpecificServiceEndPoints.saveTablesNewImport(this.file)
 						break
 				}
 

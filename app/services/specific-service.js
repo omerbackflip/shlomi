@@ -30,6 +30,36 @@ exports.getCustomersToSave = (data) => {
         throw error;
     }
 }
+
+exports.getCustomersNewToSave = (data) => {
+    try {
+        let customers = [];
+        data.forEach(item => {
+            let customer = {
+                customerId: item['customerId'],
+                fullName: item['fullName'],
+                address: item['address'],
+                city: item['city'],
+                phone1: item['phone1'],				
+                phone2: item['phone2'],
+                phone3: item['phone3'],
+                arrivedFrom: item['arrivedFrom'],
+                issueDate: item['issueDate'],
+                hasTicket: item['hasTicket'],  // there is dedicated bach to run after loading
+                remark: item['remark'],
+            }
+
+            customers.push(customer);
+        });
+
+        return customers;
+
+    } catch (error) {
+        console.log(error)
+        throw error;
+    }
+}
+
 exports.getTicketsToSave = (data) => {
     try {
         let tickets = [];
@@ -74,7 +104,7 @@ exports.getTicketsNewToSave = (data) => {
     try {
         let tickets = [];
         data.forEach(item => {
-            if(!(item['Ticket ID'])) return;
+            if(!(item['ticketId'])) return;
             let ticket = {
                 ticketId: item['ticketId'],
                 ticketStatus: item['ticketStatus'],
@@ -84,8 +114,8 @@ exports.getTicketsNewToSave = (data) => {
                 entryCondition: item['entryCondition'],
                 accessories: item['accessories'],
                 defectDescription: item['defectDescription'],
-                defectFound: item[defectFound],
-                defectFixes: item[defectFixes],
+                defectFound: item['defectFound'],
+                defectFixes: item['defectFixes'],
                 prepaid: item['prepaid'],
                 prepaidInvoice: item['prepaidInvoice'],
                 amount: item['amount'],
@@ -93,9 +123,9 @@ exports.getTicketsNewToSave = (data) => {
                 total: item['total'],
                 invoice: item['invoice'],
                 year: item['year'],
-                entryDate: !isNaN(Date.parse(item['entryDate'])) ? moment(item['Entry Date']).add(1,'days') : null,
-                fixDate: !isNaN(Date.parse(item['fixDate'])) ? moment(item['fix date']).add(1,'days') : null,
-                exitDate: !isNaN(Date.parse(item['exitDate'])) ? moment(item['Exit date']).add(1,'days') : null,
+                entryDate: item['entryDate'],
+                fixDate: item['fixDate'],
+                exitDate: item['exitDate'],
                 remarks: item['remarks'],
                 ticketRemark: item['ticketRemark'],
                 fixHour: item['fixHour'],
@@ -121,6 +151,28 @@ exports.getTablesToSave = (data) => {
             let table = {
                 table_id: item['ID'],
                 table_code: item['CODE'],
+                description: item['description'],
+                numeric: item['numeric'],
+            }
+
+            tables.push(table);
+        });
+
+        return tables;
+
+    } catch (error) {
+        console.log(error)
+        throw error;
+    }
+}
+
+exports.getTablesNewToSave = (data) => {
+    try {
+        let tables = [];
+        data.forEach(item => {
+            let table = {
+                table_id: item['table_id'],
+                table_code: item['table_code'],
                 description: item['description'],
                 numeric: item['numeric'],
             }

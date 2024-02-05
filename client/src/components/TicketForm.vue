@@ -80,6 +80,11 @@
                                 <v-col class="px-2" cols="6">
                                     <v-combobox v-model="ticket.accessories" :items="accessoriesList" label="אביזר נוסף" multiple dense/>
                                 </v-col>
+                                <v-col cols="3"></v-col>
+                                <v-col class="px-2" cols="3">
+                                    <v-text-field v-model="ticket.fixPrice" :value="ticket.fixPrice" label="מחיר תיקון" style="padding-top: 0px; margin-top: 0px;"
+                                        reverse @focus="$event.target.select()"></v-text-field>
+                                </v-col>
                             </v-row>
                         </div>
                     </v-col>
@@ -422,8 +427,9 @@ export default {
                 this.ticket.total = 0;
             }
             this.yitra = this.ticket.total-this.ticket.prepaid;
-        }
+        },
     },
+
     watch: {
         search (val) {
             if (!val) {
@@ -441,18 +447,14 @@ export default {
             }
         },
 
-        // Whenever ticketStatus is change - setup the corresponding date
-        // async 'ticket.ticketStatus' (newStatus) {
-        //     switch (newStatus) {
-        //         case 'Fixed' :
-        //             this.ticket.fixDate = new Date().toISOString().substr(0, 10);
-        //             break;
-        //         case 'Closed' :
-        //             this.ticket.exitDate = new Date().toISOString().substr(0, 10);
-        //             break;                    
-        //     }
-        // }
+        // Whenever the Item is piked - fatch the corresponding fixPrice from the table (placed in table_code field)
+        async 'ticket.item' (item) {
+            const response = await apiService.getOne({model: TABLE_MODEL, description:item})
+            this.ticket.fixPrice = response.data.table_code                
+            console.log(this.ticket.fixPrice) // although this console is updated we don't see this update in the DOM (ticket) 
+        },
     },
+
     mounted() {
 		this.getDefectList();
 		this.getItemsList();

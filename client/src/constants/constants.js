@@ -79,6 +79,7 @@ export const NEW_TICKET = {
     defectDescription: [],
     defectFound: [],
     defectFixes: [],
+    fixPrice: '',
     prepaid: '',
     prepaidInvoice: '',
     amount: '',

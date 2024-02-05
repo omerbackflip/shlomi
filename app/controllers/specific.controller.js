@@ -33,6 +33,25 @@ exports.saveCustomersBulk = async (req, res) => {
 	}
 };
 
+exports.saveCustomersNewBulk = async (req, res) => {
+	try {
+        await Customer.deleteMany();
+		var workbook = XLSX.readFile(`uploads/${req.file.filename}`);
+		var sheet_name_list = workbook.SheetNames;
+		const data = transformCSVData(sheet_name_list , workbook);
+
+        let customers = specificService.getCustomersNewToSave(data[0]);
+        await dbService.insertMany(Customer,customers);
+
+        unLinkFile(`uploads/${req.file.filename}`);
+        return res.send({ success: true, message: `Total ${customers.length} customers successfully Imported`});
+
+	} catch (error) {
+		console.log(error)
+		res.status(500).send({ message: "Error saving customers", error });
+	}
+};
+
 exports.saveTicketsBulk = async (req, res) => {
 	try {
         await Ticket.deleteMany();
@@ -81,6 +100,25 @@ exports.saveTablesBulk = async (req, res) => {
 		const data = transformCSVData(sheet_name_list , workbook);
 
         let tables = specificService.getTablesToSave(data[0]);
+        await dbService.insertMany(Table,tables);
+
+        unLinkFile(`uploads/${req.file.filename}`);
+        return res.send({ success: true, message: `Total ${tables.length} tables successfully Imported`});
+
+	} catch (error) {
+		console.log(error)
+		res.status(500).send({ message: "Error saving tables", error });
+	}
+};
+
+exports.saveTablesNewBulk = async (req, res) => {
+	try {
+        await Table.deleteMany();
+		var workbook = XLSX.readFile(`uploads/${req.file.filename}`);
+		var sheet_name_list = workbook.SheetNames;
+		const data = transformCSVData(sheet_name_list , workbook);
+
+        let tables = specificService.getTablesNewToSave(data[0]);
         await dbService.insertMany(Table,tables);
 
         unLinkFile(`uploads/${req.file.filename}`);

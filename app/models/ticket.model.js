@@ -11,6 +11,7 @@ module.exports = mongoose => {
 			defectDescription: [String],
 			defectFound: [String],
 			defectFixes: [String],
+			fixPrice: Number,
 			prepaid: Number,
 			prepaidInvoice: String,
 			amount: Number,

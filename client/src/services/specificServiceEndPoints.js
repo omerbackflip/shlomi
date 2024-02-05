@@ -12,6 +12,16 @@ class SpecificServiceEndPoints {
 		});
 	}
 
+	async saveCustomersNewImport(file) {
+		var formData = new FormData();
+		formData.append("file", file);
+		return await axios.post(`${baseUrl}/specific/save-customers-new`, formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			}
+		});
+	}
+
 	async saveTicketsImport(file) {
 		var formData = new FormData();
 		formData.append("file", file);
@@ -36,6 +46,16 @@ class SpecificServiceEndPoints {
 		var formData = new FormData();
 		formData.append("file", file);
 		return await axios.post(`${baseUrl}/specific/save-tables`, formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			}
+		});
+	}
+
+	async saveTablesNewImport(file) {
+		var formData = new FormData();
+		formData.append("file", file);
+		return await axios.post(`${baseUrl}/specific/save-tables-new`, formData, {
 			headers: {
 				'Content-Type': 'multipart/form-data'
 			}
