@@ -9,6 +9,7 @@ const XLSX = require('xlsx');
 const fs = require('fs');
 const { transformCSVData } = require("../util/util");
 const { url } = require("../config/db.config");
+const { cursorTo } = require("readline");
 
 const accountSid = process.env.ACCOUNT_SID;
 const authToken = process.env.AUTH_TOKEN;
@@ -195,9 +196,6 @@ exports.saveFixTimeBulk = async (req, res) => {
 	}
 };
 
-
-
-
 exports.searchCustomer = async (req, res) => {
 	try {
 		const { customer } = req.query;
@@ -272,6 +270,30 @@ exports.sendMessageToUser = async (req, res) => {
 	}
 };
 
+exports.getWithRemark = async (req, res) => {
+	const { ticketStatus, customerId, year } = req.query;
+	let data = {};
+	if (ticketStatus) {
+		if (ticketStatus === 'ALL') {
+			data = await Ticket.find({ticketStatus: {$ne: 'Closed'}})
+		} else {
+			data = await Ticket.find({ticketStatus: ticketStatus})
+		}
+	}
+	if (customerId) {
+		data = await Ticket.find({customerId: customerId})
+	}
+	if (year) {
+		data = await Ticket.find({year: year})
+	}
+	
+	// if have customer remark, add it to the object
+	let data1 = await Promise.all (data.map(async(item) => {
+		let customer = await Customer.findOne({customerId: item.customerId})
+		return ({...item._doc, customerRemark: customer.remark})
+	}))
+	return res.send (data1)
+};
 function unLinkFile(path) {
 	fs.unlinkSync(path);
 }

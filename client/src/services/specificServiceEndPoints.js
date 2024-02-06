@@ -111,6 +111,9 @@ class SpecificServiceEndPoints {
 		return await axios.get(`${baseUrl}/specific/get-no-close`);
 	}
 
+	async getWithRemark(params) {
+		return await axios.get(`${baseUrl}/specific/get-with-remark`,{params});
+	}
 }
 
 export default new SpecificServiceEndPoints();

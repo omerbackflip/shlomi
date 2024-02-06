@@ -82,7 +82,7 @@
                                 </v-col>
                                 <v-col cols="3"></v-col>
                                 <v-col class="px-2" cols="3">
-                                    <v-text-field v-model="ticket.fixPrice" :value="ticket.fixPrice" label="מחיר תיקון" style="padding-top: 0px; margin-top: 0px;"
+                                    <v-text-field v-model="ticket.fixPrice" :value="ticket.fixPrice" label="מחיר בדיקה" style="padding-top: 0px; margin-top: 0px;"
                                         reverse @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                             </v-row>

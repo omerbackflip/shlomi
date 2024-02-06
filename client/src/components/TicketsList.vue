@@ -56,7 +56,8 @@
 
 
 <script>
-import { TICKET_HEADERS, TICKET_MODEL, isMobile, CUSTOMER_MODEL } from "../constants/constants";
+// import { TICKET_HEADERS, TICKET_MODEL, isMobile, CUSTOMER_MODEL } from "../constants/constants";
+import { TICKET_HEADERS, TICKET_MODEL, isMobile } from "../constants/constants";
 import apiService from "../services/apiService";
 import TicketForm from './TicketForm.vue';
 import ConfirmDialog from './Common/ConfirmDialog.vue';
@@ -118,17 +119,17 @@ export default {
 			try {
 				switch (this.ticketType) {
 					case 'YEAR':
-						response = await apiService.getMany({model: TICKET_MODEL, year: this.ticketsFilter });
+						// response = await apiService.getMany({model: TICKET_MODEL, year: this.ticketsFilter });
+						response = await specificServiceEndPoints.getWithRemark({year: this.ticketsFilter});
 						this.header = "סה'כ לשנה " + this.ticketsFilter 
 						break;
 					case 'CUSTOMER':
-						response = await apiService.getMany({model: TICKET_MODEL, customerId: this.ticketsFilter });
+						// response = await apiService.getMany({model: TICKET_MODEL, customerId: this.ticketsFilter });
+						response = await specificServiceEndPoints.getWithRemark({customerId: this.ticketsFilter});
 						this.header = "סה'כ ללקוח " + this.ticketsFilter 
 						break;
 					case 'STATUS':
-						if (this.ticketsFilter != 'ALL') {
-							response = await apiService.getMany({model: TICKET_MODEL, ticketStatus: this.ticketsFilter });
-						} else response = await specificServiceEndPoints.getNoClose();
+						response = await specificServiceEndPoints.getWithRemark({ticketStatus: this.ticketsFilter});
 						this.header = this.ticketsFilter 
 						break;
 					default:
@@ -137,11 +138,11 @@ export default {
 				
 				if(response.data) {
 					this.tickets = response.data;
-					let customer = '';
-					this.tickets = await Promise.all(response.data.map(async(item) =>{
-						customer = await apiService.getOne({model: CUSTOMER_MODEL, customerId: item.customerId})
-						return ({...item , customerRemark: customer.data.remark })
-					}))
+					// let customer = '';
+					// this.tickets = await Promise.all(response.data.map(async(item) =>{
+					// 	customer = await apiService.getOne({model: CUSTOMER_MODEL, customerId: item.customerId})
+					// 	return ({...item , customerRemark: customer.data.remark })
+					// }))
 				}
 			} catch (error) {
 				console.log(error);

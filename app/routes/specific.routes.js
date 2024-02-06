@@ -24,6 +24,7 @@ module.exports = app => {
   router.post("/hasTickets-bulk", specific.hasTicketsBulk);
   router.get("/get-database-info", specific.getDbInfo);
   router.get("/get-no-close",specific.getNoClose);
+  router.get("/get-with-remark",specific.getWithRemark);
 
   router.post("/send-message", specific.sendMessageToUser);
 

@@ -44,10 +44,10 @@ export const CUSTOMER_HEADERS_VD = [  // used for vue-virtual-table
 ]
 
 export const CUSTOMER_HEADERS = [
-    { text: 'שם לקוח', value: 'fullName', actionName:'name' , align:'end', class: 'primary white--text', width: '46%'},
-    { text: 'בית 1', value: 'phone1' , align:'end', class: 'primary white--text', width: '18%'},
-    { text: 'נייד 3', value: 'phone3' , align:'end', class: 'primary white--text', width: '18%'},
-    { text: 'נוסף 2', value: 'phone2' , align:'end', class: 'primary white--text', width: '18%'},
+    { text: 'שם לקוח', value: 'fullName', actionName:'name' , align:'end', class: 'primary white--text', width: '40%'},
+    { text: 'בית 1', value: 'phone1' , align:'end', class: 'primary white--text', width: '20%'},
+    { text: 'נייד 3', value: 'phone3' , align:'end', class: 'primary white--text', width: '20%'},
+    { text: 'נוסף 2', value: 'phone2' , align:'end', class: 'primary white--text', width: '20%'},
 ]
 
 export const TABLE_HEADERS = [
