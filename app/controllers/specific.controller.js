@@ -236,6 +236,68 @@ exports.getNoClose = async (req,res) => {
 	}
 };
 
+
+exports.getTables = async (req,res) => {
+	try {
+		let table = {}
+		let data = ''
+
+		data = await Table.find({table_id: 2})
+		data = data.map((item) => {
+			return item.description
+		})
+		table.remarkList = data
+
+		data = await Table.find({table_id: 3})
+		data = data.map((item) => {
+			return item.description
+		})
+		table.itemList = data
+
+		data = await Table.find({table_id: 4})
+		data = data.map((item) => {
+			return item.description
+		})
+		table.defectList = data
+
+		data = await Table.find({table_id: 5})
+		data = data.map((item) => {
+			return item.description
+		})
+		table.defectFoundList = data
+
+		data = await Table.find({table_id: 6})
+		data = data.map((item) => {
+			return item.description
+		})
+		table.defectFixesList = data
+
+		data = await Table.find({table_id: 11})
+		data = data.map((item) => {
+			return item.description
+		})
+		table.accessoriesList = data
+		
+		data = await Table.find({table_id: 12})
+		data = data.map((item) => {
+			return item.description
+		})
+		table.entryConditionList = data
+		
+		data = await Table.find({table_id: 16})
+		data = data.map((item) => {
+			return item.description
+		})
+		table.ticketRemarkList = data
+
+
+		return res.send (table)
+	} catch (error) {
+		console.log(error)
+		res.status(500).send({ message: "Error hasTicketsBulk", error });
+	}
+};
+
 exports.getDbInfo = (req,res) => {
 	try {
 		const local = url.includes('localhost');

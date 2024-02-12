@@ -25,6 +25,7 @@ module.exports = app => {
   router.get("/get-database-info", specific.getDbInfo);
   router.get("/get-no-close",specific.getNoClose);
   router.get("/get-with-remark",specific.getWithRemark);
+  router.get("/get-tables",specific.getTables);
 
   router.post("/send-message", specific.sendMessageToUser);
 

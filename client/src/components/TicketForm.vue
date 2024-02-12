@@ -58,7 +58,7 @@
                             <h6 class="area-header">פרטי מכשיר</h6>
                             <v-row no-gutters>
                                 <v-col class="px-2" cols="6">
-                                    <v-combobox v-model="ticket.item" :items="itemList" label="שם המכשיר" reverse />
+                                    <v-combobox v-model="ticket.item" :items="tableList.itemList" label="שם המכשיר" reverse />
                                 </v-col>
                                 <v-col cols="3"></v-col>
                                 <v-col class="px-2" cols="3">
@@ -70,15 +70,15 @@
                                     </v-menu>
                                 </v-col>
                                 <v-col class="px-2" cols="12">
-                                    <v-combobox v-model="ticket.defectDescription" :items="defectList" label="תאור התקלה" multiple 
+                                    <v-combobox v-model="ticket.defectDescription" :items="tableList.defectList" label="תאור התקלה" multiple 
                                     :menu-props="{ minWidth: '250', maxHeight: '300' }" dense/>
                                 </v-col>
                                 <v-col class="px-2" cols="12">
-                                    <v-combobox v-model="ticket.entryCondition" :items="entryConditionList" label="מצב המכשיר" multiple 
+                                    <v-combobox v-model="ticket.entryCondition" :items="tableList.entryConditionList" label="מצב המכשיר" multiple 
                                     :menu-props="{ minWidth: '250', maxHeight: '300' }" dense/>
                                 </v-col>
                                 <v-col class="px-2" cols="6">
-                                    <v-combobox v-model="ticket.accessories" :items="accessoriesList" label="אביזר נוסף" multiple dense/>
+                                    <v-combobox v-model="ticket.accessories" :items="tableList.accessoriesList" label="אביזר נוסף" multiple dense/>
                                 </v-col>
                                 <v-col cols="3"></v-col>
                                 <v-col class="px-2" cols="3">
@@ -112,16 +112,16 @@
                                     </v-menu>
                                 </v-col>
                                 <v-col class="px-2" cols="12">
-                                    <v-combobox v-model="ticket.defectFound" :items="defectFoundList" label="תקלות שאובחנו" multiple 
+                                    <v-combobox v-model="ticket.defectFound" :items="tableList.defectFoundList" label="תקלות שאובחנו" multiple 
                                     :menu-props="{ minWidth: '250', maxHeight: '300' }" dense/>
                                 </v-col>
                                 <v-col class="px-2" cols="12">
-                                    <v-combobox v-model="ticket.defectFixes" :items="defectFixesList" label="תאור ביצוע העבודה" multiple 
+                                    <v-combobox v-model="ticket.defectFixes" :items="tableList.defectFixesList" label="תאור ביצוע העבודה" multiple 
                                     :menu-props="{ minWidth: '250', maxHeight: '300' }" dense></v-combobox>
                                 </v-col>
                                 <v-row style="justify-content: right;">
                                     <v-col class="px-2" cols="9">
-                                        <v-combobox v-model="ticket.ticketRemark" :items="ticketRemarkList" label="הערה לכרטיס - לא מודפס" multiple 
+                                        <v-combobox v-model="ticket.ticketRemark" :items="tableList.ticketRemarkList" label="הערה לכרטיס - לא מודפס" multiple 
                                     :menu-props="{ minWidth: '250', maxHeight: '300' }" dense hide-details></v-combobox>
                                     </v-col>
                                 </v-row>
@@ -167,7 +167,7 @@
                                 </v-col>
                                 <!-- <v-col cols="6" sm="5"></v-col> -->
                                 <v-col class="px-2" cols="10">
-                                    <v-combobox v-model="ticket.remarks" :items="remarkList" label="הערות להדפסה" multiple hide-details
+                                    <v-combobox v-model="ticket.remarks" :items="tableList.remarkList" label="הערות להדפסה" multiple hide-details
                                     :menu-props="{ minWidth: '250', maxHeight: '300' }" dense></v-combobox>
                                 </v-col>
                             </v-row>
@@ -232,15 +232,15 @@ export default {
 			showMessage: false,
             search: '',
             newTicket: false,
-            defectList: [],
-            itemList: [],
-            accessoriesList: [],
-            entryConditionList: [],
-            defectFoundList: [],
-            defectFixesList: [],
-            ticketRemarkList: [],
+            // defectList: [],
+            // itemList: [],
+            // accessoriesList: [],
+            // entryConditionList: [],
+            // defectFoundList: [],
+            // defectFixesList: [],
+            // ticketRemarkList: [],
             customers: [],
-            remarkList: '',
+            // remarkList: '',
             customerInfo: '',
             loading: false,
             menu: false,
@@ -248,6 +248,7 @@ export default {
             menu2: false,
             printExit: false,
             yitra: 0,
+            tableList:[],
         };
     },
 
@@ -346,60 +347,66 @@ export default {
 			await this.$refs.customerForm.open(this.customerInfo, false);
         },
 
-        async getDefectList() {
-            let response = await apiService.getMany({model: TABLE_MODEL , table_id: 4} );
-            this.defectList = response.data.map((item) => {
-                return (item.description)
-            });
-        },
+        // async getDefectList() {
+        //     let response = await apiService.getMany({model: TABLE_MODEL , table_id: 4} );
+        //     this.defectList = response.data.map((item) => {
+        //         return (item.description)
+        //     });
+        // },
 
-        async getRemarkList() {
-            let response = await apiService.getMany({model: TABLE_MODEL , table_id: 2} );
-            this.remarkList = response.data.map((item) => {
-                return (item.description)
-            });
-        },
+        // async getRemarkList() {
+        //     let response = await apiService.getMany({model: TABLE_MODEL , table_id: 2} );
+        //     this.remarkList = response.data.map((item) => {
+        //         return (item.description)
+        //     });
+        // },
 
-        async getItemsList() {
-            let response = await apiService.getMany({model: TABLE_MODEL , table_id: 3} );
-            this.itemList = response.data.map((item) => {
-                return (item.description)
-            });
-        },
+        // async getItemsList() {
+        //     let response = await apiService.getMany({model: TABLE_MODEL , table_id: 3} );
+        //     this.itemList = response.data.map((item) => {
+        //         return (item.description)
+        //     });
+        // },
 
-        async getAccessoriesList() {
-            let response = await apiService.getMany({model: TABLE_MODEL , table_id: 11} );
-            this.accessoriesList = response.data.map((item) => {
-                return (item.description)
-            });
-        },
+        // async getAccessoriesList() {
+        //     let response = await apiService.getMany({model: TABLE_MODEL , table_id: 11} );
+        //     this.accessoriesList = response.data.map((item) => {
+        //         return (item.description)
+        //     });
+        // },
 
-        async getEntryConditionList() {
-            let response = await apiService.getMany({model: TABLE_MODEL , table_id: 12} );
-            this.entryConditionList = response.data.map((item) => {
-                return (item.description)
-            });
-        },
+        // async getEntryConditionList() {
+        //     let response = await apiService.getMany({model: TABLE_MODEL , table_id: 12} );
+        //     this.entryConditionList = response.data.map((item) => {
+        //         return (item.description)
+        //     });
+        // },
 
-        async getDefectFoundList() {
-            let response = await apiService.getMany({model: TABLE_MODEL , table_id: 5} );
-            this.defectFoundList = response.data.map((item) => {
-                return (item.description)
-            });
-        },
+        // async getDefectFoundList() {
+        //     let response = await apiService.getMany({model: TABLE_MODEL , table_id: 5} );
+        //     this.defectFoundList = response.data.map((item) => {
+        //         return (item.description)
+        //     });
+        // },
 
-        async getDefectFixesList() {
-            let response = await apiService.getMany({model: TABLE_MODEL , table_id: 6} );
-            this.defectFixesList = response.data.map((item) => {
-                return (item.description)
-            });
-        },
+        // async getDefectFixesList() {
+        //     let response = await apiService.getMany({model: TABLE_MODEL , table_id: 6} );
+        //     this.defectFixesList = response.data.map((item) => {
+        //         return (item.description)
+        //     });
+        // },
 
-        async getTicketRemarksList() {
-            let response = await apiService.getMany({model: TABLE_MODEL , table_id: 16} );
-            this.ticketRemarkList = response.data.map((item) => {
-                return (item.description)
-            });
+        // async getTicketRemarksList() {
+        //     let response = await apiService.getMany({model: TABLE_MODEL , table_id: 16} );
+        //     this.ticketRemarkList = response.data.map((item) => {
+        //         return (item.description)
+        //     });
+        // },
+
+        async getTableLists() {
+            let response = await specificServiceEndPoints.getTables();
+            this.tableList = response.data;
+            // console.log(this.tableList)
         },
 
         onAmountChange() {
@@ -449,22 +456,23 @@ export default {
 
         // Whenever the Item is piked - fatch the corresponding fixPrice from the table (placed in table_code field)
         async 'ticket.item' (item) {
-            const response = await apiService.getOne({model: TABLE_MODEL, description:item})
+            const response = await apiService.getOne({model: TABLE_MODEL, table_id: 3, description:item})
             this.ticket.fixPrice = response.data.table_code
             this.$forceUpdate();            
         },
     },
 
     mounted() {
-		this.getDefectList();
-		this.getItemsList();
-		this.getAccessoriesList();
-		this.getEntryConditionList();
-		this.getDefectFoundList();
-		this.getDefectFixesList();
-        this.getRemarkList();
-        this.getTicketRemarksList();
+		// this.getDefectList();
+		// this.getItemsList();
+		// this.getAccessoriesList();
+		// this.getEntryConditionList();
+		// this.getDefectFoundList();
+		// this.getDefectFixesList();
+        // this.getRemarkList();
+        // this.getTicketRemarksList();
         this.yitra = 0;
+        this.getTableLists();
 	},
 };
 </script>

@@ -107,12 +107,16 @@ class SpecificServiceEndPoints {
 		return await axios.post(`${baseUrl}/specific/send-message`,body);
 	}
 
-	async getNoClose() {
+	async getNoClose() {  // not used
 		return await axios.get(`${baseUrl}/specific/get-no-close`);
 	}
 
 	async getWithRemark(params) {
 		return await axios.get(`${baseUrl}/specific/get-with-remark`,{params});
+	}
+
+	async getTables() {
+		return await axios.get(`${baseUrl}/specific/get-tables`);
 	}
 }
 
