@@ -2,6 +2,8 @@ export const CUSTOMER_MODEL = 'customers';
 export const TICKET_MODEL = 'tickets';
 export const TABLE_MODEL = 'tables';
 export const PHONE_MODEL = 'phones';
+export const PAYMENT_MODEL = 'payments';
+export const INVOICE_MODEL = 'invoices';
 
 export const printTicketTopPadding = '85px';
 export const printTicketRightPadding = '100px';
@@ -16,6 +18,7 @@ export const ROUTE_LIST = [
     {icon: 'mdi-file-table-box-multiple', text: 'טבלאות', route: '/tables'},
     {icon: 'mdi-cash-multiple', text: 'יבוא נתונים', route: '/import'},
     {icon: 'mdi-cash-multiple', text: 'ספר טלפונים', route: '/phones'},
+    {icon: 'mdi-cash-multiple', text: 'תשלומים לספקים', route: '/payments'},
 ]
 
 export const TICKET_HEADERS = [
@@ -55,6 +58,30 @@ export const TABLE_HEADERS = [
     { text: "קוד",      value: "table_code",    class: 'primary white--text'},
     { text: "תאור",     value: "description",   class: 'primary white--text'},
     { text: "פעולות",   value: "actions",       class: 'primary white--text'},
+  ]
+
+export const PAYMENT_HEADERS = [
+    // { text: "supplierId",     value: "supplierId",      class: 'primary white--text'},
+    { text: "מס' תשלום",     value: "paymentId",      class: 'primary white--text'},
+    { text: "מס' שיק",     value: "checkId",      class: 'primary white--text'},
+    { text: "תאריך",      value: "date",    class: 'primary white--text'},
+    { text: "סכום",     value: "amount",   class: 'primary white--text'},
+    { text: "פעולות",   value: "actions",       class: 'primary white--text'},
+  ]
+
+export const INVOICE_HEADERS = [
+    // { text: "supplierId",     value: "supplierId",      class: 'primary white--text'},
+    { text: "מס' תשלום",     value: "paymentId",      class: 'primary white--text'},
+    { text: "מס' חשבונית",     value: "invoiceId",   class: 'primary white--text'},
+    { text: "תאריך",      value: "date",    class: 'primary white--text'},
+    { text: "סכום",     value: "amount",   class: 'primary white--text'},
+    { text: "פעולות",   value: "actions",       class: 'primary white--text'},
+  ]
+
+  export const INVOICE_SHORT_HEADERS = [
+    { text: "חשבונית",     value: "invoiceId",   class: 'primary white--text'},
+    { text: "תאריך",      value: "date",    class: 'primary white--text'},
+    { text: "סכום",     value: "amount",   class: 'primary white--text'},
   ]
 
 export const PHONE_HEADERS = [

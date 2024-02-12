@@ -6,11 +6,6 @@
                 <div v-if="isMobile()"> {{local ? 'L' : 'P'}}                   </div>
                 <div v-else>            {{local ? 'Local Host' : 'Production'}} </div>
             </div>
-            <!-- <export-excel :fetch="fetchData" type="xlsx" name="all-data">
-                <v-btn x-small class="btn btn-danger" :loading="loading">
-                    <v-icon small>mdi-download</v-icon>
-                </v-btn>
-            </export-excel> -->
             <v-spacer></v-spacer>
             <v-btn-toggle v-if="isTicketsList" v-model="ticketStatus" @change="onFilterChange" group >
                 <v-btn text value="Open"     elevation='3' small> פתוח </v-btn>
@@ -48,13 +43,6 @@ export default {
             local: false,
             production: false,
             loading: false,
-            // links: [
-            //     {icon: 'mdi-briefcase-check', text: 'כרטיסי תיקון', route: '/'},
-            //     {icon: 'mdi-account-multiple-check', text: 'לקוחות', route: '/customers'},
-            //     {icon: 'mdi-file-table-box-multiple', text: 'טבלאות', route: '/tables'},
-            //     {icon: 'mdi-cash-multiple', text: 'יבוא נתונים', route: '/import'},
-            //     {icon: 'mdi-cash-multiple', text: 'ספר טלפונים', route: '/phones'},
-            // ],
             links : ROUTE_LIST,
             dialog: false,
             ticketStatus: 'Open',

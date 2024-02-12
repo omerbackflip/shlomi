@@ -36,5 +36,10 @@ export default new Router({
       name: "phone-list",
       component: () => import("./components/PhoneList")
     },
+    {
+      path: "/payments",
+      name: "payment-list",
+      component: () => import("./components/PaymentsList")
+    },
   ]
 });

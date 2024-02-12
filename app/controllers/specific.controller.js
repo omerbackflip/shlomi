@@ -271,20 +271,12 @@ exports.sendMessageToUser = async (req, res) => {
 };
 
 exports.getWithRemark = async (req, res) => {
-	const { ticketStatus, customerId, year } = req.query;
+	// Here - req.query consist the find arguments
 	let data = {};
-	if (ticketStatus) {
-		if (ticketStatus === 'ALL') {
-			data = await Ticket.find({ticketStatus: {$ne: 'Closed'}})
-		} else {
-			data = await Ticket.find({ticketStatus: ticketStatus})
-		}
-	}
-	if (customerId) {
-		data = await Ticket.find({customerId: customerId})
-	}
-	if (year) {
-		data = await Ticket.find({year: year})
+	if (Object.values(req.query) == 'ALL') {
+		data = await Ticket.find({ticketStatus: {$ne: 'Closed'}})
+	} else { 
+		data = await Ticket.find(req.query)
 	}
 	
 	// if have customer remark, add it to the object

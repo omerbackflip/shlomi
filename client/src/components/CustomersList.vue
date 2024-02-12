@@ -79,11 +79,11 @@
 			<v-card class="p-3 m-3" max-width="45%">
 				<v-data-table
 					:headers="ticketHeaders"
+					:items="tickets"
 					disable-pagination
 					hide-default-footer
 					fixed-header
 					height="73vh"
-					:items="tickets"
 					item-key="_id"
 					mobile-breakpoint="0"
 					:loading = "loading"
@@ -172,9 +172,9 @@ export default {
 		},
 
 		async customerTicketsList(item) {
+			let tickets = await apiService.getMany({model: TICKET_MODEL, customerId:item.customerId})
+			this.tickets = tickets.data
 			if (item.hasTicket) {
-				let tickets = await apiService.getMany({model: TICKET_MODEL, customerId:item.customerId})
-				this.tickets = tickets.data
 				this.customerName = item.fullName
 				this.customerRemark = item.remark
 			} else {

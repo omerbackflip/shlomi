@@ -1,0 +1,159 @@
+<template>
+    <v-dialog
+        v-model="dialog"
+        width="700"
+        :style="{ zIndex: options.zIndex }"
+        @keydown.esc="cancel"
+    >
+        <v-card style="direction: rtl;">
+            <v-card-title class="text-h5 grey lighten-2">
+                הוספת/עדכון תשלום - {{ supplierName}}
+            </v-card-title>
+            <div class="field-margin" v-show="showMessage">
+                {{message}}
+            </div>
+                <v-row class="p-3 overflow-hidden">
+                    <v-col cols="2">
+                        <v-text-field v-model="payment.paymentId" label="מס' תשלום"></v-text-field>
+                    </v-col>
+                    <v-col cols="2">
+                        <v-text-field v-model="payment.checkId" label="מס' שיק"></v-text-field>
+                    </v-col>
+                    <v-col cols="2">
+                        <v-menu v-model="dateMenu" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-text-field v-model="payment.date" v-bind="attrs" v-on="on" label="תאריך" reverse readonly></v-text-field>
+                            </template>
+                            <v-date-picker v-model="payment.date" @input="dateMenu = false"></v-date-picker>
+                        </v-menu>
+                    </v-col>
+                    <v-col cols="2">
+                        <v-text-field v-model="payment.amount" label="סכום"></v-text-field>
+                    </v-col>          
+                </v-row>
+                <v-data-table 
+                    :headers ="invoiceHeaders" 
+                    :items = "avilableInvoices"
+                    disable-pagination
+                    hide-default-footer
+                    fixed-header
+                    dense
+                    class="elevation-3"
+                    show-select
+                    v-model="pickedInvoices"
+                    item-key="amount"
+                >
+                <template v-slot:[`item.date`]="{ item }">
+					<span>{{ item.date ? new Date(item.date).toLocaleDateString('en-GB') : ''}}</span>
+				</template>
+                </v-data-table>
+            <v-divider></v-divider>
+
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" text @click="dialog = false"> בטל </v-btn>
+                <v-btn :disabled = "!payment" color="primary" text @click="submitTable()"> שמור </v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+</template>
+
+<script>
+import { INVOICE_SHORT_HEADERS, INVOICE_MODEL, PAYMENT_MODEL } from "../constants/constants";
+import apiService from "../services/apiService";
+
+export default {
+    name: "payment-form",
+    data() {
+        return {
+            payment: {},
+			dialog: false,
+            resolve: null,  
+			showMessage: false,
+			message: '',
+            options: {
+                color: "grey lighten-3",
+                width: 500,
+                zIndex: 200,
+            },
+            supplierName:'',
+            avilableInvoices:[],
+            pickedInvoices:[],
+            invoiceHeaders: INVOICE_SHORT_HEADERS,
+            dateMenu: false,
+        };
+    },
+    methods: {
+        async submitTable() {
+			try {
+				let response;
+                if (this.payment._id) {
+                    response = await apiService.update(this.payment._id , {...this.payment} , {model:PAYMENT_MODEL});
+                } else {
+                    response = await apiService.create({...this.payment} , {model:PAYMENT_MODEL});
+                }
+                // update avilable list to final before save to db.
+                let piked_id = this.pickedInvoices.map((item) => {
+                    return (item._id)
+                })
+                this.avilableInvoices.map(async (item) => {
+                        item.paymentId = piked_id.includes(item._id) ? this.payment.paymentId : ''
+                    return (item) 
+                })
+
+                this.avilableInvoices.map(async (item) => {
+                        await apiService.update(item._id , {...item} , {model:INVOICE_MODEL});
+                    return (item) 
+                })
+
+                if(response.data && response.data.data) {
+					this.message = 'Payment successfully created/updated!';
+				}
+                this.showMessage = true;
+                setTimeout(() => {
+                    this.dialog = false;
+                    this.showMessage = false;
+                    this.resolve(true);
+                }, 2000);
+			} catch (error) {
+				console.log(error);
+			}
+		},
+
+        async open(payment, supplierName) {
+            this.payment = payment;
+            this.payment.date ? this.payment.date = new Date(this.payment.date).toISOString().substr(0, 10) : ''
+            this.supplierName = supplierName
+            let response = await apiService.getMany({model:INVOICE_MODEL, supplierId:this.payment.supplierId, paymentId:this.payment.paymentId}) 
+            let response1 = await apiService.getMany({model:INVOICE_MODEL, supplierId:this.payment.supplierId, paymentId:""})
+            this.avilableInvoices = (response.data);
+            for (let i=0 ; i < response1.data.length ; i++) {  
+                this.avilableInvoices.push(response1.data[i]);
+            }
+            this.pickedInvoices = this.avilableInvoices.filter((item) => {
+                    this.payment.amount += item.amount;
+                return (item.paymentId)
+            })
+            this.dialog = true;
+            return new Promise((resolve) => {
+                this.resolve = resolve;
+            });
+        },
+    },
+
+    watch: {
+        pickedInvoices() {
+            this.payment.amount = this.pickedInvoices.reduce((total, item) => {
+                return item.amount + total
+            },0)
+        },
+    }
+};
+</script>
+
+<style scoped>
+.overflow-hidden{
+    overflow: hidden;
+    margin: 0px;
+}
+</style>
