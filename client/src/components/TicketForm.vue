@@ -4,7 +4,7 @@
         width="1000"
         @keydown.esc="dialog = false"
     >
-        <v-card >
+        <v-card>
             <v-card-title class="text-h6 grey lighten-2">
                 <v-btn @click="dialog = false" small><v-icon small> mdi-close </v-icon> </v-btn>
                 <v-spacer></v-spacer>
@@ -232,15 +232,7 @@ export default {
 			showMessage: false,
             search: '',
             newTicket: false,
-            // defectList: [],
-            // itemList: [],
-            // accessoriesList: [],
-            // entryConditionList: [],
-            // defectFoundList: [],
-            // defectFixesList: [],
-            // ticketRemarkList: [],
             customers: [],
-            // remarkList: '',
             customerInfo: '',
             loading: false,
             menu: false,
@@ -312,7 +304,6 @@ export default {
             this.dialog = false;  // need to close this dialog so no print it in background
             this.submitTicket()
             setTimeout(() => {  
-                // this.$emit('openPrint', {ticket: this.ticket, customerInfo: this.customerInfo, printExit});                
                 printExit   ? this.$refs.printExitVue.print({ticket: this.ticket, customerInfo: this.customerInfo, printExit}) 
                             : this.$refs.printEntryVue.print({ticket: this.ticket, customerInfo: this.customerInfo, printExit});
             }, 1000);
@@ -347,64 +338,8 @@ export default {
 			await this.$refs.customerForm.open(this.customerInfo, false);
         },
 
-        // async getDefectList() {
-        //     let response = await apiService.getMany({model: TABLE_MODEL , table_id: 4} );
-        //     this.defectList = response.data.map((item) => {
-        //         return (item.description)
-        //     });
-        // },
-
-        // async getRemarkList() {
-        //     let response = await apiService.getMany({model: TABLE_MODEL , table_id: 2} );
-        //     this.remarkList = response.data.map((item) => {
-        //         return (item.description)
-        //     });
-        // },
-
-        // async getItemsList() {
-        //     let response = await apiService.getMany({model: TABLE_MODEL , table_id: 3} );
-        //     this.itemList = response.data.map((item) => {
-        //         return (item.description)
-        //     });
-        // },
-
-        // async getAccessoriesList() {
-        //     let response = await apiService.getMany({model: TABLE_MODEL , table_id: 11} );
-        //     this.accessoriesList = response.data.map((item) => {
-        //         return (item.description)
-        //     });
-        // },
-
-        // async getEntryConditionList() {
-        //     let response = await apiService.getMany({model: TABLE_MODEL , table_id: 12} );
-        //     this.entryConditionList = response.data.map((item) => {
-        //         return (item.description)
-        //     });
-        // },
-
-        // async getDefectFoundList() {
-        //     let response = await apiService.getMany({model: TABLE_MODEL , table_id: 5} );
-        //     this.defectFoundList = response.data.map((item) => {
-        //         return (item.description)
-        //     });
-        // },
-
-        // async getDefectFixesList() {
-        //     let response = await apiService.getMany({model: TABLE_MODEL , table_id: 6} );
-        //     this.defectFixesList = response.data.map((item) => {
-        //         return (item.description)
-        //     });
-        // },
-
-        // async getTicketRemarksList() {
-        //     let response = await apiService.getMany({model: TABLE_MODEL , table_id: 16} );
-        //     this.ticketRemarkList = response.data.map((item) => {
-        //         return (item.description)
-        //     });
-        // },
-
         async getTableLists() {
-            let response = await specificServiceEndPoints.getTables();
+            let response = await specificServiceEndPoints.getTabels();
             this.tableList = response.data;
             // console.log(this.tableList)
         },
@@ -463,14 +398,6 @@ export default {
     },
 
     mounted() {
-		// this.getDefectList();
-		// this.getItemsList();
-		// this.getAccessoriesList();
-		// this.getEntryConditionList();
-		// this.getDefectFoundList();
-		// this.getDefectFixesList();
-        // this.getRemarkList();
-        // this.getTicketRemarksList();
         this.yitra = 0;
         this.getTableLists();
 	},

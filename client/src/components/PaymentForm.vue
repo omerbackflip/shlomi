@@ -3,9 +3,9 @@
         v-model="dialog"
         width="700"
         :style="{ zIndex: options.zIndex }"
-        @keydown.esc="cancel"
+        @keydown.esc="dialog = false"
     >
-        <v-card style="direction: rtl;">
+        <v-card class="center">
             <v-card-title class="text-h5 grey lighten-2">
                 הוספת/עדכון תשלום - {{ supplierName}}
             </v-card-title>
@@ -31,22 +31,24 @@
                         <v-text-field v-model="payment.amount" label="סכום"></v-text-field>
                     </v-col>          
                 </v-row>
-                <v-data-table 
-                    :headers ="invoiceHeaders" 
-                    :items = "avilableInvoices"
-                    disable-pagination
-                    hide-default-footer
-                    fixed-header
-                    dense
-                    class="elevation-3"
-                    show-select
-                    v-model="pickedInvoices"
-                    item-key="amount"
-                >
-                <template v-slot:[`item.date`]="{ item }">
-					<span>{{ item.date ? new Date(item.date).toLocaleDateString('en-GB') : ''}}</span>
-				</template>
-                </v-data-table>
+                <v-col cols="8" >
+                    <v-data-table 
+                        :headers ="invoiceHeaders" 
+                        :items = "avilableInvoices"
+                        disable-pagination
+                        hide-default-footer
+                        fixed-header
+                        dense
+                        class="elevation-3"
+                        show-select
+                        v-model="pickedInvoices"
+                        item-key="amount"
+                    >
+                    <template v-slot:[`item.date`]="{ item }">
+                        <span>{{ item.date ? new Date(item.date).toLocaleDateString('en-GB') : ''}}</span>
+                    </template>
+                    </v-data-table>
+                </v-col>
             <v-divider></v-divider>
 
             <v-card-actions>
@@ -155,5 +157,10 @@ export default {
 .overflow-hidden{
     overflow: hidden;
     margin: 0px;
+    place-content: center;
+}
+.center {
+    direction: rtl; 
+    text-align: -webkit-center;
 }
 </style>

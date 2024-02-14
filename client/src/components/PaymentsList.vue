@@ -5,68 +5,68 @@
 
         <!-- Main table_id = 9 -->
         <v-card class="p-3 m-3" max-width="15%">
-        <v-data-table
-          :headers="suppliersHeaders"
-          :items="suppliers"
-          disable-pagination
-          hide-default-footer
-          fixed-header
-          height="75vh"
-          dense
-          class="elevation-3"
-					:loading = "loading"
-					loader-height = "30"
-					mobile-breakpoint="0"
-        >
-          <template v-slot:top>
-            <v-toolbar flat>
-            <v-toolbar-title>רשימת ספקים</v-toolbar-title>
-            </v-toolbar>
-          </template>
-          <template v-slot:body="{ items }">
-          <tbody>
-            <tr v-for="(item, key) in items" :key="item.table_code" :class="key === selectedRow ? 'custom-highlight-row' : ''" 
-                    @click="filterSupplier(key,item)" style="text-align: right;">
-              <td>{{ item.description }}</td>
-            </tr>
-          </tbody>
-      </template>
-        </v-data-table>
+          <v-data-table
+            :headers="suppliersHeaders"
+            :items="suppliers"
+            disable-pagination
+            hide-default-footer
+            fixed-header
+            height="75vh"
+            dense
+            class="elevation-3"
+            :loading = "loading"
+            loader-height = "30"
+            mobile-breakpoint="0"
+          >
+            <template v-slot:top>
+              <v-toolbar flat>
+              <v-toolbar-title>רשימת ספקים</v-toolbar-title>
+              </v-toolbar>
+            </template>
+            <template v-slot:body="{ items }">
+              <tbody>
+                <tr v-for="(item, key) in items" :key="item.table_code" :class="key === selectedRow ? 'custom-highlight-row' : ''" 
+                        @click="filterSupplier(key,item)" style="text-align: right;">
+                  <td>{{ item.description }}</td>
+                </tr>
+              </tbody>
+            </template>
+          </v-data-table>
         </v-card>
 
         <!-- Payments -->
         <v-card class="p-3 m-3" max-width="30%">
-        <v-data-table
-          :headers="paymentHeaders"
-          :items="payments"
-          disable-pagination
-          hide-default-footer
-          fixed-header
-          height="75vh"
-          dense
-          class="elevation-3"
-					:loading = "loading"
-					loader-height = "30"
-					mobile-breakpoint="0"
-        >
-          <template v-slot:top>
-            <v-toolbar flat>
-            <v-toolbar-title>תשלומים - {{supplier.description}}</v-toolbar-title>
-              <v-spacer></v-spacer>
-              <v-btn v-show="supplier.table_code" @click="addPayment()" small class="mt-3">
-                <v-icon class="nav-icon" small >mdi-plus</v-icon> פתח תשלום חדש </v-btn>
-            </v-toolbar>
-          </template>
-          <template v-slot:[`item.actions`]="{ item }">
-            <div v-show="supplier.table_code">
-              <v-icon small @click="addPayment(item)"> mdi-pencil </v-icon>
-              <v-icon small @click="deletePayment(item._id, item.paymentId)"> mdi-delete </v-icon>
-            </div>
-          </template>
-          <template v-slot:[`item.date`]="{ item }">
-            <span>{{ item.date ? new Date(item.date).toLocaleDateString('en-GB') : '-'}}</span>
-          </template>
-        </v-data-table>
+          <v-data-table
+            :headers="paymentHeaders"
+            :items="payments"
+            disable-pagination
+            hide-default-footer
+            fixed-header
+            height="75vh"
+            dense
+            class="elevation-3"
+            :loading = "loading"
+            loader-height = "30"
+            mobile-breakpoint="0"
+          >
+            <template v-slot:top>
+              <v-toolbar flat>
+              <v-toolbar-title>תשלומים - {{supplier.description}}</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn v-show="supplier.table_code" @click="addPayment()" small class="mt-3">
+                  <v-icon class="nav-icon" small >mdi-plus</v-icon> פתח תשלום חדש </v-btn>
+              </v-toolbar>
+            </template>
+            <template v-slot:[`item.actions`]="{ item }">
+              <div v-show="supplier.table_code">
+                <v-icon small @click="addPayment(item)"> mdi-pencil </v-icon>
+                <v-icon small @click="deletePayment(item._id, item.paymentId)"> mdi-delete </v-icon>
+              </div>
+            </template>
+            <template v-slot:[`item.date`]="{ item }">
+              <span>{{ item.date ? new Date(item.date).toLocaleDateString('en-GB') : '-'}}</span>
+            </template>
+          </v-data-table>
         </v-card>
 
         <!-- Invoices -->

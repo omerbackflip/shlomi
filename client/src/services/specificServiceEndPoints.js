@@ -115,7 +115,7 @@ class SpecificServiceEndPoints {
 		return await axios.get(`${baseUrl}/specific/get-with-remark`,{params});
 	}
 
-	async getTables() {
+	async getTabels() {
 		return await axios.get(`${baseUrl}/specific/get-tables`);
 	}
 }

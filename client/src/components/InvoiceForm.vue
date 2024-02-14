@@ -3,9 +3,9 @@
         v-model="dialog"
         width="700"
         :style="{ zIndex: options.zIndex }"
-        @keydown.esc="cancel"
+        @keydown.esc="dialog = false"
     >
-        <v-card style="direction: rtl;">
+        <v-card class="center">
             <v-card-title class="text-h5 grey lighten-2">
                 הוספה/עדכון חשבונית/ת.משלוח לספק
             </v-card-title>
@@ -13,13 +13,6 @@
                 {{message}}
             </div>
                 <v-row class="p-3 overflow-hidden">
-                    <!-- <v-col cols="2">
-                        <v-combobox v-model="invoice.supplierId" :items="suppliers" :return-object="false" 
-                                    item-value="table_code" item-text="description" label="בחר ספק" reverse />
-                    </v-col>
-                    <v-col cols="2">
-                        <v-text-field v-model="invoice.paymentId" label="paymentId"></v-text-field>
-                    </v-col> -->
                     <v-col cols="2">
                         <v-text-field v-model="invoice.invoiceId" label="invoiceId"></v-text-field>
                     </v-col>
@@ -100,13 +93,6 @@ export default {
                 this.resolve = resolve;
             });
         },
-        // async retrieveSuppliers() {
-        //     this.loading = true
-        //     let suppliers
-        //     suppliers = await apiService.getMany({ model: TABLE_MODEL, table_id: 9})
-        //     this.suppliers = suppliers.data
-        //     this.loading = false
-        // },
     },
 };
 </script>
@@ -115,5 +101,10 @@ export default {
 .overflow-hidden{
     overflow: hidden;
     margin: 0px;
+    place-content: center;
+}
+.center {
+    direction: rtl; 
+    text-align: -webkit-center;
 }
 </style>
