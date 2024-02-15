@@ -386,6 +386,7 @@ export default {
                 const response = await apiService.getOne({model: CUSTOMER_MODEL, fullName:newFullName})
                 this.customerInfo = response.data
                 this.ticket.customerId = this.customerInfo.customerId
+                this.$forceUpdate();            
             }
         },
 

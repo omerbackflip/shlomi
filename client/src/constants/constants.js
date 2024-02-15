@@ -38,16 +38,16 @@ export const TICKET_SHORT_HEADERS = [
 ]
 
 export const CUSTOMER_HEADERS_VD = [  // used for vue-virtual-table
-    { name: 'מס לקוח', prop: 'customerId' ,searchable: true, class: 'primary white--text'},
+    // { name: 'מס לקוח', prop: 'customerId' ,searchable: true, class: 'primary white--text'},
     { name: 'שם לקוח', prop: 'fullName', actionName:'name' ,searchable: true, class: 'primary white--text'},
     { name: 'טלפון 1', prop: 'phone1' ,searchable: true, class: 'primary white--text'},
     { name: 'טלפון 2', prop: 'phone2' ,searchable: true, class: 'primary white--text'},
     { name: 'טלפון 3', prop: 'phone3' ,searchable: true, class: 'primary white--text'},
-    { name: 'הערה לקוח', prop: 'remark' , class: 'primary white--text'},
+    // { name: 'הערה לקוח', prop: 'remark' , class: 'primary white--text'},
 ]
 
 export const CUSTOMER_HEADERS = [
-    { text: 'שם לקוח', value: 'fullName', actionName:'name' , align:'end', class: 'primary white--text', width: '40%'},
+    { text: 'שם לקוח', value: 'fullName', align:'end', class: 'primary white--text', width: '40%'},
     { text: 'בית 1', value: 'phone1' , align:'end', class: 'primary white--text', width: '20%'},
     { text: 'נייד 3', value: 'phone3' , align:'end', class: 'primary white--text', width: '20%'},
     { text: 'נוסף 2', value: 'phone2' , align:'end', class: 'primary white--text', width: '20%'},

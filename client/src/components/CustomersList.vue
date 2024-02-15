@@ -20,7 +20,6 @@
 				>
 					<template v-slot:top>
 						<v-toolbar flat>
-							<!-- <v-toolbar-title>{{customers.length}}</v-toolbar-title> -->
 							<v-text-field v-model="search" class="mx-4"	label="Search" clearable></v-text-field>
 							<v-spacer></v-spacer>
 							<export-excel :data="customers" type="xlsx" name="customers">
@@ -35,13 +34,14 @@
 						</v-toolbar>
 					</template>
 					<template v-slot:[`item.fullName`]="{ item }">
-					<div style="text-align: right;">
-						<span :class="{'bold-red': item.hasTicket}" @click="customerForm(item)">{{ item.fullName }}</span>
-						<span v-show="item.remark" class="custRmk">{{' - ' + item.remark }}</span>
+					<div style="text-align: right;" :class="{'bg-yellow': item.hasTicket}" >
+						<td @click.stop>
+							<span @click="customerForm(item)">{{ item.fullName }}</span>
+						</td>
+						<span v-show="item.remark" class="custRmk">{{item.remark }}</span>
 					</div>
 					</template>
 				</v-data-table>
-				<!-- <v-btn @click="updateHasTickets">Script</v-btn> -->
 				<!-- <vue-virtual-table
 					:config="headersVD"
 					:data="customers"
@@ -96,7 +96,7 @@
 						<span>{{ item.entryDate ? new Date(item.entryDate).toLocaleDateString('en-GB') : '-'}}</span>
 					</template>
 					<template v-slot:[`item.ticketStatus`]="{ item }">
-						<div :class="{'bold-red': (item.ticketStatus!='Closed')}">{{ item.ticketStatus }}</div>
+						<div :class="{'bg-yellow': (item.ticketStatus!='Closed')}">{{ item.ticketStatus }}</div>
 					</template>
 				</v-data-table>
 			</v-card>
@@ -136,7 +136,7 @@ export default {
 			// headersVD: CUSTOMER_HEADERS,
 			search: '',
 			loading: false,
-			hasTicket: 2, // 0=hasTicket   1=noTicket   2=all
+			// hasTicket: 2, // 0=hasTicket   1=noTicket   2=all
 			ticketHeaders: TICKET_SHORT_HEADERS,
 			customerName: '',
 			customerRemark: '',
@@ -200,11 +200,6 @@ export default {
 		async updateTicket(item) {
 			await this.$refs.ticketForm.open(item, false);
 		},
-
-		itemRowBackground(item) {
-			let classes = item.hasTicket ? "bold-red" : ""
-			return classes
-		},
 	},
 
 	mounted() {
@@ -253,25 +248,25 @@ export default {
 .v-label {
 	font-size: smaller !important;
 }
-.bold-red {
-	font-weight: bold;
-	/* background-color: lightgreen !important; */
-	color: red;
+.bg-yellow {
+	background-color: yellow !important;
 	text-align: justify;
 }
 .custRmk{
-	font-size: smaller;
-	/* color: black; */
+	font-size: large;
+	color: red;
 	text-align: justify;
 }
 .hebrew {
   direction: rtl;
-  /* text-align: right; */
   text-align-last: right !important
 }
 @media print {  /* Very important to remove background in print mode */
     .no-print {
         display: none;
     }
+}	
+td {
+	font-size: larger !important;
 }
 </style>

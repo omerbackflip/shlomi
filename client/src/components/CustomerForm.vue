@@ -9,6 +9,8 @@
     >
         <v-card class="hebrew">
             <v-card-title class="text-h6 grey lighten-2">
+                <v-btn @click="dialog = false" small><v-icon small> mdi-close </v-icon> </v-btn>
+                <v-spacer></v-spacer>
                 כרטיס לקוח - {{ customer.fullName }}
             </v-card-title>
             <div class="field-margin" v-show="showMessage">
@@ -59,7 +61,7 @@
             <v-card-actions>
                 <v-btn v-if="customer.hasTicket" color="primary" text @click="customerTickets"> פעילות לקוח </v-btn>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" text @click="deleteCustomer(customer._id)"> מחק </v-btn>
+                <v-btn v-show="!newCustomer" color="primary" text @click="deleteCustomer(customer._id)"> מחק </v-btn>
                 <v-btn color="primary" text @click="dialog = false"> סגור </v-btn>
                 <v-btn color="primary" text @click="submitCustomer()" :disabled = "!customer.customerId"> שמור </v-btn>
             </v-card-actions>
@@ -69,7 +71,7 @@
 </template>
 
 <script>
-import { CUSTOMER_MODEL,TABLE_MODEL } from "../constants/constants";
+import { CUSTOMER_MODEL,TABLE_MODEL, TICKET_MODEL } from "../constants/constants";
 import apiService from "../services/apiService";
 import ConfirmDialog from './Common/ConfirmDialog.vue';
 
@@ -101,10 +103,17 @@ export default {
 					response = await apiService.create({...this.customer} , {model:CUSTOMER_MODEL});
 				} else {
 					response = await apiService.update(this.customer._id , { ...this.customer } , {model:CUSTOMER_MODEL});
+                    // now update the customerName in exsiting tickets.
+                    response = await apiService.getMany({model:TICKET_MODEL , customerId: this.customer.customerId})
+                    response.data.map(async(item) => {
+                        item.customerName = this.customer.fullName
+                        await apiService.update(item._id , { ...item } , {model:TICKET_MODEL});
+                        return (item)
+                    })
 				}
 
                 if(response.data && response.data.data) {
-					this.message = 'Customer successfully created/updated!';
+					this.message = 'עדכון/הוספה בוצע בהצלחה';
 				}
                 this.dialog = false;
                 this.resolve(this.customer.fullName);
