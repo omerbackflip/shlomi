@@ -22,9 +22,9 @@ export const ROUTE_LIST = [
 ]
 
 export const TICKET_HEADERS = [
-    { text: 'מס כרטיס', value: 'ticketId', align:'end', class: 'primary white--text', width: '10%' },
+    { text: 'כרטיס', value: 'ticketId', align:'end', class: 'primary white--text', width: '5%' },
     { text: 'כניסה', value: 'entryDate', align:'end', class: 'primary white--text', width: '10%' },
-    { text: 'שם לקוח', value: 'customerName', align:'end', class: 'primary white--text', width: '15%' },
+    { text: 'שם לקוח', value: 'customerName', align:'end', class: 'primary white--text', width: '20%' },
     { text: 'מכשיר', value: 'item', align:'end', class: 'primary white--text', width: '20%' },
     { text: 'תאור תקלה', value: 'defectDescription', align:'end', class: 'primary white--text', width: '45%' },
 ]

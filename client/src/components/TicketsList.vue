@@ -19,7 +19,6 @@
 			>
 				<template v-slot:top>
 					<v-toolbar flat>
-						<!-- <v-toolbar-title>{{ticketsFilter}} Tickets - {{tickets.length}}</v-toolbar-title> -->
 						<v-toolbar-title>{{header}} - {{tickets.length}}</v-toolbar-title>
 						<v-spacer></v-spacer>
 						<v-text-field v-model="search" class="mx-4"	label="Search" clearable></v-text-field>
@@ -39,12 +38,8 @@
 					<span>{{ item.entryDate ? new Date(item.entryDate).toLocaleDateString('en-GB') : '-'}}</span>
 				</template>
 				<template v-slot:[`item.customerName`]="{ item }">
-					<v-tooltip bottom>
-						<template v-slot:activator="{ on }">
-							<div v-on="on" :class="{custRmk: item.customerRemark}">{{ item.customerName }}</div>
-						</template>
-						<span>{{item.customerRemark}}</span>
-					</v-tooltip>
+						<tr>{{ item.customerName }}</tr>
+						<span v-show="item.customerRemark" class="custRmk" style="text-align: -webkit-right;">{{item.customerRemark}}</span>
 				</template>
 			</v-data-table>
 		</v-layout>
@@ -198,14 +193,14 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .row {
 	cursor: pointer;
 }
 
 .v-toolbar__title {
         white-space: pre-wrap !important;
-        font-size: smaller !important;
+        /* font-size: smaller !important; */
     }
 
 
@@ -220,6 +215,12 @@ export default {
   text-align-last: right !important
 }
 .custRmk{
-	background-color: yellow;
+	color: red;
+	/* font-size: large; */
+	display: grid;
+}
+
+td {
+	font-size: larger !important;
 }
 </style>

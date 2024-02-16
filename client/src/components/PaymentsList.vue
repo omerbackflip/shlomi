@@ -4,7 +4,7 @@
 			<v-row no-gutters>
 
         <!-- Main table_id = 9 -->
-        <v-card class="p-3 m-3" max-width="15%">
+        <v-card class="p-3" max-width="15%">
           <v-data-table
             :headers="suppliersHeaders"
             :items="suppliers"
@@ -35,7 +35,7 @@
         </v-card>
 
         <!-- Payments -->
-        <v-card class="p-3 m-3" max-width="30%">
+        <v-card class="p-3" max-width="40%">
           <v-data-table
             :headers="paymentHeaders"
             :items="payments"
@@ -70,7 +70,7 @@
         </v-card>
 
         <!-- Invoices -->
-        <v-card class="p-3 m-3" max-width="30%">
+        <v-card class="p-3" max-width="40%">
         <v-data-table
           :headers="invoiceHeaders"
           :items="invoices"
@@ -265,8 +265,8 @@ export default {
 <style scoped>
 .list {
   text-align: left;
-  max-width: auto;
-  margin: auto;
+  /* max-width: auto;
+  margin: auto; */
 }
 .row {
   justify-content: space-around;
@@ -275,12 +275,6 @@ export default {
 }
 .mr-2{
   margin-right: 15px;
-}
-.title {
-  border: 5px solid rgb(197, 100, 31);
-  text-align: center;
-  font-weight: bold;
-  font-size: 16px;
 }
 .hebrew {
   direction: rtl;
