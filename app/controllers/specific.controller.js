@@ -250,7 +250,7 @@ exports.getTables = async (req,res) => {
 
 		data = await Table.find({table_id: 3})
 		data = data.map((item) => {
-			return item.description
+			return ({item:item.description, price:item.table_code})
 		})
 		table.itemList = data
 

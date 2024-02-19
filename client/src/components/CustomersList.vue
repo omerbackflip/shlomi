@@ -167,6 +167,7 @@ export default {
 		},
 
 		async customerTicketsList(item) {
+			this.loading = true;
 			let tickets = await apiService.getMany({model: TICKET_MODEL, customerId:item.customerId})
 			this.tickets = tickets.data
 			if (item.hasTicket) {
@@ -177,6 +178,7 @@ export default {
 				this.customerRemark = '';
 			}
 			if (this.tickets.length === 1) this.updateTicket(this.tickets[0])
+			this.loading = false;
 		},
 
 		async deleteCustomer(id) {

@@ -32,16 +32,16 @@
                                     ></v-autocomplete>
                                 </v-col>
                                 <v-col class="px-2" cols="6" sm="2">
-                                    <v-text-field type="text" :value="customerInfo.address +' '+ customerInfo.city" readonly reverse hide-details></v-text-field>
+                                    <v-text-field type="text" :value="customerInfo.address +' '+ customerInfo.city" disabled reverse hide-details></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="4" sm="2">
-                                    <v-text-field type="text" :value="customerInfo.phone1" readonly hide-details></v-text-field>
+                                    <v-text-field type="text" :value="customerInfo.phone1" disabled hide-details></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="4" sm="2">
-                                    <v-text-field type="text" :value="customerInfo.phone3" readonly hide-details></v-text-field>
+                                    <v-text-field type="text" :value="customerInfo.phone3" disabled hide-details></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="4" sm="2">
-                                    <v-text-field type="text" :value="customerInfo.phone2" readonly hide-details></v-text-field>
+                                    <v-text-field type="text" :value="customerInfo.phone2" disabled hide-details></v-text-field>
                                 </v-col>
                                 <v-col>
                                     <v-btn @click="openExsitingCustomerForm" style="margin-top: 15px;" x-small><v-icon small>mdi-pencil</v-icon></v-btn>
@@ -58,7 +58,8 @@
                             <h6 class="area-header">פרטי מכשיר</h6>
                             <v-row no-gutters>
                                 <v-col class="px-2" cols="6">
-                                    <v-combobox v-model="ticket.item" :items="tableList.itemList" label="שם המכשיר" reverse />
+                                    <!-- <v-combobox v-model="ticket.item" :items="tableList.itemList" label="שם המכשיר" reverse /> -->
+                                    <v-combobox v-model="ticket.item" :items="itemList" label="שם המכשיר" reverse />
                                 </v-col>
                                 <v-col cols="3"></v-col>
                                 <v-col class="px-2" cols="3">
@@ -83,7 +84,7 @@
                                 <v-col cols="3"></v-col>
                                 <v-col class="px-2" cols="3">
                                     <v-text-field v-model="ticket.fixPrice" :value="ticket.fixPrice" label="מחיר בדיקה" style="padding-top: 0px; margin-top: 0px;"
-                                        reverse @focus="$event.target.select()"></v-text-field>
+                                        reverse @focus="$event.target.select()" :class="fixPriceUnequal ? bg-red : ''"></v-text-field>
                                 </v-col>
                             </v-row>
                         </div>
@@ -241,6 +242,9 @@ export default {
             printExit: false,
             yitra: 0,
             tableList:[],
+            itemList:[],
+            fixPriceUnequal: false,
+            avoidWatch: true,
         };
     },
 
@@ -269,11 +273,12 @@ export default {
                 let response = await specificServiceEndPoints.searchCustomers({customer: value});
                 this.customers = response.data.customers.map(item => item.fullName);
             }
-        }, 500),
+        }, 500), // this is the time-lap in ms' between each key-pressed
 
         async open(ticket, newTicket) {
             // console.log(ticket.ticketStatus)
             this.loading = true;
+            this.avoidWatch = true;
             this.dialog = true;
             this.newTicket = newTicket;
             this.ticket = newTicket ? NEW_TICKET : {...ticket};
@@ -286,7 +291,7 @@ export default {
                 this.ticket.vat = vatTable.data.table_code;
                 this.yitra = 0;
             } else {
-                this.customers.push(ticket.customerName);
+                this.customers.push(ticket.customerName);  // need this !
                 const response = await apiService.getOne({model: CUSTOMER_MODEL, fullName:ticket.customerName})
                 this.customerInfo = response.data
                 this.ticket.exitDate ? this.ticket.exitDate = new Date(this.ticket.exitDate).toISOString().substr(0, 10) : ''
@@ -295,6 +300,7 @@ export default {
                 this.yitra = this.ticket.prepaid ? this.ticket.total-this.ticket.prepaid : 0;
             }
             this.loading = false;
+            this.avoidWatch = false;
             return new Promise((resolve) => { // must !! for update the db while 'submitTicket'
                 this.resolve = resolve;
             });
@@ -306,7 +312,7 @@ export default {
             setTimeout(() => {  
                 printExit   ? this.$refs.printExitVue.print({ticket: this.ticket, customerInfo: this.customerInfo, printExit}) 
                             : this.$refs.printEntryVue.print({ticket: this.ticket, customerInfo: this.customerInfo, printExit});
-            }, 1000);
+            }, 500);
         },
 
         async sendMessage() {
@@ -341,6 +347,7 @@ export default {
         async getTableLists() {
             let response = await specificServiceEndPoints.getTabels();
             this.tableList = response.data;
+            this.itemList = response.data.itemList.map((item) => item.item);
             // console.log(this.tableList)
         },
 
@@ -382,19 +389,31 @@ export default {
 
         // Whenever the customer is piked - fatch customerInfo
         async 'ticket.customerName' (newFullName) {
-            if (newFullName) {
-                const response = await apiService.getOne({model: CUSTOMER_MODEL, fullName:newFullName})
-                this.customerInfo = response.data
-                this.ticket.customerId = this.customerInfo.customerId
-                this.$forceUpdate();            
+            if (!this.avoidWatch) {
+                if (newFullName) { // avoide run when newFullName=undefine (watch run any when on open)
+                    const response = await apiService.getOne({model: CUSTOMER_MODEL, fullName:newFullName})
+                    this.customerInfo = response.data
+                    this.ticket.customerId = this.customerInfo.customerId
+                    // this.$forceUpdate();            
+                }
             }
         },
 
         // Whenever the Item is piked - fatch the corresponding fixPrice from the table (placed in table_code field)
-        async 'ticket.item' (item) {
-            const response = await apiService.getOne({model: TABLE_MODEL, table_id: 3, description:item})
-            this.ticket.fixPrice = response.data.table_code
-            this.$forceUpdate();            
+        // Note, only for itemList - the structure of the tableList for itemList is "item: xxx, price: xx.xx"
+        async 'ticket.item' () {
+            let price = this.tableList.itemList.filter((item) => {return item.item === this.ticket.item})
+            // here price is structured as "{item: xxx, price: xx.xx}"
+            if (price.length === 1) { //avoide cases where the item name wasn't found (item was override by Shlomi) 
+                if (this.ticket.fixPrice > 0 ) {
+                    if (this.ticket.fixPrice != price[0].price ) {
+                        window.alert("שים לב, מחיר בדיקה לא זהה למחיר בטבלת מכשירים")
+                    }
+                }else {
+                    this.ticket.fixPrice = price[0].price
+                }
+            }
+            // this.$forceUpdate();            
         },
     },
 
@@ -432,5 +451,8 @@ export default {
     }
     .h6.area-header {
         margin-bottom: 0px !important;
+    }
+    .bg-red {
+        background-color: red;
     }
 </style>
