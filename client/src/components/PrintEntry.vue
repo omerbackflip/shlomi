@@ -151,7 +151,7 @@ export default {
             customerInfo: {address: null},
             topPadding: printTicketTopPadding,
             rightPadding: printTicketRightPadding,
-            printExit: true,
+            // printExit: true,
         };
     },
 
@@ -159,7 +159,7 @@ export default {
         print(data) {
             this.ticket = data.ticket;
             this.customerInfo = data.customerInfo;
-            this.printExit = data.printExit;
+            // this.printExit = data.printExit;
             this.entryDialog = true;
             setTimeout(() => {	
                 window.print();

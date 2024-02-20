@@ -195,7 +195,6 @@ exports.getDefectsToSave = (data) => {
             let table = {
                 ticketId: item['ticketId'],
                 type: item['type'],
-                id: item['id'],
                 description: item['description'],
             }
 

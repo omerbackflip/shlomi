@@ -139,7 +139,7 @@ exports.saveDefectsBulk = async (req, res) => {
 
         let defectsArray = specificService.getDefectsToSave(data[0]);
 		defectsArray.map(async (item) => {
-			let ticket = dbService.getSingleItem(Ticket,{ticketId: item.ticketId})
+			let ticket = await dbService.getSingleItem(Ticket,{ticketId: item.ticketId})
 			ticket.defectFound = item.defectFound
 			ticket.defectFixes = item.defectFixes
 			await dbService.updateItem(Ticket,{ticketId:item.ticketId}, ticket)

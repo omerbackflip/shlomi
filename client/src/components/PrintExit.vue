@@ -74,7 +74,7 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="index in maxRows" :key="index">
-                                            <td>{{ ticket.defectFixes[index-1] }}</td>
+                                            <td style="direction: rtl;">{{ ticket.defectFixes[index-1] }}</td>
                                             <td>{{ ticket.defectFound[index-1] }}</td>
                                         </tr>
                                     </tbody>
@@ -92,7 +92,10 @@
                                     <tr><td>{{ ticket.vat }} ש"ח</td><td>מע"מ</td></tr>
                                     <tr><td>{{ ticket.total ? ticket.total.toLocaleString() : '' }} ש"ח</td><td>סה"כ לתשלום</td></tr>
                                     <tr><td>{{ ticket.prepaid }} ש"ח</td><td>שולם ע"ח  ({{ ticket.prepaidInvoice }}) </td></tr>
-                                    <tr style="font-size: large;"><td><b>{{ (ticket.total - ticket.prepaid).toLocaleString()}} ש"ח</b></td><td><b>סה"כ נותר לתשלום</b></td></tr>
+                                    <tr style="font-size: large;">
+                                        <td><b>{{ (ticket.total - ticket.prepaid).toLocaleString()}} ש"ח</b></td>
+                                        <td><b>סה"כ נותר לתשלום</b></td>
+                                    </tr>
                                 </tbody>
                                 {{ ticket.invoice }} -  חשבונית
                             </table>
@@ -128,9 +131,7 @@
 </template>
 
 <script>
-// import { TICKET_MODEL, CUSTOMER_MODEL, VAT_PERCENTAGE, NEW_TICKET, printTicketTopPadding, printTicketRightPadding } from "../constants/constants";
 import { printTicketTopPadding, printTicketRightPadding } from "../constants/constants";
-// import apiService from "../services/apiService";
 
 export default {
     name: "print-exit",
@@ -141,7 +142,7 @@ export default {
             customerInfo: {address: null},
             topPadding: printTicketTopPadding,
             rightPadding: printTicketRightPadding,
-            printExit: true,
+            // printExit: true,
         };
     },
 
@@ -149,11 +150,11 @@ export default {
         print(data) {
             this.ticket = data.ticket;
             this.customerInfo = data.customerInfo;
-            this.printExit = data.printExit;
+            // this.printExit = data.printExit;
             this.exitDialog = true;
             setTimeout(() => {	
                 window.print();
-			}, 500);
+			}, 1500); // this time is needed to let the screen to be full proccessed then call to print
         },
     },
     watch: {
@@ -196,21 +197,21 @@ export default {
         border-radius: 0px;
     }
 
-    .area-header {
+    /* .area-header {
         color: blue;
         font-size: large;
         font-style:italic;
-    }
+    } */
 
     .container {
         padding-bottom: 0px !important;
         /* font-size: small; */
     }
-    @media screen {
+    /* @media screen {
         div.divHeader, div.divFooter{
             display: none;
         }
-    }
+    } */
     @media print {
         .print-logo{
             width: 30%;

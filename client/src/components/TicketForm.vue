@@ -84,7 +84,7 @@
                                 <v-col cols="3"></v-col>
                                 <v-col class="px-2" cols="3">
                                     <v-text-field v-model="ticket.fixPrice" :value="ticket.fixPrice" label="מחיר בדיקה" style="padding-top: 0px; margin-top: 0px;"
-                                        reverse @focus="$event.target.select()" :class="fixPriceUnequal ? bg-red : ''"></v-text-field>
+                                        reverse @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                             </v-row>
                         </div>
@@ -243,7 +243,6 @@ export default {
             yitra: 0,
             tableList:[],
             itemList:[],
-            fixPriceUnequal: false,
             avoidWatch: true,
         };
     },
@@ -306,13 +305,13 @@ export default {
             });
         },
 
-        printForm(printExit) {
+        async printForm(printExit) {
             this.dialog = false;  // need to close this dialog so no print it in background
-            this.submitTicket()
+            await this.submitTicket()
             setTimeout(() => {  
                 printExit   ? this.$refs.printExitVue.print({ticket: this.ticket, customerInfo: this.customerInfo, printExit}) 
                             : this.$refs.printEntryVue.print({ticket: this.ticket, customerInfo: this.customerInfo, printExit});
-            }, 500);
+            }, 10);
         },
 
         async sendMessage() {
@@ -412,7 +411,7 @@ export default {
                 }else {
                     this.ticket.fixPrice = price[0].price
                 }
-            }
+            } // eliminate this "else" due to many case of this.   "else window.alert("שים לב, לא נקוב מחיר בדיקה")"
             // this.$forceUpdate();            
         },
     },
