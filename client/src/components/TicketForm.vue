@@ -148,16 +148,16 @@
                                     <v-text-field v-model="ticket.discountPrecent" reverse suffix="%" @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="3" sm="1">
-                                    <v-text-field v-model="ticket.discountAmount" label="הנחה" disabled reverse @focus="$event.target.select()"></v-text-field>
+                                    <v-text-field v-model="ticket.discountAmount" label="הנחה" disabled reverse></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="3" sm="1">
-                                    <v-text-field v-model="ticket.amount" label="סופי" disabled reverse @focus="$event.target.select()"></v-text-field>
+                                    <v-text-field v-model="ticket.amount" label="סופי" disabled reverse></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="3" sm="1">
-                                    <v-text-field v-model="ticket.vat" label="מע'מ" disabled reverse @focus="$event.target.select()"></v-text-field>
+                                    <v-text-field v-model="ticket.vat" label="מע'מ" disabled reverse></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="3" sm="1">
-                                    <v-text-field v-model="ticket.total" label="סה'כ" disabled reverse @focus="$event.target.select()"></v-text-field>
+                                    <v-text-field v-model="ticket.total" label="סה'כ" disabled reverse></v-text-field>
                                 </v-col>
                                 <v-col cols="6" sm="1"></v-col>
                                 <v-col class="px-2" cols="3" sm="1">
@@ -348,12 +348,19 @@ export default {
         },
 
         async openNewCustomerForm(){
-			this.ticket.customerName = await this.$refs.customerForm.open(null, true);
-            this.customers.push(this.ticket.customerName);
+			let newCustomer = await this.$refs.customerForm.open(null, true);
+            this.customerNameAddress = newCustomer.fullName + " - " + newCustomer.address + (newCustomer.city ? (" - " +  newCustomer.city) : '') ;
+            this.customerInfo = newCustomer;
+            this.ticket.customerId = this.customerInfo.customerId
+            this.ticket.customerName = this.customerInfo.fullName
         },
 
         async openExsitingCustomerForm(){
-			await this.$refs.customerForm.open(this.customerInfo, false);
+			let exsitingCustomer = await this.$refs.customerForm.open(this.customerInfo, false);
+            this.customerNameAddress = exsitingCustomer.fullName + " - " + exsitingCustomer.address + (exsitingCustomer.city ? (" - " +  exsitingCustomer.city) : '') ;
+            this.customerInfo = exsitingCustomer;
+            this.ticket.customerId = this.customerInfo.customerId
+            this.ticket.customerName = this.customerInfo.fullName
         },
 
         async getTableLists() {
@@ -362,28 +369,6 @@ export default {
             this.itemList = response.data.itemList.map((item) => item.item);
             // console.log(this.tableList)
         },
-
-        // onAmountChange() {
-        //     let { amount } = this.ticket;
-        //     if(amount && amount >= 0) {
-        //         this.ticket.total = (parseFloat(amount) * (1 + this.ticket.vat/100 )).toFixed(0);
-        //     } else {
-        //         this.ticket.amount = 0;
-        //         this.ticket.total = 0;
-        //     }
-        //     this.yitra = this.ticket.total-this.ticket.prepaid;
-        // },
-
-        // onTotalChange() {
-        //     let { total } = this.ticket;
-        //     if(total && total >= 0) {
-        //         this.ticket.amount = (parseFloat(total)/(1+this.ticket.vat/100)).toFixed(0);
-        //     } else {
-        //         this.ticket.amount = 0;
-        //         this.ticket.total = 0;
-        //     }
-        //     this.yitra = this.ticket.total-this.ticket.prepaid;
-        // },
     },
 
     watch: {
@@ -398,7 +383,6 @@ export default {
         async 'customerNameAddress' (nameNAddress) {
             if (nameNAddress.value) { // avoide run first time (while open, there is no object)
                 const response = await apiService.getOne({model: CUSTOMER_MODEL, customerId:nameNAddress.value})
-                // console.log(response.data)
                 this.customerInfo = response.data
                 this.ticket.customerId = this.customerInfo.customerId
                 this.ticket.customerName = this.customerInfo.fullName

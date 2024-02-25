@@ -104,8 +104,8 @@ export default {
 				} else {
 					response = await apiService.update(this.customer._id , { ...this.customer } , {model:CUSTOMER_MODEL});
                     // now update the customerName in exsiting tickets.
-                    response = await apiService.getMany({model:TICKET_MODEL , customerId: this.customer.customerId})
-                    response.data.map(async(item) => {
+                    let response2 = await apiService.getMany({model:TICKET_MODEL , customerId: this.customer.customerId})
+                    response2.data.map(async(item) => {
                         item.customerName = this.customer.fullName
                         await apiService.update(item._id , { ...item } , {model:TICKET_MODEL});
                         return (item)
@@ -116,7 +116,7 @@ export default {
 					this.message = 'עדכון/הוספה בוצע בהצלחה';
 				}
                 this.dialog = false;
-                this.resolve(this.customer.fullName);
+                this.resolve(response.data.data); // bring back the whole customer object
 
 			} catch (error) {
 				console.log(error);
