@@ -1,16 +1,11 @@
 <template>
-    <v-dialog
-        v-model="exitDialog"
-        width="1200"
-        @keydown.esc="exitDialog = false"
-    >
+    <v-dialog v-model="exitDialog" width="1200" @keydown.esc="exitDialog = false">
         <v-card :style="{ 'padding-top': topPadding, 'padding-right': rightPadding, height: '100%' }" class="elevation-0">
             <v-card-title class="text-h4 padding-title text-center">
              כרטיס תיקון מס' - {{ticket.ticketId}}
             </v-card-title>
             <v-container>
                     <!-- ------------------- Customer Area  ------------------- -->
-
                 <div class="col mb--20 right-align" cols="12">
                     <div class="v-area">
                         <div class="row mr-200 mb--30">
@@ -88,7 +83,8 @@
                         <div class=" v-area">
                             <table class="table-payment">
                                 <tbody style="text-align-last: right; direction: rtl;">
-                                    <tr><td>{{ ticket.amount ? ticket.amount.toLocaleString() : '' }} ש"ח</td><td>מחיר</td></tr>
+                                    <tr><td>{{ ticket.discountPrecent > 0  ? ticket.discountBefore.toLocaleString() : ticket.amount.toLocaleString() }} ש"ח</td><td>מחיר</td></tr>
+                                    <tr v-if="ticket.discountPrecent > 0"> <td>{{ ticket.discountAmount }} ש"ח</td><td style="direction: ltr;"> {{ ticket.discountPrecent }}% - הנחה </td></tr>
                                     <tr><td>{{ ticket.vat }} ש"ח</td><td>מע"מ</td></tr>
                                     <tr><td>{{ ticket.total ? ticket.total.toLocaleString() : '' }} ש"ח</td><td>סה"כ לתשלום</td></tr>
                                     <tr><td>{{ ticket.prepaid }} ש"ח</td><td>שולם ע"ח  ({{ ticket.prepaidInvoice }}) </td></tr>
@@ -126,7 +122,6 @@
                 </div>
             </v-container>
         </v-card>
-
     </v-dialog>
 </template>
 
@@ -238,9 +233,10 @@ export default {
         place-content: center;
     }
 
-    .table {
+    /* .table {
       border-collapse: collapse;
-    }
+      padding: 2px;
+    } */
     .table-payment {
       border-collapse: collapse;
       width:   50%;
@@ -366,5 +362,7 @@ export default {
         margin-right: 30px;
         margin-bottom: 30px;
     }
-
+    .table td {
+        padding-left: 3px;
+    }
 </style>

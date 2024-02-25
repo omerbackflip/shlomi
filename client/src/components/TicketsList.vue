@@ -38,8 +38,10 @@
 					<span>{{ item.entryDate ? new Date(item.entryDate).toLocaleDateString('en-GB') : '-'}}</span>
 				</template>
 				<template v-slot:[`item.customerName`]="{ item }">
-						<tr>{{ item.customerName }}</tr>
+					<td style="font-size: large;">
+						{{ item.customerName }}
 						<span v-show="item.customerRemark" class="custRmk" style="text-align: -webkit-right;">{{item.customerRemark}}</span>
+					</td>
 				</template>
 			</v-data-table>
 		</v-layout>
@@ -220,7 +222,7 @@ export default {
 	display: grid;
 }
 
-td {
+/* td {
 	font-size: larger !important;
-}
+} */
 </style>

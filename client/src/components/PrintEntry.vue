@@ -1,9 +1,5 @@
 <template>
-    <v-dialog
-        v-model="entryDialog"
-        width="1200"
-        @keydown.esc="entryDialog = false"
-    >
+    <v-dialog v-model="entryDialog" width="1200" @keydown.esc="entryDialog = false">
         <v-card :style="{ 'padding-top': topPadding, 'padding-right': rightPadding, height: '100%' }" class="elevation-0">
             <v-card-title class="text-h5 text-center">
                שובר הזמנת תיקון מס'  - {{ticket.ticketId}}
@@ -133,14 +129,11 @@
                 </div>
             </v-container>
         </v-card>
-
     </v-dialog>
 </template>
 
 <script>
-// import { TICKET_MODEL, CUSTOMER_MODEL, VAT_PERCENTAGE, NEW_TICKET, printTicketTopPadding, printTicketRightPadding } from "../constants/constants";
 import { printTicketTopPadding, printTicketRightPadding } from "../constants/constants";
-// import apiService from "../services/apiService";
 
 export default {
     name: "print-entry",

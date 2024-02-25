@@ -17,6 +17,7 @@
 					@click:row="customerTicketsList"
 					dense
 					class="elevation-3 hebrew"
+					:item-class="bg_row"
 				>
 					<template v-slot:top>
 						<v-toolbar flat>
@@ -34,12 +35,12 @@
 						</v-toolbar>
 					</template>
 					<template v-slot:[`item.fullName`]="{ item }">
-					<div style="text-align: right;" :class="{'bg-yellow': item.hasTicket}" >
-						<td @click.stop>
-							<span @click="customerForm(item)">{{ item.fullName }}</span>
-						</td>
-						<span v-show="item.remark" class="custRmk">{{item.remark }}</span>
-					</div>
+						<div style="text-align: right;" :class="{'bg-yellow': item.hasTicket}" >
+							<td @click.stop style="font-size: large;">
+								<span @click="customerForm(item)">{{ item.fullName }}</span>
+							</td>
+							<span v-show="item.remark" class="custRmk">{{item.remark }}</span>
+						</div>
 					</template>
 				</v-data-table>
 				<!-- <vue-virtual-table
@@ -202,6 +203,12 @@ export default {
 		async updateTicket(item) {
 			await this.$refs.ticketForm.open(item, false);
 		},
+		
+		bg_row(item) {
+			let classes = '';
+			item.hasTicket ? "bg_row" : ""
+			return classes
+		}
 	},
 
 	mounted() {
@@ -267,8 +274,11 @@ export default {
     .no-print {
         display: none;
     }
-}	
-td {
-	font-size: larger !important;
 }
+.bg_row {
+	background-color: lightgreen;
+}
+/* td {     this td was remarked becasue it's influance the size of the printExit.vue font-size
+	font-size: larger;
+} */
 </style>

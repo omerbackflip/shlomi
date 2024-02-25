@@ -16,23 +16,23 @@
                     <v-col cols="12" style="padding: 0px">
                         <div class="v-area">
                             <v-row no-gutters>
-                                <v-col cols="6" sm="3">
-                                    <v-autocomplete
-                                        v-model="ticket.customerName"
+                                <v-col cols="6" sm="5">
+                                    <!-- replaced from v-autocomplete -->
+                                    <v-combobox
+                                        v-model="customerNameAddress"
                                         auto-select-first
                                         :search-input.sync="search"
                                         append-icon="mdi-account-plus"
-                                        cache-items
+                                        :cache-items = true
                                         class="mx-3"
                                         flat
                                         hide-no-data
                                         hide-details
                                         @click:append="openNewCustomerForm"
                                         :items="customers"
-                                    ></v-autocomplete>
-                                </v-col>
-                                <v-col class="px-2" cols="6" sm="2">
-                                    <v-text-field type="text" :value="customerInfo.address +' '+ customerInfo.city" disabled reverse hide-details></v-text-field>
+                                        :item-value="customers.value"
+                                        :item-text="customers.text"
+                                    ></v-combobox>
                                 </v-col>
                                 <v-col class="px-2" cols="4" sm="2">
                                     <v-text-field type="text" :value="customerInfo.phone1" disabled hide-details></v-text-field>
@@ -140,23 +140,34 @@
                                 <v-col class="px-2" cols="6" sm="1">
                                     <v-text-field v-model="ticket.prepaidInvoice" label="חש' מראש" reverse @focus="$event.target.select()" hide-details></v-text-field>
                                 </v-col>
-                                <v-col cols="6" sm="2"></v-col>
+                                <v-col cols="6" sm="1"></v-col>
                                 <v-col class="px-2" cols="3" sm="1">
-                                    <v-text-field @input="onAmountChange" v-model="ticket.amount" label="סכום" reverse @focus="$event.target.select()"></v-text-field>
+                                    <v-text-field v-model="ticket.discountBefore" label="סכום" reverse @focus="$event.target.select()"></v-text-field>
+                                </v-col>
+                                <v-col class="px-2" cols="3" sm="1">
+                                    <v-text-field v-model="ticket.discountPrecent" reverse suffix="%" @focus="$event.target.select()"></v-text-field>
+                                </v-col>
+                                <v-col class="px-2" cols="3" sm="1">
+                                    <v-text-field v-model="ticket.discountAmount" label="הנחה" disabled reverse @focus="$event.target.select()"></v-text-field>
+                                </v-col>
+                                <v-col class="px-2" cols="3" sm="1">
+                                    <v-text-field v-model="ticket.amount" label="סופי" disabled reverse @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="3" sm="1">
                                     <v-text-field v-model="ticket.vat" label="מע'מ" disabled reverse @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="3" sm="1">
-                                    <v-text-field @input="onTotalChange" v-model="ticket.total" label="סה'כ" reverse @focus="$event.target.select()"></v-text-field>
+                                    <v-text-field v-model="ticket.total" label="סה'כ" disabled reverse @focus="$event.target.select()"></v-text-field>
                                 </v-col>
-                                <v-col cols="6" sm="2"></v-col>
+                                <v-col cols="6" sm="1"></v-col>
                                 <v-col class="px-2" cols="3" sm="1">
                                     <v-text-field  v-model="yitra" label="יתרה לתשלום" disabled reverse></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="3" sm="1">
                                     <v-text-field v-model="ticket.invoice" label="חשבונית" reverse @focus="$event.target.select()"></v-text-field>
                                 </v-col>
+                            </v-row>
+                            <v-row no-gutters>
                                 <v-col class="px-2" cols="2">
                                     <v-menu v-model="menu" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
                                         <template v-slot:activator="{ on, attrs }">
@@ -243,7 +254,8 @@ export default {
             yitra: 0,
             tableList:[],
             itemList:[],
-            avoidWatch: true,
+            customerId: '',
+            customerNameAddress: '',
         };
     },
 
@@ -270,14 +282,16 @@ export default {
         debounceInput: debounce(async function (value) {
             if(value) {
                 let response = await specificServiceEndPoints.searchCustomers({customer: value});
-                this.customers = response.data.customers.map(item => item.fullName);
+                this.customers = response.data.customers.map((item) => {
+                    return ({text: item.fullName + ' - ' + item.address + (item.city ? (' - ' + item.city) : ''), value:item.customerId})
+                    // return ({text: {'customerName': item.fullName, 'address': item.address}, value:item.customerId})
+                });
             }
         }, 500), // this is the time-lap in ms' between each key-pressed
 
         async open(ticket, newTicket) {
             // console.log(ticket.ticketStatus)
             this.loading = true;
-            this.avoidWatch = true;
             this.dialog = true;
             this.newTicket = newTicket;
             this.ticket = newTicket ? NEW_TICKET : {...ticket};
@@ -290,16 +304,15 @@ export default {
                 this.ticket.vat = vatTable.data.table_code;
                 this.yitra = 0;
             } else {
-                this.customers.push(ticket.customerName);  // need this !
-                const response = await apiService.getOne({model: CUSTOMER_MODEL, fullName:ticket.customerName})
+                const response = await apiService.getOne({model: CUSTOMER_MODEL, customerId:ticket.customerId})
                 this.customerInfo = response.data
                 this.ticket.exitDate ? this.ticket.exitDate = new Date(this.ticket.exitDate).toISOString().substr(0, 10) : ''
                 this.ticket.entryDate ? this.ticket.entryDate = new Date(this.ticket.entryDate).toISOString().substr(0, 10) : ''
                 this.ticket.fixDate ? this.ticket.fixDate = new Date(this.ticket.fixDate).toISOString().substr(0, 10) : ''
+                this.customerNameAddress = ticket.customerName + " - " + this.customerInfo.address + (this.customerInfo.city ? (" - " +  this.customerInfo.city) : '') ;  // need this !
                 this.yitra = this.ticket.prepaid ? this.ticket.total-this.ticket.prepaid : 0;
             }
             this.loading = false;
-            this.avoidWatch = false;
             return new Promise((resolve) => { // must !! for update the db while 'submitTicket'
                 this.resolve = resolve;
             });
@@ -350,32 +363,27 @@ export default {
             // console.log(this.tableList)
         },
 
-        onAmountChange() {
-            let { amount } = this.ticket;
-            if(amount && amount >= 0) {
-                // this.ticket.vat = ((parseFloat(amount) * VAT_PERCENTAGE)/100)
-                // this.ticket.total = (this.ticket.vat + parseFloat(amount)).toFixed(0);
-                this.ticket.total = (parseFloat(amount) * (1 + this.ticket.vat/100 )).toFixed(0);
-            } else {
-                this.ticket.amount = 0;
-                // this.ticket.vat = 0;
-                this.ticket.total = 0;
-            }
-            this.yitra = this.ticket.total-this.ticket.prepaid;
-        },
+        // onAmountChange() {
+        //     let { amount } = this.ticket;
+        //     if(amount && amount >= 0) {
+        //         this.ticket.total = (parseFloat(amount) * (1 + this.ticket.vat/100 )).toFixed(0);
+        //     } else {
+        //         this.ticket.amount = 0;
+        //         this.ticket.total = 0;
+        //     }
+        //     this.yitra = this.ticket.total-this.ticket.prepaid;
+        // },
 
-        onTotalChange() {
-            let { total } = this.ticket;
-            if(total && total >= 0) {
-                this.ticket.amount = (parseFloat(total)/(1+this.ticket.vat/100)).toFixed(0);
-                // this.ticket.vat = (parseFloat(total)- this.ticket.amount).toFixed(0);
-            } else {
-                this.ticket.amount = 0;
-                // this.ticket.vat = 0;
-                this.ticket.total = 0;
-            }
-            this.yitra = this.ticket.total-this.ticket.prepaid;
-        },
+        // onTotalChange() {
+        //     let { total } = this.ticket;
+        //     if(total && total >= 0) {
+        //         this.ticket.amount = (parseFloat(total)/(1+this.ticket.vat/100)).toFixed(0);
+        //     } else {
+        //         this.ticket.amount = 0;
+        //         this.ticket.total = 0;
+        //     }
+        //     this.yitra = this.ticket.total-this.ticket.prepaid;
+        // },
     },
 
     watch: {
@@ -387,14 +395,14 @@ export default {
         },
 
         // Whenever the customer is piked - fatch customerInfo
-        async 'ticket.customerName' (newFullName) {
-            if (!this.avoidWatch) {
-                if (newFullName) { // avoide run when newFullName=undefine (watch run any when on open)
-                    const response = await apiService.getOne({model: CUSTOMER_MODEL, fullName:newFullName})
-                    this.customerInfo = response.data
-                    this.ticket.customerId = this.customerInfo.customerId
-                    // this.$forceUpdate();            
-                }
+        async 'customerNameAddress' (nameNAddress) {
+            if (nameNAddress.value) { // avoide run first time (while open, there is no object)
+                const response = await apiService.getOne({model: CUSTOMER_MODEL, customerId:nameNAddress.value})
+                // console.log(response.data)
+                this.customerInfo = response.data
+                this.ticket.customerId = this.customerInfo.customerId
+                this.ticket.customerName = this.customerInfo.fullName
+                // this.$forceUpdate();            
             }
         },
 
@@ -413,6 +421,21 @@ export default {
                 }
             } // eliminate this "else" due to many case of this.   "else window.alert("שים לב, לא נקוב מחיר בדיקה")"
             // this.$forceUpdate();            
+        },
+
+        'ticket.discountBefore' (num) {
+            this.ticket.amount = num -  (this.ticket.discountPrecent ? (num * this.ticket.discountPrecent/100) : 0);
+            this.ticket.total = (parseFloat(this.ticket.amount) * (1 + this.ticket.vat/100 )).toFixed(0);
+            this.yitra = this.ticket.total-this.ticket.prepaid;
+            this.$forceUpdate();            
+        },
+
+        'ticket.discountPrecent' (num) {
+            this.ticket.discountAmount = this.ticket.discountBefore * num/100
+            this.ticket.amount = this.ticket.discountBefore - (this.ticket.discountBefore * this.ticket.discountPrecent/100);
+            this.ticket.total = (parseFloat(this.ticket.amount) * (1 + this.ticket.vat/100 )).toFixed(0);
+            this.yitra = this.ticket.total-this.ticket.prepaid;
+            this.$forceUpdate();            
         },
     },
 
