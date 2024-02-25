@@ -142,10 +142,10 @@
                                 </v-col>
                                 <v-col cols="6" sm="1"></v-col>
                                 <v-col class="px-2" cols="3" sm="1">
-                                    <v-text-field v-model="ticket.discountBefore" label="סכום" reverse @focus="$event.target.select()"></v-text-field>
+                                    <v-text-field v-model="ticket.discountBefore" @change="onDiscountBeforeChange" label="סכום" reverse @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="3" sm="1">
-                                    <v-text-field v-model="ticket.discountPrecent" reverse suffix="%" @focus="$event.target.select()"></v-text-field>
+                                    <v-text-field v-model="ticket.discountPrecent" @change="onDiscountPrecentChange" reverse suffix="%" @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="3" sm="1">
                                     <v-text-field v-model="ticket.discountAmount" label="הנחה" disabled reverse></v-text-field>
@@ -157,7 +157,7 @@
                                     <v-text-field v-model="ticket.vat" label="מע'מ" disabled reverse></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="3" sm="1">
-                                    <v-text-field v-model="ticket.total" label="סה'כ" disabled reverse></v-text-field>
+                                    <v-text-field v-model="ticket.total" @change="onTotalChage" label="סה'כ" reverse @focus="$event.target.select()"></v-text-field>
                                 </v-col>
                                 <v-col cols="6" sm="1"></v-col>
                                 <v-col class="px-2" cols="3" sm="1">
@@ -262,6 +262,7 @@ export default {
     methods: {
         async submitTicket() {
             this.loading = true
+            this.$forceUpdate();
 			try {
 				if(this.newTicket) {
                     this.ticket.year = new Date(this.ticket.entryDate).getFullYear() ;
@@ -369,6 +370,31 @@ export default {
             this.itemList = response.data.itemList.map((item) => item.item);
             // console.log(this.tableList)
         },
+
+        onTotalChage(num) {
+            console.log(num)
+            this.ticket.discountAmount = 0
+            this.ticket.discountPrecent = 0
+            this.ticket.amount = (num/(1+this.ticket.vat/100)).toLocaleString();
+            this.ticket.discountBefore = this.ticket.amount
+            this.yitra = num - this.ticket.prepaid;
+            this.$forceUpdate();    
+        },
+
+        onDiscountPrecentChange(num) {
+            this.ticket.discountAmount = this.ticket.discountBefore * num/100
+            this.ticket.amount = this.ticket.discountBefore - (this.ticket.discountBefore * num/100);
+            this.ticket.total = (parseFloat(this.ticket.amount) * (1 + this.ticket.vat/100 )).toFixed(0);
+            this.yitra = this.ticket.total-this.ticket.prepaid;
+            this.$forceUpdate(); 
+        },
+
+        onDiscountBeforeChange(num) {
+            this.ticket.amount = num -  (this.ticket.discountPrecent ? (num * this.ticket.discountPrecent/100) : 0);
+            this.ticket.total = (parseFloat(this.ticket.amount) * (1 + this.ticket.vat/100 )).toFixed(0);
+            this.yitra = this.ticket.total-this.ticket.prepaid;
+            this.$forceUpdate();            
+        },
     },
 
     watch: {
@@ -406,22 +432,35 @@ export default {
             } // eliminate this "else" due to many case of this.   "else window.alert("שים לב, לא נקוב מחיר בדיקה")"
             // this.$forceUpdate();            
         },
-
-        'ticket.discountBefore' (num) {
-            this.ticket.amount = num -  (this.ticket.discountPrecent ? (num * this.ticket.discountPrecent/100) : 0);
-            this.ticket.total = (parseFloat(this.ticket.amount) * (1 + this.ticket.vat/100 )).toFixed(0);
-            this.yitra = this.ticket.total-this.ticket.prepaid;
-            this.$forceUpdate();            
-        },
-
-        'ticket.discountPrecent' (num) {
-            this.ticket.discountAmount = this.ticket.discountBefore * num/100
-            this.ticket.amount = this.ticket.discountBefore - (this.ticket.discountBefore * this.ticket.discountPrecent/100);
-            this.ticket.total = (parseFloat(this.ticket.amount) * (1 + this.ticket.vat/100 )).toFixed(0);
-            this.yitra = this.ticket.total-this.ticket.prepaid;
-            this.$forceUpdate();            
-        },
     },
+
+    // computed: {
+
+    //     'ticket.discountBefore' (num) {
+    //         this.ticket.amount = num -  (this.ticket.discountPrecent ? (num * this.ticket.discountPrecent/100) : 0);
+    //         this.ticket.total = (parseFloat(this.ticket.amount) * (1 + this.ticket.vat/100 )).toFixed(0);
+    //         this.yitra = this.ticket.total-this.ticket.prepaid;
+    //         this.$forceUpdate();            
+    //     },
+
+    //     'ticket.discountPrecent' (num) {
+    //         this.ticket.discountAmount = this.ticket.discountBefore * num/100
+    //         this.ticket.amount = this.ticket.discountBefore - (this.ticket.discountBefore * num/100);
+    //         this.ticket.total = (parseFloat(this.ticket.amount) * (1 + this.ticket.vat/100 )).toFixed(0);
+    //         this.yitra = this.ticket.total-this.ticket.prepaid;
+    //         this.$forceUpdate();            
+    //     },
+
+    //     'ticket.total' (num) {
+    //         console.log(num)
+    //         this.ticket.discountAmount = 0
+    //         this.ticket.discountPrecent = 0
+    //         this.ticket.amount = (num/(1+this.ticket.vat/100)).toLocaleString();
+    //         this.ticket.discountBefore = this.ticket.amount
+    //         this.yitra = num - this.ticket.prepaid;
+    //         this.$forceUpdate();            
+    //     },
+    // },
 
     mounted() {
         this.yitra = 0;
