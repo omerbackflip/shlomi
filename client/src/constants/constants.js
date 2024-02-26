@@ -5,8 +5,8 @@ export const PHONE_MODEL = 'phones';
 export const PAYMENT_MODEL = 'payments';
 export const INVOICE_MODEL = 'invoices';
 
-export const printTicketTopPadding = '85px';
-export const printTicketRightPadding = '100px';
+export const printTicketTopPadding = '115px';
+export const printTicketRightPadding = '120px';
 
 export const VAT_PERCENTAGE = 17;
 

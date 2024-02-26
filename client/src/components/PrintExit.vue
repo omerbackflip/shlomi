@@ -55,7 +55,7 @@
                     </div>
                 </div>
 
-                <v-row style="justify-content: center;">
+                <v-row style="justify-content: center; margin: auto;">
 
                     <!-- ------------------- Treatment Area  ------------------- -->
                     <v-col class="mb--20" cols="12">
@@ -342,8 +342,8 @@ export default {
     .row {
         display: flex;
         flex-wrap: wrap;
-        margin-right: -15px;
-        margin-left: -15px;
+        /* margin-right: -15px;
+        margin-left: -15px; */
     }
 
     .col {

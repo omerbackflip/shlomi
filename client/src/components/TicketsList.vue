@@ -53,7 +53,6 @@
 
 
 <script>
-// import { TICKET_HEADERS, TICKET_MODEL, isMobile, CUSTOMER_MODEL } from "../constants/constants";
 import { TICKET_HEADERS, TICKET_MODEL, isMobile } from "../constants/constants";
 import apiService from "../services/apiService";
 import TicketForm from './TicketForm.vue';
@@ -152,20 +151,6 @@ export default {
 			await this.$refs.ticketForm.open(item, newTicket);
 			this.getTickets();
 		},
-
-		// async deleteTicket(id) {
-		// 	try {
-		// 		if(id) {
-		// 			if(await this.$refs.confirm.open( "Confirm", "Are you sure to delete this ticket?")){
-		// 				let params = {model:TICKET_MODEL, id:id}
-		// 				await apiService.deleteOne(params)
-		// 				this.getTickets();
-		// 			}
-		// 		}
-		// 	} catch (error) {
-		// 		console.log(error);		
-		// 	}
-		// },
 
 		async fetchData(){
             this.loading = true;

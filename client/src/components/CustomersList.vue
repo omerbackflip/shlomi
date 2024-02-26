@@ -1,14 +1,14 @@
 <template>
 	<div class="row no-print">
 		<v-layout class="mt-1" row wrap>
-			<v-card class="p-3 m-3" max-width="50%">
+			<v-card class="p-0 m-0" max-width="50%">
 				<v-data-table
 					:headers="headers"
 					:items="customers"
 					disable-pagination
 					hide-default-footer
 					fixed-header
-					height="73vh"
+					height="75vh"
 					item-key="customerId"
 					mobile-breakpoint="0"
 					:search="search"
@@ -72,14 +72,14 @@
 				</vue-virtual-table> -->
 				<!-- <v-btn @click="updateHasTickets" :loading="loading">Run HasTicket Script</v-btn> -->
 			</v-card>
-			<v-card class="p-3 m-3" max-width="45%">
+			<v-card class="p-0 m-0" max-width="49%">
 				<v-data-table
 					:headers="ticketHeaders"
 					:items="tickets"
 					disable-pagination
 					hide-default-footer
 					fixed-header
-					height="73vh"
+					height="75vh"
 					item-key="_id"
 					mobile-breakpoint="0"
 					:loading = "loading"
