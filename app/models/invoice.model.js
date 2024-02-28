@@ -6,6 +6,7 @@ module.exports = mongoose => {
       date: Date,
       amount: Number,
       paymentId: Number,
+      remark: String,
     },
     { timestamps: true }
   );

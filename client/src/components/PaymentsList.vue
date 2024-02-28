@@ -1,10 +1,9 @@
 <template>
   <div class="list row">
-		<v-container class="bg-surface-variant">
+		<v-layout class="mt-1" row wrap>
 			<v-row no-gutters>
-
         <!-- Main table_id = 9 -->
-        <v-card class="p-3" max-width="15%">
+        <v-card class="p-0 m-0" max-width="15%">
           <v-data-table
             :headers="suppliersHeaders"
             :items="suppliers"
@@ -33,9 +32,8 @@
             </template>
           </v-data-table>
         </v-card>
-
         <!-- Payments -->
-        <v-card class="p-3" max-width="40%">
+        <v-card class="p-0 m-0" max-width="42%">
           <v-data-table
             :headers="paymentHeaders"
             :items="payments"
@@ -66,11 +64,13 @@
             <template v-slot:[`item.date`]="{ item }">
               <span>{{ item.date ? new Date(item.date).toLocaleDateString('en-GB') : '-'}}</span>
             </template>
+            <template v-slot:[`item.amount`]="{ item }">
+              <span>{{ item.amount.toLocaleString() }}</span>
+            </template>
           </v-data-table>
         </v-card>
-
         <!-- Invoices -->
-        <v-card class="p-3" max-width="40%">
+        <v-card class="p-0 m-0" max-width="42%">
         <v-data-table
           :headers="invoiceHeaders"
           :items="invoices"
@@ -102,10 +102,13 @@
           <template v-slot:[`item.date`]="{ item }">
             <span>{{ item.date ? new Date(item.date).toLocaleDateString('en-GB') : '-'}}</span>
           </template>
+          <template v-slot:[`item.amount`]="{ item }">
+            <span>{{ item.amount.toLocaleString() }}</span>
+          </template>
         </v-data-table>
         </v-card>
       </v-row>
-    </v-container>
+		</v-layout>
     <payment-form ref="paymentForm"/>
     <invoice-form ref="invoiceForm"/>
   </div>
@@ -179,7 +182,6 @@ export default {
     async retrievePayments() {
 			this.loading = true
       let response = await apiService.getMany({ model: PAYMENT_MODEL, supplierId: this.supplier.table_code})
-      // this.payments = response.data;
       if (response.data.length > 0) {
         this.payments = response.data.sort((a, b) => a.paymentId - b.paymentId);
         this.lastPaymentId = this.payments[this.payments.length-1].paymentId;

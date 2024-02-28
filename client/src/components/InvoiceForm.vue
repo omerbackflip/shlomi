@@ -12,22 +12,27 @@
             <div class="field-margin" v-show="showMessage">
                 {{message}}
             </div>
-                <v-row class="p-3 overflow-hidden">
+                <v-row class="overflow-hidden">
                     <v-col cols="2">
-                        <v-text-field v-model="invoice.invoiceId" label="invoiceId"></v-text-field>
+                        <v-text-field v-model="invoice.invoiceId" label="חשבונית/ת.משלוח" hide-details></v-text-field>
                     </v-col>
                     <v-col cols="2">
                         <v-menu v-model="dateMenu" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
                             <template v-slot:activator="{ on, attrs }">
-                                <v-text-field v-model="invoice.date" v-bind="attrs" v-on="on" label="תאריך" reverse readonly></v-text-field>
+                                <v-text-field v-model="invoice.date" v-bind="attrs" v-on="on" label="תאריך" reverse readonly hide-details></v-text-field>
                             </template>
                             <v-date-picker v-model="invoice.date" @input="dateMenu = false"></v-date-picker>
                         </v-menu>
                     </v-col>
                     <v-col cols="2">
-                        <v-text-field v-model="invoice.amount" label="Amount"></v-text-field>
+                        <v-text-field v-model="invoice.amount" label="סכום" hide-details></v-text-field>
                     </v-col>          
                 </v-row>
+                <v-row class="overflow-hidden">
+                    <v-col cols="8">
+                        <v-text-field v-model="invoice.remark" label="הערה" hide-details></v-text-field>
+                    </v-col>
+                </v-row> 
             <v-divider></v-divider>
             <v-card-actions>
                 <v-spacer></v-spacer>
@@ -70,7 +75,7 @@ export default {
                     response = await apiService.create({...this.invoice} , {model:INVOICE_MODEL});
                 }
                 if(response.data && response.data.data) {
-					this.message = 'Table successfully created/updated!';
+					this.message = 'רשומה עודכנה בהצלחה !!';
 				}
                 this.showMessage = true;
                 setTimeout(() => {

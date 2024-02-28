@@ -18,7 +18,7 @@
                             <v-text-field disabled v-model="table.table_id" label="ID"></v-text-field>
                         </v-col>
                         <v-col cols="2">
-                            <v-text-field v-show="table.table_id===99" v-model="table.table_code" label="Code"></v-text-field>
+                            <v-text-field v-show="table.table_id===99 || table.table_id===3" v-model="table.table_code" label="Code"></v-text-field>
                         </v-col>
                         <v-col cols="8">
                             <v-text-field v-model="table.description" label="תאור"></v-text-field>

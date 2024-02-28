@@ -312,7 +312,6 @@ export default {
                 this.ticket.fixDate ? this.ticket.fixDate = new Date(this.ticket.fixDate).toISOString().substr(0, 10) : ''
                 this.customerNameAddress = ticket.customerName + " - " + this.customerInfo.address + (this.customerInfo.city ? (" - " +  this.customerInfo.city) : '') ;  // need this !
                 this.yitra = this.ticket.prepaid ? this.ticket.total-this.ticket.prepaid : 0;
-                if (this.ticket.ticketRemark.length > 0) window.alert ("הערה לכרטיס:\n" + this.ticket.ticketRemark)
             }
             this.loading = false;
             return new Promise((resolve) => { // must !! for update the db while 'submitTicket'

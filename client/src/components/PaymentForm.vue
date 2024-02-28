@@ -7,30 +7,38 @@
     >
         <v-card class="center">
             <v-card-title class="text-h5 grey lighten-2">
-                הוספת/עדכון תשלום - {{ supplierName}}
+                {{ payment._id ? 'עדכון' : 'הוספה' }} - {{ supplierName}}
             </v-card-title>
             <div class="field-margin" v-show="showMessage">
                 {{message}}
             </div>
-                <v-row class="p-3 overflow-hidden">
+                <v-row class="overflow-hidden">
                     <v-col cols="2">
-                        <v-text-field v-model="payment.paymentId" label="מס' תשלום"></v-text-field>
+                        <v-btn v-if="payment._id" @click="copyPayment">שכפל</v-btn>         
                     </v-col>
                     <v-col cols="2">
-                        <v-text-field v-model="payment.checkId" label="מס' שיק"></v-text-field>
+                        <v-text-field v-model="payment.paymentId" label="מס' תשלום" hide-details></v-text-field>
+                    </v-col>
+                    <v-col cols="2">
+                        <v-text-field v-model="payment.checkId" label="מס' שיק" hide-details></v-text-field>
                     </v-col>
                     <v-col cols="2">
                         <v-menu v-model="dateMenu" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
                             <template v-slot:activator="{ on, attrs }">
-                                <v-text-field v-model="payment.date" v-bind="attrs" v-on="on" label="תאריך" reverse readonly></v-text-field>
+                                <v-text-field v-model="payment.date" v-bind="attrs" v-on="on" label="תאריך" reverse readonly hide-details></v-text-field>
                             </template>
                             <v-date-picker v-model="payment.date" @input="dateMenu = false"></v-date-picker>
                         </v-menu>
                     </v-col>
                     <v-col cols="2">
-                        <v-text-field v-model="payment.amount" label="סכום"></v-text-field>
-                    </v-col>          
+                        <v-text-field v-model="payment.amount" label="סכום" hide-details></v-text-field>
+                    </v-col> 
                 </v-row>
+                <v-row class="overflow-hidden">
+                    <v-col cols="10">
+                        <v-text-field v-model="payment.remark" label="הערה" hide-details></v-text-field>
+                    </v-col>
+                </v-row> 
                 <v-col cols="8" >
                     <v-data-table 
                         :headers ="invoiceHeaders" 
@@ -89,7 +97,7 @@ export default {
         async submitTable() {
 			try {
 				let response;
-                if (this.payment._id) {
+                if (this.payment._id) { // if payment_id does NOT exsit - this is a new Payment
                     response = await apiService.update(this.payment._id , {...this.payment} , {model:PAYMENT_MODEL});
                 } else {
                     response = await apiService.create({...this.payment} , {model:PAYMENT_MODEL});
@@ -109,8 +117,9 @@ export default {
                 })
 
                 if(response.data && response.data.data) {
-					this.message = 'Payment successfully created/updated!';
+					this.message = 'תשלום עודכן בהצלחה !!';
 				}
+
                 this.showMessage = true;
                 setTimeout(() => {
                     this.dialog = false;
@@ -141,6 +150,17 @@ export default {
                 this.resolve = resolve;
             });
         },
+
+        async copyPayment() {
+            this.payment._id = null
+            this.payment.checkId = null
+            this.payment.date = null
+            let response = await apiService.getMany({ model: PAYMENT_MODEL, supplierId: this.payment.supplierId})
+            if (response.data.length > 0) {
+                let payments = response.data.sort((b, a) => a.paymentId - b.paymentId);
+                this.payment.paymentId = payments[0].paymentId+1;
+            } 
+        }
     },
 
     watch: {
@@ -157,6 +177,7 @@ export default {
 .overflow-hidden{
     overflow: hidden;
     margin: 0px;
+    padding: 0px;
     place-content: center;
 }
 .center {

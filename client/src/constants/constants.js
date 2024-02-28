@@ -6,7 +6,7 @@ export const PAYMENT_MODEL = 'payments';
 export const INVOICE_MODEL = 'invoices';
 
 export const printTicketTopPadding = '115px';
-export const printTicketRightPadding = '120px';
+export const printTicketRightPadding = '125px';
 
 export const VAT_PERCENTAGE = 17;
 
@@ -26,7 +26,8 @@ export const TICKET_HEADERS = [
     { text: 'כניסה', value: 'entryDate', align:'end', class: 'primary white--text', width: '10%' },
     { text: 'שם לקוח', value: 'customerName', align:'end', class: 'primary white--text', width: '20%' },
     { text: 'מכשיר', value: 'item', align:'end', class: 'primary white--text', width: '20%' },
-    { text: 'תאור תקלה', value: 'defectDescription', align:'end', class: 'primary white--text', width: '45%' },
+    { text: 'הערה לכרטיס', value: 'ticketRemark', align:'end', class: 'primary white--text', width: '20%' },
+    { text: 'תאור תקלה', value: 'defectDescription', align:'end', class: 'primary white--text', width: '25%' },
 ]
 
 export const TICKET_SHORT_HEADERS = [
@@ -61,22 +62,22 @@ export const TABLE_HEADERS = [
     { text: "פעולות",   value: "actions",       class: 'primary white--text'},
   ]
 
-export const PAYMENT_HEADERS = [
-    // { text: "supplierId",     value: "supplierId",      class: 'primary white--text'},
-    { text: "מס' תשלום",     value: "paymentId",      class: 'primary white--text'},
-    { text: "מס' שיק",     value: "checkId",      class: 'primary white--text'},
-    { text: "תאריך",      value: "date",    class: 'primary white--text'},
-    { text: "סכום",     value: "amount",   class: 'primary white--text'},
-    { text: "פעולות",   value: "actions",       class: 'primary white--text'},
+export const PAYMENT_HEADERS = [    
+    { text: "ID",     value: "paymentId",      class: 'primary white--text', width: '8%'},
+    { text: "שיק",     value: "checkId",      class: 'primary white--text', width: '12%'},
+    { text: "תאריך",      value: "date",    class: 'primary white--text', width: '20%'},
+    { text: "סכום",     value: "amount",   class: 'primary white--text', width: '11%'},
+    { text: "הערה",     value: "remark",      class: 'primary white--text', width: '40%'},
+    { text: "",   value: "actions",       class: 'primary white--text', width: '9%'},
   ]
 
 export const INVOICE_HEADERS = [
-    // { text: "supplierId",     value: "supplierId",      class: 'primary white--text'},
-    { text: "מס' תשלום",     value: "paymentId",      class: 'primary white--text'},
-    { text: "מס' חשבונית",     value: "invoiceId",   class: 'primary white--text'},
-    { text: "תאריך",      value: "date",    class: 'primary white--text'},
-    { text: "סכום",     value: "amount",   class: 'primary white--text'},
-    { text: "פעולות",   value: "actions",       class: 'primary white--text'},
+    { text: "ID",     value: "paymentId",      class: 'primary white--text', width: '8%'},
+    { text: "חשבונית",     value: "invoiceId",   class: 'primary white--text', width: '12%'},
+    { text: "תאריך",      value: "date",    class: 'primary white--text', width: '20%'},
+    { text: "סכום",     value: "amount",   class: 'primary white--text', width: '11%'},
+    { text: "הערה",     value: "remark",      class: 'primary white--text', width: '40%'},
+    { text: "",   value: "actions",       class: 'primary white--text', width: '9%'},
   ]
 
   export const INVOICE_SHORT_HEADERS = [
