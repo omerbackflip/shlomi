@@ -24,9 +24,9 @@ export const ROUTE_LIST = [
 export const TICKET_HEADERS = [
     { text: 'כרטיס', value: 'ticketId', align:'end', class: 'primary white--text', width: '5%' },
     { text: 'כניסה', value: 'entryDate', align:'end', class: 'primary white--text', width: '10%' },
-    { text: 'שם לקוח', value: 'customerName', align:'end', class: 'primary white--text', width: '20%' },
+    { text: 'שם לקוח', value: 'customerName', align:'start', class: 'primary white--text', width: '20%' },
     { text: 'מכשיר', value: 'item', align:'end', class: 'primary white--text', width: '20%' },
-    { text: 'הערה לכרטיס', value: 'ticketRemark', align:'end', class: 'primary white--text', width: '20%' },
+    { text: 'הערה לכרטיס', value: 'ticketRemark', align:'start', class: 'primary white--text', width: '20%' },
     { text: 'תאור תקלה', value: 'defectDescription', align:'end', class: 'primary white--text', width: '25%' },
 ]
 
@@ -38,6 +38,12 @@ export const TICKET_SHORT_HEADERS = [
     { text: 'סטטוס', value: 'ticketStatus', align:'end', class: 'primary white--text' },
 ]
 
+export const TICKET_MOBILE_HEADERS = [
+    // { text: 'כניסה', value: 'entryDate', align:'end', class: 'primary white--text', width: '20%'  },
+    { text: 'שם לקוח', value: 'customerName', align:'start', class: 'primary white--text', width: '50%' },
+    { text: 'מכשיר', value: 'item', align:'start', class: 'primary white--text', width: '50%'  },
+    // { text: 'תקלה', value: 'defectDescription', align:'end', class: 'primary white--text', width: '20%'  },
+]
 export const CUSTOMER_HEADERS_VD = [  // used for vue-virtual-table
     // { name: 'מס לקוח', prop: 'customerId' ,searchable: true, class: 'primary white--text'},
     { name: 'שם לקוח', prop: 'fullName', actionName:'name' ,searchable: true, class: 'primary white--text'},

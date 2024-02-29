@@ -2,34 +2,34 @@
 	<div class="row no-print">
 		<v-layout class="mt-1" row wrap>
 			<v-data-table
-				:headers="headers"
+				:headers="getHeaders()"
+				:items="tickets"
 				disable-pagination
 				hide-default-footer
 				fixed-header
 				height="78vh"
-				:items="tickets"
 				:single-expand="true"
 				mobile-breakpoint="0"
 				:search = "search"
 				:loading = "loading"
 				loader-height = "30"
 				dense
-				class="elevation-3 hebrew"
+				class="hebrew p-0"
 				@click:row="updateTicket"
 			>
 				<template v-slot:top>
 					<v-toolbar flat>
 						<v-toolbar-title>{{header}} - {{tickets.length}}</v-toolbar-title>
 						<v-spacer></v-spacer>
-						<v-text-field v-model="search" class="mx-4"	label="Search" clearable></v-text-field>
+						<v-text-field v-model="search" class="mx-4"	label="Search" clearable hide-details></v-text-field>
 						<v-spacer></v-spacer>
 						<v-btn @click="updateTicket()" small class="mt-3 m-2">
 							<v-icon class="nav-icon" small >mdi-plus</v-icon>
 							<div v-if="!isMobile()"> כרטיס חדש </div>
 						</v-btn>
-						<export-excel :fetch="fetchData" type="xlsx" name="tickets">
+						<export-excel v-if="!isMobile()" :fetch="fetchData" type="xlsx" name="tickets">
 							<v-btn small class="btn btn-danger mt-1" :loading="loading">
-								<v-icon >mdi-download</v-icon>
+								<v-icon>mdi-download</v-icon>
 							</v-btn>
 						</export-excel>
 					</v-toolbar>
@@ -40,8 +40,13 @@
 				<template v-slot:[`item.customerName`]="{ item }">
 					<td style="font-size: large;">
 						{{ item.customerName }}
-						<span v-show="item.customerRemark" class="custRmk" style="text-align: -webkit-right;">{{item.customerRemark}}</span>
+						<span v-show="item.customerRemark && !isMobile()" class="custRmk">{{item.customerRemark}}</span>
+						<span v-if="isMobile()" style="font-size:medium; display: block;">{{ new Date(item.entryDate).toLocaleDateString('en-GB') }}</span>
 					</td>
+				</template>
+				<template v-if="isMobile()" v-slot:[`item.item`]="{ item }">
+					<span><b>{{ item.item }}</b></span>
+					<td>{{ item.defectDescription[0] }}</td>
 				</template>
 			</v-data-table>
 		</v-layout>
@@ -53,7 +58,7 @@
 
 
 <script>
-import { TICKET_HEADERS, TICKET_MODEL, isMobile } from "../constants/constants";
+import { TICKET_HEADERS, TICKET_MOBILE_HEADERS, TICKET_MODEL, isMobile } from "../constants/constants";
 import apiService from "../services/apiService";
 import TicketForm from './TicketForm.vue';
 import ConfirmDialog from './Common/ConfirmDialog.vue';
@@ -70,7 +75,7 @@ export default {
 			tickets: [],
 			showMessage: false,
 			header: '',
-			headers: TICKET_HEADERS,
+			// headers: getHeaders(),
 			customerInfo: null,
 			listOfItems: [],
 			search: '',
@@ -78,33 +83,6 @@ export default {
 			ticketsFilter: 'Open',
 			ticketType: 'STATUS',
 			loading: '',
-			////////////////////////////////////
-			// json_fields: {
-			//     'Name': 'name',
-			//     'City': 'city',
-			// 	'Country': 'country',
-			//     'phone' : {
-			//         field: 'phone',
-			//         callback: (value) => {
-			//             return `${value}`;
-			//         }
-			//     },
-			// },
-			// json_data: [
-			//     {
-			//         'name': 'Tony Peña',
-			//         'city': 'New York',
-			//         'country': 'United States',
-			//         'phone': ['STR1', 'STR2', 'STR3']
-			//     },
-			//     {
-			//         'name': 'Thessaloniki',
-			//         'city': 'Athens',
-			//         'country': 'Greece',
-			//         'phone': ['STR4', 'STR6', 'STR5']
-			//     }
-			// ],
-			////////////////////////////////////
 		}
 	},
 
@@ -146,6 +124,14 @@ export default {
 			this.loading = false
 		},
 
+		getHeaders() {
+			if (this.isMobile()) {
+				return TICKET_MOBILE_HEADERS;
+			} else {
+				return TICKET_HEADERS;
+			}
+		},
+
 		async updateTicket(item) {
 			let newTicket = item ? false : true;
 			await this.$refs.ticketForm.open(item, newTicket);
@@ -183,6 +169,8 @@ export default {
 <style>
 .row {
 	cursor: pointer;
+	padding: 0%;
+	justify-content: center;
 }
 
 .v-toolbar__title {
@@ -196,12 +184,14 @@ export default {
         display: none;
     }
 }
+
 .hebrew {
   direction: rtl;
   /* text-align: right; */
   text-align-last: right !important
 }
-.custRmk{
+
+.custRmk{	
 	color: red;
 	/* font-size: large; */
 	display: grid;
