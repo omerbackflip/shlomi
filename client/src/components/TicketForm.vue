@@ -47,7 +47,7 @@
                                     <v-btn @click="openExsitingCustomerForm" style="margin-top: 15px;" x-small><v-icon small>mdi-pencil</v-icon></v-btn>
                                 </v-col>
                             </v-row>
-                            <v-row class="px-4" dense style="font-size: smaller; color: red; margin: 0px;"> 
+                            <v-row class="px-4" dense style="font-size: smaller; color: red; margin: 0px; justify-content: right;"> 
                                 {{customerInfo.remark}}
                             </v-row>
                         </div>
@@ -134,32 +134,32 @@
                         <div class=" v-area">
                             <h6 class="area-header">פרטי תשלום</h6>
                             <v-row no-gutters>
-                                <v-col class="px-2" cols="6" sm="1">
+                                <v-col class="px-2" cols="5" sm="1">
                                     <v-text-field v-model="ticket.prepaid" label="שולם מראש" reverse @focus="$event.target.select()" hide-details></v-text-field>
                                 </v-col>
-                                <v-col class="px-2" cols="6" sm="1">
+                                <v-col class="px-2" cols="5" sm="1">
                                     <v-text-field v-model="ticket.prepaidInvoice" label="חש' מראש" reverse @focus="$event.target.select()" hide-details></v-text-field>
                                 </v-col>
-                                <v-col cols="6" sm="1"></v-col>
-                                <v-col class="px-2" cols="3" sm="1">
+                                <v-col v-if="!isMobile()" cols="4" sm="1"></v-col>
+                                <v-col class="px-2" cols="4" sm="1">
                                     <v-text-field v-model="ticket.discountBefore" @change="onDiscountBeforeChange" label="סכום" reverse @focus="$event.target.select()"></v-text-field>
                                 </v-col>
-                                <v-col class="px-2" cols="3" sm="1">
+                                <v-col class="px-2" cols="4" sm="1">
                                     <v-text-field v-model="ticket.discountPrecent" @change="onDiscountPrecentChange" reverse suffix="%" @focus="$event.target.select()"></v-text-field>
                                 </v-col>
-                                <v-col class="px-2" cols="3" sm="1">
+                                <v-col class="px-2" cols="4" sm="1">
                                     <v-text-field v-model="ticket.discountAmount" label="הנחה" disabled reverse></v-text-field>
                                 </v-col>
-                                <v-col class="px-2" cols="3" sm="1">
+                                <v-col class="px-2" cols="4" sm="1">
                                     <v-text-field v-model="ticket.amount" label="סופי" disabled reverse></v-text-field>
                                 </v-col>
-                                <v-col class="px-2" cols="3" sm="1">
+                                <v-col class="px-2" cols="4" sm="1">
                                     <v-text-field v-model="ticket.vat" label="מע'מ" disabled reverse></v-text-field>
                                 </v-col>
-                                <v-col class="px-2" cols="3" sm="1">
+                                <v-col class="px-2" cols="4" sm="1">
                                     <v-text-field v-model="ticket.total" @change="onTotalChage" label="סה'כ" reverse @focus="$event.target.select()"></v-text-field>
                                 </v-col>
-                                <v-col cols="6" sm="1"></v-col>
+                                <v-col v-if="!isMobile()" cols="6" sm="1"></v-col>
                                 <v-col class="px-2" cols="3" sm="1">
                                     <v-text-field  v-model="yitra" label="יתרה לתשלום" disabled reverse></v-text-field>
                                 </v-col>
@@ -435,31 +435,6 @@ export default {
     },
 
     // computed: {
-
-    //     'ticket.discountBefore' (num) {
-    //         this.ticket.amount = num -  (this.ticket.discountPrecent ? (num * this.ticket.discountPrecent/100) : 0);
-    //         this.ticket.total = (parseFloat(this.ticket.amount) * (1 + this.ticket.vat/100 )).toFixed(0);
-    //         this.yitra = this.ticket.total-this.ticket.prepaid;
-    //         this.$forceUpdate();            
-    //     },
-
-    //     'ticket.discountPrecent' (num) {
-    //         this.ticket.discountAmount = this.ticket.discountBefore * num/100
-    //         this.ticket.amount = this.ticket.discountBefore - (this.ticket.discountBefore * num/100);
-    //         this.ticket.total = (parseFloat(this.ticket.amount) * (1 + this.ticket.vat/100 )).toFixed(0);
-    //         this.yitra = this.ticket.total-this.ticket.prepaid;
-    //         this.$forceUpdate();            
-    //     },
-
-    //     'ticket.total' (num) {
-    //         console.log(num)
-    //         this.ticket.discountAmount = 0
-    //         this.ticket.discountPrecent = 0
-    //         this.ticket.amount = (num/(1+this.ticket.vat/100)).toLocaleString();
-    //         this.ticket.discountBefore = this.ticket.amount
-    //         this.yitra = num - this.ticket.prepaid;
-    //         this.$forceUpdate();            
-    //     },
     // },
 
     mounted() {

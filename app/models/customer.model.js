@@ -1,7 +1,8 @@
 module.exports = mongoose => {
 	const schema = mongoose.Schema(
 		{
-			customerId: Number,
+			// customerId: Number,
+			customerId:{ type: Number, required: true, unique: true },
 			fullName: String,
 			// name: String,
 			// family: String,

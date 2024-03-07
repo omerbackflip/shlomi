@@ -19,7 +19,7 @@
 			>
 				<template v-slot:top>
 					<v-toolbar flat>
-						<v-toolbar-title>{{header}} - {{tickets.length}}</v-toolbar-title>
+						<v-toolbar-title style="text-align-last: center;">{{header}} - {{tickets.length}}</v-toolbar-title>
 						<v-spacer></v-spacer>
 						<v-text-field v-model="search" class="mx-4"	label="Search" clearable hide-details></v-text-field>
 						<v-spacer></v-spacer>
@@ -174,9 +174,12 @@ export default {
 }
 
 .v-toolbar__title {
-        white-space: pre-wrap !important;
-        /* font-size: smaller !important; */
-    }
+	white-space: pre-wrap !important;
+}
+
+.v-toolbar__content {
+	padding-right: 15px;
+}
 
 
 @media print {  /* Very important to remove background in print mode */

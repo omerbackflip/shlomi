@@ -1,106 +1,116 @@
 <template>
 	<div class="row no-print">
 		<v-layout class="mt-1" row wrap>
-			<v-card class="p-0 m-0" max-width="50%">
-				<v-data-table
-					:headers="headers"
-					:items="customers"
-					disable-pagination
-					hide-default-footer
-					fixed-header
-					height="75vh"
-					item-key="customerId"
-					mobile-breakpoint="0"
-					:search="search"
-					:loading = "loading"
-					loader-height = "30"
-					@click:row="customerTicketsList"
-					dense
-					class="elevation-3 hebrew"
-					:item-class="bg_row"
-				>
-					<template v-slot:top>
-						<v-toolbar flat>
-							<v-text-field v-model="search" class="mx-4"	label="Search" clearable></v-text-field>
-							<v-spacer></v-spacer>
-							<export-excel :data="customers" type="xlsx" name="customers">
-								<v-btn small class="btn btn-danger mt-1 ml-3" :loading="loading">
-									<v-icon >mdi-download</v-icon>
-								</v-btn>
-							</export-excel>
-							<v-btn @click="customerForm()" small class="mt-1">
-								<v-icon class="nav-icon" small >mdi-plus</v-icon>
-								<div v-if="!isMobile()"> הוסף לקוח חדש </div>
+			<v-data-table
+				:headers="headers"
+				:items="customers"
+				disable-pagination
+				hide-default-footer
+				fixed-header
+				height="75vh"
+				item-key="customerId"
+				mobile-breakpoint="0"
+				:search="search"
+				:loading = "loading"
+				loader-height = "30"
+				@click:row="customerTicketsList"
+				dense
+				class="elevation-3 hebrew"
+				:item-class="bg_row"
+			>
+				<template v-slot:top>
+					<v-toolbar flat>
+						<!-- <v-text-field v-model="search" class="mx-4"	label="Search" clearable></v-text-field> -->
+						<v-text-field v-model="fullName" class="mx-4" type="text" label="שם לקוח"  hide-details></v-text-field>
+						<v-text-field v-model="phone" class="mx-4" type="number" label="טלפון" hide-details></v-text-field>
+						<v-spacer></v-spacer>
+						<export-excel :data="customers" type="xlsx" name="customers">
+							<v-btn small class="btn btn-danger mt-1 ml-3" :loading="loading">
+								<v-icon >mdi-download</v-icon>
 							</v-btn>
-						</v-toolbar>
-					</template>
-					<template v-slot:[`item.fullName`]="{ item }">
-						<div style="text-align: right;" :class="{'bg-yellow': item.hasTicket}" >
-							<td @click.stop style="font-size: large;">
-								<span @click="customerForm(item)">{{ item.fullName }}</span>
-							</td>
-							<span v-show="item.remark" class="custRmk">{{item.remark }}</span>
-						</div>
-					</template>
-				</v-data-table>
-				<!-- <vue-virtual-table
-					:config="headersVD"
-					:data="customers"
-					:height="800"			
-					:itemHeight="55"
-					:minWidth="1000"
-					:enableExport="true"
-					class="mt-2"
-					language = 'en'
-				>
-
-					<template slot-scope="item" slot="issueDate">
-						<span>{{ item.row.issueDate ? new Date(item.row.issueDate).toDateString() : ''}}</span>
-					</template>
-					<template slot-scope="scope" slot="name">
-						<div>{{ scope.row.name + ' ' + scope.row.family}}</div>
-					</template>
-
-					<template slot-scope="scope" slot="actionCommon">
-						<v-btn @click="customerForm(scope.row)" x-small>
-							<v-icon small>mdi-pencil</v-icon>
+						</export-excel>
+						<v-btn @click="customerForm()" small class="mt-1">
+							<v-icon class="nav-icon" small >mdi-plus</v-icon>
+							<div v-if="!isMobile()"> הוסף לקוח חדש </div>
 						</v-btn>
-						<v-btn  @click="deleteCustomer(scope.row._id)" x-small>
-							<v-icon small>mdi-delete</v-icon>
-						</v-btn>
-					</template>
-				</vue-virtual-table> -->
-				<!-- <v-btn @click="updateHasTickets" :loading="loading">Run HasTicket Script</v-btn> -->
-			</v-card>
-			<v-card class="p-0 m-0" max-width="49%">
-				<v-data-table
-					:headers="ticketHeaders"
-					:items="tickets"
-					disable-pagination
-					hide-default-footer
-					fixed-header
-					height="75vh"
-					item-key="_id"
-					mobile-breakpoint="0"
-					:loading = "loading"
-					loader-height = "30"
-					@click:row="updateTicket"
-					dense
-					class="elevation-3 hebrew"
-				>
-					<template v-slot:top>
-						<v-toolbar flat style="font-size: xx-large;">
-							<v-toolbar-title>{{ customerName }}</v-toolbar-title>
-						</v-toolbar>
-					</template>
-					<template v-slot:[`item.entryDate`]="{ item }">
-						<span>{{ item.entryDate ? new Date(item.entryDate).toLocaleDateString('en-GB') : '-'}}</span>
-					</template>
-					<template v-slot:[`item.ticketStatus`]="{ item }">
-						<div :class="{'bg-yellow': (item.ticketStatus!='Closed')}">{{ item.ticketStatus }}</div>
-					</template>
-				</v-data-table>
-			</v-card>
+					</v-toolbar>
+
+<!-- 
+            <tr>
+              <td>
+                <v-text-field v-model="fullName" type="text" label="name"></v-text-field>
+              </td>
+              <td>
+                <v-text-field v-model="phone" type="text" label="phone"></v-text-field>
+              </td>
+            </tr> -->
+
+		</template>
+
+				<template v-slot:[`item.fullName`]="{ item }">
+					<div style="text-align: right;" :class="{'bg-yellow': item.hasTicket}" >
+						<td @click.stop style="font-size: large;">
+							<span @click="customerForm(item)">{{ item.fullName }}</span>
+						</td>
+						<span v-show="item.remark" class="custRmk">{{item.remark }}</span>
+					</div>
+				</template>
+			</v-data-table>
+			<!-- <vue-virtual-table
+				:config="headersVD"
+				:data="customers"
+				:height="800"			
+				:itemHeight="55"
+				:minWidth="1000"
+				:enableExport="true"
+				class="mt-2"
+				language = 'en'
+			>
+
+				<template slot-scope="item" slot="issueDate">
+					<span>{{ item.row.issueDate ? new Date(item.row.issueDate).toDateString() : ''}}</span>
+				</template>
+				<template slot-scope="scope" slot="name">
+					<div>{{ scope.row.name + ' ' + scope.row.family}}</div>
+				</template>
+
+				<template slot-scope="scope" slot="actionCommon">
+					<v-btn @click="customerForm(scope.row)" x-small>
+						<v-icon small>mdi-pencil</v-icon>
+					</v-btn>
+					<v-btn  @click="deleteCustomer(scope.row._id)" x-small>
+						<v-icon small>mdi-delete</v-icon>
+					</v-btn>
+				</template>
+			</vue-virtual-table> -->
+			<!-- <v-btn @click="updateHasTickets" :loading="loading">Run HasTicket Script</v-btn> -->
+			<v-data-table
+				:headers="ticketHeaders"
+				:items="tickets"
+				disable-pagination
+				hide-default-footer
+				fixed-header
+				height="75vh"
+				item-key="_id"
+				mobile-breakpoint="0"
+				:loading = "loading"
+				loader-height = "30"
+				@click:row="updateTicket"
+				dense
+				class="elevation-3 hebrew"
+			>
+				<template v-slot:top>
+					<v-toolbar flat style="font-size: xx-large;">
+						<v-toolbar-title>{{ customerName }}</v-toolbar-title>
+					</v-toolbar>
+				</template>
+				<template v-slot:[`item.entryDate`]="{ item }">
+					<span>{{ item.entryDate ? new Date(item.entryDate).toLocaleDateString('en-GB') : '-'}}</span>
+				</template>
+				<template v-slot:[`item.ticketStatus`]="{ item }">
+					<div :class="{'bg-yellow': (item.ticketStatus!='Closed')}">{{ item.ticketStatus }}</div>
+				</template>
+			</v-data-table>
 		</v-layout>
 		<customer-form ref="customerForm"/>
 		<confirm-dialog ref="confirm"/>
@@ -111,8 +121,7 @@
 
 
 <script>
-import { CUSTOMER_HEADERS, CUSTOMER_MODEL, isMobile, TICKET_MODEL, TICKET_SHORT_HEADERS} from "../constants/constants";
-// import { CUSTOMER_HEADERS, CUSTOMER_MODEL, isMobile } from "../constants/constants";
+import { CUSTOMER_MODEL, isMobile, TICKET_MODEL, TICKET_SHORT_HEADERS} from "../constants/constants";
 import apiService from "../services/apiService";
 import CustomerForm from './CustomerForm.vue';
 import TicketForm from './TicketForm.vue';
@@ -133,7 +142,7 @@ export default {
 			tickets: [],
 			showMessage: false,
 			message: '',
-			headers: CUSTOMER_HEADERS,
+			// headers: CUSTOMER_HEADERS,
 			// headersVD: CUSTOMER_HEADERS,
 			search: '',
 			loading: false,
@@ -141,19 +150,40 @@ export default {
 			ticketHeaders: TICKET_SHORT_HEADERS,
 			customerName: '',
 			customerRemark: '',
+			fullName: '',
+			phone: '',
 		}
 	},
+
+	computed: {
+		headers() { return [
+				{ text: 'שם לקוח', value: 'fullName', align:'end', class: 'primary white--text', width: '20%', 
+					filter: f => { return ( f + '' ).includes( this.fullName ) }},
+				{ text: 'כתובת', value: 'address' ,align:'end', class: 'primary white--text', width: '20%'},
+				// { text: 'בית 1', value: 'phone1' , align:'end', class: 'primary white--text', width: '20%',
+				// 	filter: f => { return ( f + '' ).includes( this.phone ) }},
+				// { text: 'נייד 3', value: 'phone3' , align:'end', class: 'primary white--text', width: '20%',
+				// 	filter: f => { return ( f + '' ).includes( this.phone ) }},
+				// { text: 'נוסף 2', value: 'phone2' , align:'end', class: 'primary white--text', width: '20%',
+				// 	filter: f => { return ( f + '' ).includes( this.phone ) }},
+				{ text: 'טלפונים', value: 'allPhones' , align:'end', class: 'primary white--text', width: '60%',
+					filter: f => { return ( f + '' ).includes( this.phone ) }},
+			];}
+	},	
 
 	methods: {
 		async getCustomers() {
 			this.loading = true
 			try {
 				const response = await apiService.getMany({model: CUSTOMER_MODEL});
-				// const response = await apiService.getMany({model: CUSTOMER_MODEL , hasTicket: this.hasTicket === 0 ? true 
-				// 																				: (this.hasTicket === 1 ? false 
-				// 																				: [true,false])});
 				if(response.data) {
 					this.customers = response.data;
+					this.customers = this.customers.map((item) => {
+						let allPhones = (item.phone1 ? item.phone1.replace("-","") : '') + 
+										(item.phone2 ? ' / ' + item.phone2.replace("-","") : '') +
+										(item.phone3 ? ' / ' + item.phone3.replace("-","") : '')
+						return ({...item, allPhones: allPhones}) 
+					})
 				}
 			} catch (error) {
 				console.log(error);
@@ -231,6 +261,7 @@ export default {
 	justify-content: space-around;
 	cursor: pointer;
 	direction: rtl;
+	padding: 0%;
 }
 .field-margin{
 	margin: 12px;
@@ -281,4 +312,10 @@ export default {
 /* td {     this td was remarked becasue it's influance the size of the printExit.vue font-size
 	font-size: larger;
 } */
+
+.v-data-table {
+max-width: 49%;
+padding: 0%;
+margin: 0%;
+}
 </style>

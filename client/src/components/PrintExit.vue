@@ -70,7 +70,7 @@
                                     <tbody>
                                         <tr v-for="index in maxRows" :key="index">
                                             <td style="direction: rtl;">{{ ticket.defectFixes[index-1] }}</td>
-                                            <td>{{ ticket.defectFound[index-1] }}</td>
+                                            <td style="direction: rtl;">{{ ticket.defectFound[index-1] }}</td>
                                         </tr>
                                     </tbody>
                                 </table>

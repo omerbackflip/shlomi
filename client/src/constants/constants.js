@@ -53,13 +53,13 @@ export const CUSTOMER_HEADERS_VD = [  // used for vue-virtual-table
     // { name: 'הערה לקוח', prop: 'remark' , class: 'primary white--text'},
 ]
 
-export const CUSTOMER_HEADERS = [
-    { text: 'שם לקוח', value: 'fullName', align:'end', class: 'primary white--text', width: '20%'},
-    { text: 'כתובת', value: 'address' ,align:'end', class: 'primary white--text', width: '20%'},
-    { text: 'בית 1', value: 'phone1' , align:'end', class: 'primary white--text', width: '20%'},
-    { text: 'נייד 3', value: 'phone3' , align:'end', class: 'primary white--text', width: '20%'},
-    { text: 'נוסף 2', value: 'phone2' , align:'end', class: 'primary white--text', width: '20%'},
-]
+// export const CUSTOMER_HEADERS = [
+//     { text: 'שם לקוח', value: 'fullName', align:'end', class: 'primary white--text', width: '20%', filter: f => { return ( f + '' ).includes( this.fullName ) }},
+//     { text: 'כתובת', value: 'address' ,align:'end', class: 'primary white--text', width: '20%'},
+//     { text: 'בית 1', value: 'phone1' , align:'end', class: 'primary white--text', width: '20%'},
+//     { text: 'נייד 3', value: 'phone3' , align:'end', class: 'primary white--text', width: '20%'},
+//     { text: 'נוסף 2', value: 'phone2' , align:'end', class: 'primary white--text', width: '20%'},
+// ]
 
 export const TABLE_HEADERS = [
     { text: "מספר",     value: "table_id",      class: 'primary white--text'},
