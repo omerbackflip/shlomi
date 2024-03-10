@@ -5,7 +5,7 @@
         @keydown.esc="dialog = false"
     >
         <v-card>
-            <v-card-title class="text-h6 grey lighten-2">
+            <v-card-title :class="`${ticket.ticketStatus}`" class="text-h6">
                 <v-btn @click="dialog = false" small><v-icon small> mdi-close </v-icon> </v-btn>
                 <v-spacer></v-spacer>
                 כרטיס תיקון - {{ticket.ticketId}}
@@ -478,7 +478,13 @@ export default {
     .h6.area-header {
         margin-bottom: 0px !important;
     }
-    .bg-red {
+    .Open {
         background-color: red;
+    }
+    .Fixed {
+        background-color: lightgreen;
+    }
+    .Checked {
+        background-color:yellow;
     }
 </style>
