@@ -48,6 +48,11 @@
 					<span><b>{{ item.item }}</b></span>
 					<td>{{ item.defectDescription[0] }}</td>
 				</template>
+				<template v-else v-slot:[`item.item`]="{ item }">
+					<tr :class="`${item.ticketStatus}`">
+						<span>{{ item.item }}</span>
+					</tr>
+				</template>
 			</v-data-table>
 		</v-layout>
 		<ticket-form ref="ticketForm"/>
@@ -112,6 +117,7 @@ export default {
 				
 				if(response.data) {
 					this.tickets = response.data;
+					this.tickets = this.tickets.sort((a,b) => {return (a.ticketId - b.ticketId)})
 					// let customer = '';
 					// this.tickets = await Promise.all(response.data.map(async(item) =>{
 					// 	customer = await apiService.getOne({model: CUSTOMER_MODEL, customerId: item.customerId})
@@ -203,4 +209,18 @@ export default {
 /* td {
 	font-size: larger !important;
 } */
+
+.Open {
+	border-right-width: thick;
+    border-color: red;
+}
+
+.Fixed {
+	border-right-width: thick;
+    border-color: lightgreen;
+}
+.Checked {
+	border-right-width: thick;
+    border-color:yellow
+}
 </style>

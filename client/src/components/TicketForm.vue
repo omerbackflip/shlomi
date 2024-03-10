@@ -190,10 +190,16 @@
                     <v-card-actions>
                         <v-col>
                             <v-layout wrap justify-center>
-                                <v-btn-toggle v-model="ticket.ticketStatus" group mandatory color="error">
-                                    <v-btn text value="Open"     elevation='3' small>פתוח</v-btn>
-                                    <v-btn text value="Checked"  elevation='3' small>נבדק</v-btn>
-                                    <v-btn text value="Fixed"    elevation='3' small>תוקן</v-btn>
+                                <v-btn-toggle v-model="ticket.ticketStatus" group mandatory>
+                                    <v-btn text value="Open"     elevation='3' small 
+                                        style="border-color: red;  border-bottom-width: thick; border-inline-color: revert-layer; border-top-width: inherit;">פתוח
+                                    </v-btn>
+                                    <v-btn text value="Checked"  elevation='3' small
+                                        style="border-color: yellow;  border-bottom-width: thick; border-inline-color: revert-layer; border-top-width: inherit;">נבדק
+                                    </v-btn>                                    
+                                    <v-btn text value="Fixed"    elevation='3' small
+                                        style="border-color: lightgreen;  border-bottom-width: thick; border-inline-color: revert-layer; border-top-width: inherit;">תוקן
+                                    </v-btn>
                                     <v-btn text value="Closed"   elevation='3' small>סגור</v-btn>
                                 </v-btn-toggle>
                                 <v-spacer></v-spacer>

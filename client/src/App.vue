@@ -36,13 +36,13 @@ import Navbar from './components/Common/Navbar.vue';
     background-color: #1371ce;
 }
 .v-application .primary {
-    background-color: #1e0571 !important;
-    border-color: #1976d2 !important;
+    background-color: #1e0571 ;
+    border-color: #1976d2 ;
 }
 
 #app > div > nav > nav {
-    background-color: #1e0571 !important;
-    border-color: #1976d2 !important;
+    background-color: #1e0571 ;
+    border-color: #1976d2 ;
 }
 .p-3{
 	padding: 12px;
