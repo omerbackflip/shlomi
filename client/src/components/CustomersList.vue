@@ -16,11 +16,10 @@
 				@click:row="customerTicketsList"
 				dense
 				class="elevation-3 hebrew"
-				:item-class="bg_row"
+				:class="getSize()"
 			>
 				<template v-slot:top>
 					<v-toolbar flat>
-						<!-- <v-text-field v-model="search" class="mx-4"	label="Search" clearable></v-text-field> -->
 						<v-text-field v-model="fullName" class="mx-4" type="text" label="שם לקוח"  hide-details></v-text-field>
 						<v-text-field v-model="phone" class="mx-4" type="number" label="טלפון" hide-details></v-text-field>
 						<v-spacer></v-spacer>
@@ -34,19 +33,7 @@
 							<div v-if="!isMobile()"> הוסף לקוח חדש </div>
 						</v-btn>
 					</v-toolbar>
-
-<!-- 
-            <tr>
-              <td>
-                <v-text-field v-model="fullName" type="text" label="name"></v-text-field>
-              </td>
-              <td>
-                <v-text-field v-model="phone" type="text" label="phone"></v-text-field>
-              </td>
-            </tr> -->
-
-		</template>
-
+				</template>
 				<template v-slot:[`item.fullName`]="{ item }">
 					<div style="text-align: right;" :class="{'bg-yellow': item.hasTicket}" >
 						<td @click.stop style="font-size: large;">
@@ -84,7 +71,7 @@
 				</template>
 			</vue-virtual-table> -->
 			<!-- <v-btn @click="updateHasTickets" :loading="loading">Run HasTicket Script</v-btn> -->
-			<v-data-table
+			<v-data-table v-if="!isMobile()"
 				:headers="ticketHeaders"
 				:items="tickets"
 				disable-pagination
@@ -97,7 +84,7 @@
 				loader-height = "30"
 				@click:row="updateTicket"
 				dense
-				class="elevation-3 hebrew"
+				class="elevation-3 hebrew width49"
 			>
 				<template v-slot:top>
 					<v-toolbar flat style="font-size: xx-large;">
@@ -108,7 +95,7 @@
 					<span>{{ item.entryDate ? new Date(item.entryDate).toLocaleDateString('en-GB') : '-'}}</span>
 				</template>
 				<template v-slot:[`item.ticketStatus`]="{ item }">
-					<div :class="{'bg-yellow': (item.ticketStatus!='Closed')}">{{ item.ticketStatus }}</div>
+					<div :class="`${item.ticketStatus}`">{{ item.ticketStatus }}</div>
 				</template>
 			</v-data-table>
 		</v-layout>
@@ -156,19 +143,24 @@ export default {
 	},
 
 	computed: {
-		headers() { return [
+		headers() { 
+			if (isMobile()) {
+				return [
+				{ text: 'שם לקוח', value: 'fullName', align:'end', class: 'primary white--text', width: '50%', 
+					filter: f => { return ( f + '' ).includes( this.fullName ) }},
+				{ text: 'טלפונים', value: 'allPhones' , align:'start', class: 'primary white--text', width: '50%',
+					filter: f => { return ( f + '' ).includes( this.phone ) }},
+				];
+			} else {
+				return [
 				{ text: 'שם לקוח', value: 'fullName', align:'end', class: 'primary white--text', width: '20%', 
 					filter: f => { return ( f + '' ).includes( this.fullName ) }},
 				{ text: 'כתובת', value: 'address' ,align:'end', class: 'primary white--text', width: '20%'},
-				// { text: 'בית 1', value: 'phone1' , align:'end', class: 'primary white--text', width: '20%',
-				// 	filter: f => { return ( f + '' ).includes( this.phone ) }},
-				// { text: 'נייד 3', value: 'phone3' , align:'end', class: 'primary white--text', width: '20%',
-				// 	filter: f => { return ( f + '' ).includes( this.phone ) }},
-				// { text: 'נוסף 2', value: 'phone2' , align:'end', class: 'primary white--text', width: '20%',
-				// 	filter: f => { return ( f + '' ).includes( this.phone ) }},
 				{ text: 'טלפונים', value: 'allPhones' , align:'end', class: 'primary white--text', width: '60%',
 					filter: f => { return ( f + '' ).includes( this.phone ) }},
-			];}
+				];				
+			}
+		}
 	},	
 
 	methods: {
@@ -233,25 +225,19 @@ export default {
 		async updateTicket(item) {
 			await this.$refs.ticketForm.open(item, false);
 		},
-		
-		bg_row(item) {
-			let classes = '';
-			item.hasTicket ? "bg_row" : ""
-			return classes
-		}
+
+		getSize() {
+			let calsses 
+			calsses = isMobile() ? 'width100': 'width49' 
+			return (calsses)
+		},
 	},
 
 	mounted() {
 		this.getCustomers();
-		// this.$root.$on("newCustomer", () => {
-		// 	this.customerForm();
-		// });
 	},
 
 	watch: {
-		// hasTicket() {
-		// 	this.getCustomers();
-		// },
 	},
 };
 </script>
@@ -273,9 +259,9 @@ export default {
     padding: 0;
     height: 40px;
 }
-.header-cell-inner[data-v-55a76cbe] {
+/* .header-cell-inner[data-v-55a76cbe] {
     word-break: normal;
-}
+} */
 .v-toolbar__title {
         white-space: pre-wrap !important;
         font-size: smaller !important;
@@ -295,7 +281,7 @@ export default {
 .custRmk{
 	font-size: large;
 	color: red;
-	text-align: justify;
+	/* text-align: justify; */
 }
 .hebrew {
   direction: rtl;
@@ -306,16 +292,29 @@ export default {
         display: none;
     }
 }
-.bg_row {
-	background-color: lightgreen;
-}
 /* td {     this td was remarked becasue it's influance the size of the printExit.vue font-size
 	font-size: larger;
 } */
 
-.v-data-table {
-max-width: 49%;
-padding: 0%;
-margin: 0%;
+.width49 {
+	max-width: 49%;
+	padding: 0%;
+	margin: 0%;
+}
+
+.width100 {
+	max-width: 100%;
+	padding: 0%;
+	margin: 0%;
+}
+
+.Open {
+    background-color: red;
+}
+.Fixed {
+	background-color: lightgreen;
+}
+.Checked {
+	background-color:yellow;
 }
 </style>

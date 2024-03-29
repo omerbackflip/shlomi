@@ -364,7 +364,8 @@ export default {
 
         async openExsitingCustomerForm(){
 			let exsitingCustomer = await this.$refs.customerForm.open(this.customerInfo, false);
-            this.customerNameAddress = exsitingCustomer.fullName + " - " + exsitingCustomer.address + (exsitingCustomer.city ? (" - " +  exsitingCustomer.city) : '') ;
+            this.customerNameAddress = exsitingCustomer.fullName + " - " + exsitingCustomer.address + 
+                                        (exsitingCustomer.city ? (" - " +  exsitingCustomer.city) : '') ;
             this.customerInfo = exsitingCustomer;
             this.ticket.customerId = this.customerInfo.customerId
             this.ticket.customerName = this.customerInfo.fullName
@@ -469,14 +470,14 @@ export default {
         color: blue;
         font-size: large;
         font-style:italic;
-        margin-bottom: 0px !important;
+        margin-bottom: 0px;
     }
 
     .container {
-        padding-bottom: 0px !important;
+        padding-bottom: 0px;
     }
     .h6.area-header {
-        margin-bottom: 0px !important;
+        margin-bottom: 0px;
     }
     .Open {
         background-color: red;

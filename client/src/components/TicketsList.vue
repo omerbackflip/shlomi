@@ -41,17 +41,14 @@
 					<td style="font-size: large;">
 						{{ item.customerName }}
 						<span v-show="item.customerRemark && !isMobile()" class="custRmk">{{item.customerRemark}}</span>
-						<span v-if="isMobile()" style="font-size:medium; display: block;">{{ new Date(item.entryDate).toLocaleDateString('en-GB') }}</span>
+						<span v-show="isMobile()" style="font-size:medium; display: block;">{{ new Date(item.entryDate).toLocaleDateString('en-GB') }}</span>
 					</td>
 				</template>
-				<template v-if="isMobile()" v-slot:[`item.item`]="{ item }">
-					<span><b>{{ item.item }}</b></span>
-					<td>{{ item.defectDescription[0] }}</td>
-				</template>
-				<template v-else v-slot:[`item.item`]="{ item }">
+				<template v-slot:[`item.item`]="{ item }">
 					<tr :class="`${item.ticketStatus}`">
-						<span>{{ item.item }}</span>
+						<span><b>{{ item.item }}</b></span>
 					</tr>
+					<td v-show="isMobile()">{{ item.defectDescription[0] }}</td>
 				</template>
 			</v-data-table>
 		</v-layout>
