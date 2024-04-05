@@ -167,6 +167,8 @@ export default {
 		async getCustomers() {
 			this.loading = true
 			try {
+				// const response = await specificServiceEndPoints.getCustomersWithStatus();
+				// console.log(response.data)
 				const response = await apiService.getMany({model: CUSTOMER_MODEL});
 				if(response.data) {
 					this.customers = response.data;

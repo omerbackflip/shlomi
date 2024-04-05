@@ -236,7 +236,6 @@ exports.getNoClose = async (req,res) => {
 	}
 };
 
-
 exports.getTables = async (req,res) => {
 	try {
 		let table = {}
@@ -348,6 +347,28 @@ exports.getWithRemark = async (req, res) => {
 	}))
 	return res.send (data1)
 };
+
+exports.getCustomersWithStatus = async (req,res) => {
+	try {
+		let data = await Customer.find().limit(1).lean()
+		data = data.map( async (item) => {
+			let findTickets = 'ddd'
+			if (item.hasTicket) {
+				findTickets = await dbService.getMultipleItems (Ticket, {customerId: item.customerId})
+			}
+			console.log(item.fullName, findTickets.length)
+			// let status = findTickets.ticketStatus
+			return (Object.assign({},item, {status : 'status'}))
+			// return (Object.assign({},item, {aaa : 'aaa'}))
+		})
+		// console.log(data1)
+		return res.send (data)
+	} catch (error) {
+		console.log(error)
+		res.status(500).send({ message: "Error hasTicketsBulk", error });
+	}
+};
+
 function unLinkFile(path) {
 	fs.unlinkSync(path);
 }

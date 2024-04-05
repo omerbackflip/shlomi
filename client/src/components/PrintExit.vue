@@ -102,17 +102,18 @@
                     <span v-for="index in maxRemarkRows" :key="index">
                         <p class="field-text">{{ticket.remarks[index-1]}}</p>
                     </span>
-                    <!-- <span class="field-text">{{ticket.remarks}}</span> -->
-                    <p class="heading"><span class="underline">תנאי אחריות</span></p>
-                    <p>מעבדת ישראל אחראית על התיקון שבוצע בלבד כמפורט בכרטיס תיקון</p>
-                    <p style="direction: rtl;">למשך 3 חודשים החל מתאריך - {{ new Date(ticket.exitDate).toLocaleDateString('en-GB') }} </p>
-                    <p>האחריות לא תחול בשל אחד או יותר מהתנאים הבאים</p>
-                    <div class="list">
-                        <li>ליקוי אחר במכשיר אשר לא פורט בכרטיס השרות</li>
-                        <li>שבר או סדק כלשהו</li>
-                        <li>הפעלה לא נכונה של המכשיר המנוגדת להוראות היצרן</li>
-                        <li>המכשיר פורק ע"י אדם שאינו מורשה מטעם <b>"מעבדת ישראל"</b></li>
-                        <li>חדירת נוזלים לתוך המכשיר</li>
+                    <div v-if="ticket.fixDate"> <!-- print this section only when fixDate is  not null -->
+                        <p class="heading"><span class="underline">תנאי אחריות</span></p>
+                        <p>מעבדת ישראל אחראית על התיקון שבוצע בלבד כמפורט בכרטיס תיקון</p>
+                        <p style="direction: rtl;">למשך 3 חודשים החל מתאריך - {{ new Date(ticket.exitDate).toLocaleDateString('en-GB') }} </p>
+                        <p>האחריות לא תחול בשל אחד או יותר מהתנאים הבאים</p>
+                        <div class="list">
+                            <li>ליקוי אחר במכשיר אשר לא פורט בכרטיס השרות</li>
+                            <li>שבר או סדק כלשהו</li>
+                            <li>הפעלה לא נכונה של המכשיר המנוגדת להוראות היצרן</li>
+                            <li>המכשיר פורק ע"י אדם שאינו מורשה מטעם <b>"מעבדת ישראל"</b></li>
+                            <li>חדירת נוזלים לתוך המכשיר</li>
+                        </div>
                     </div>
                     <p style="direction: rtl; text-align-last: center;">
                         <span>מאשר קבלת המכשיר בתאריך {{ new Date(ticket.exitDate).toLocaleDateString('en-GB') }}</span>

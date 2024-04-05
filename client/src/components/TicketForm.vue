@@ -107,7 +107,7 @@
                                 <v-col class="px-2" cols="3">
                                     <v-menu v-model="menu1" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
                                         <template v-slot:activator="{ on, attrs }">
-                                            <v-text-field v-model="ticket.fixDate" v-bind="attrs" v-on="on" label="תאריך תיקון" reverse readonly></v-text-field>
+                                            <v-text-field v-model="ticket.fixDate" v-bind="attrs" v-on="on" label="תאריך תיקון" reverse readonly clearable></v-text-field>
                                         </template>
                                         <v-date-picker v-model="ticket.fixDate" @input="menu1 = false"></v-date-picker>
                                     </v-menu>
