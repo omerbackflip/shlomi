@@ -26,7 +26,7 @@ module.exports = app => {
   router.get("/get-no-close",specific.getNoClose);
   router.get("/get-with-remark",specific.getWithRemark);
   router.get("/get-tables",specific.getTables);
-  router.get("/get-customers-with-status",specific.getCustomersWithStatus);
+  // router.get("/get-customers-with-status",specific.getCustomersWithStatus); // not in used
 
   router.post("/send-message", specific.sendMessageToUser);
 

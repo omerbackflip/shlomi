@@ -35,12 +35,17 @@
 					</v-toolbar>
 				</template>
 				<template v-slot:[`item.fullName`]="{ item }">
-					<div style="text-align: right;" :class="{'bg-yellow': item.hasTicket}" >
+					<div style="text-align: right;">
 						<td @click.stop style="font-size: large;">
 							<span @click="customerForm(item)">{{ item.fullName }}</span>
 						</td>
 						<span v-show="item.remark" class="custRmk">{{item.remark }}</span>
 					</div>
+				</template>
+				<template v-slot:[`item.allPhones`]="{ item }">
+					<td :class = "`${item.ticketExist}`">
+						<span :class="{'noTicket': !item.hasTicket}">{{ item.allPhones }}</span>
+					</td>
 				</template>
 			</v-data-table>
 			<!-- <vue-virtual-table
@@ -95,7 +100,7 @@
 					<span>{{ item.entryDate ? new Date(item.entryDate).toLocaleDateString('en-GB') : '-'}}</span>
 				</template>
 				<template v-slot:[`item.ticketStatus`]="{ item }">
-					<div :class="`${item.ticketStatus}`">{{ item.ticketStatus }}</div>
+					<td :class="`${item.ticketStatus}`">{{ item.ticketStatus }}</td>
 				</template>
 			</v-data-table>
 		</v-layout>
@@ -168,7 +173,6 @@ export default {
 			this.loading = true
 			try {
 				// const response = await specificServiceEndPoints.getCustomersWithStatus();
-				// console.log(response.data)
 				const response = await apiService.getMany({model: CUSTOMER_MODEL});
 				if(response.data) {
 					this.customers = response.data;
@@ -311,12 +315,19 @@ export default {
 }
 
 .Open {
-    background-color: red;
+	border-right-width: thick;
+    border-color: red;
 }
+
 .Fixed {
-	background-color: lightgreen;
+	border-right-width: thick;
+    border-color: lightgreen;
 }
 .Checked {
-	background-color:yellow;
+	border-right-width: thick;
+    border-color:yellow
+}
+.noTicket {
+	color: navajowhite;
 }
 </style>

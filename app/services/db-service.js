@@ -45,7 +45,6 @@ exports.createItem = async (model,payload) => {
         throw error;
     }
 },
-
 exports.insertMany = async (model,payload) => {
     try {
         return await model.insertMany(payload);
@@ -54,7 +53,6 @@ exports.insertMany = async (model,payload) => {
         throw error;
     }
 },
-
 exports.deleteItem = async (model,query) => {
     try {
         // console.log (model)  //  Model { table || project || payment ..... }

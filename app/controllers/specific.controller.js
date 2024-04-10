@@ -216,9 +216,16 @@ exports.searchCustomer = async (req, res) => {
 exports.hasTicketsBulk = async (req,res) => {
 	try {
 		let data = await Customer.find()
+		let status;
 		data.map(async (item) => {
-			let findTicket = await Ticket.findOne({customerId: item.customerId}) 
-			await Customer.updateOne({customerId: item.customerId},{hasTicket: (findTicket != null) ? true : false})	
+			let findTicket = await Ticket.find({customerId: item.customerId}) 
+			if (findTicket.length > 0){
+				status = 'Closed'
+				findTicket.map((item1) => {
+					if (item1.ticketStatus != 'Closed') status = item1.ticketStatus;
+				})
+			} else status = 'Non'
+			await Customer.updateOne({customerId: item.customerId},{ticketExist: status})	
 		})
 	} catch (error) {
 		console.log(error)
@@ -348,26 +355,25 @@ exports.getWithRemark = async (req, res) => {
 	return res.send (data1)
 };
 
-exports.getCustomersWithStatus = async (req,res) => {
-	try {
-		let data = await Customer.find().limit(1).lean()
-		data = data.map( async (item) => {
-			let findTickets = 'ddd'
-			if (item.hasTicket) {
-				findTickets = await dbService.getMultipleItems (Ticket, {customerId: item.customerId})
-			}
-			console.log(item.fullName, findTickets.length)
-			// let status = findTickets.ticketStatus
-			return (Object.assign({},item, {status : 'status'}))
-			// return (Object.assign({},item, {aaa : 'aaa'}))
-		})
-		// console.log(data1)
-		return res.send (data)
-	} catch (error) {
-		console.log(error)
-		res.status(500).send({ message: "Error hasTicketsBulk", error });
-	}
-};
+// exports.getCustomersWithStatus = async (req,res) => {  // not in used...!!!
+// 	try {
+// 		let data = await Customer.find().limit(2).lean()
+// 		let findTickets = 'Non'
+// 		data = data.map( (item) => {
+// 			if (item.hasTicket) {
+// 				findTickets = Ticket.find ({customerId: item.customerId})
+// 			}
+// 			// console.log(item.fullName, findTickets.length)
+// 			// return (Object.assign({},item, {status : 'status'}))
+// 			return ({...item, status : 'status'})
+// 		})
+// 		console.log(data)
+// 		return res.send (data)
+// 	} catch (error) {
+// 		console.log(error)
+// 		res.status(500).send({ message: "Error hasTicketsBulk", error });
+// 	}
+// };
 
 function unLinkFile(path) {
 	fs.unlinkSync(path);

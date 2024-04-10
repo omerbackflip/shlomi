@@ -14,6 +14,7 @@ module.exports = mongoose => {
 			arrivedFrom: String,
 			issueDate: Date,
 			hasTicket: Boolean,
+			ticketExist: String,
 			remark: String,
 		},
 		{ timestamps: true }
