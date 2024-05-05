@@ -7,15 +7,15 @@
                 <div v-else>            {{local ? 'Local Host' : 'Production'}} </div>
             </div>
             <v-spacer></v-spacer>
-            <v-btn-toggle v-if="isTicketsList" v-model="ticketStatus" @change="onFilterChange" group >
+            <v-btn-toggle v-if="isTicketsList" v-model="ticketStatus" @change="onFilterChange" group>
                 <v-btn text value="Open"     elevation='3' small
-                    style="border-color: red;  border-bottom-width: thick; border-inline-color: revert-layer; border-top-width: inherit;"> פתוח 
+                    style="border-color: red;" class="btn-tgl" :class="ticketStatus === 'Open' ? `${ticketStatus}` : ''"> פתוח 
                 </v-btn>
-                <v-btn text value="Checked"  elevation='3' small 
-                    style="border-color: yellow; border-bottom-width: thick; border-inline-color: revert-layer; border-top-width: inherit;"> נבדק 
+                <v-btn text value="Checked"  elevation='3' small
+                    style="border-color: yellow;" class="btn-tgl" :class="ticketStatus === 'Checked' ? `${ticketStatus}` : ''"> נבדק 
                 </v-btn>
                 <v-btn text value="Fixed"    elevation='3' small
-                    style="border-color: lightgreen; border-bottom-width: thick; border-inline-color: revert-layer; border-top-width: inherit;"> תוקן 
+                    style="border-color: lightgreen;" class="btn-tgl" :class="ticketStatus === 'Fixed' ? `${ticketStatus}` : ''"> תוקן 
                 </v-btn>
                 <v-btn text value="ALL"    elevation='3' small> הכל </v-btn>
             </v-btn-toggle>
@@ -173,6 +173,22 @@ export default {
         padding: 4px;
         border-radius: 4px;
         font-size: 14px;
+    }
+
+    .btn-tgl {
+        border-bottom-width: thick !important; 
+        border-inline-color: revert-layer !important; 
+        border-top-width: inherit !important;
+    }
+
+    .Open {
+        background-color: red !important;
+    }
+    .Checked {
+        background-color: yellow !important;
+    }
+    .Fixed {
+        background-color: lightgreen !important;
     }
 
 </style>

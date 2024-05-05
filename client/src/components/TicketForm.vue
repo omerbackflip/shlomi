@@ -321,6 +321,7 @@ export default {
                 this.ticket.ticketId = ticketId+1
                 let vatTable = await apiService.getOne({model: TABLE_MODEL, table_id: 102}) // get the current vat %
                 this.ticket.vat = vatTable.data.table_code;
+                this.customerNameAddress = '' ;
                 this.yitra = 0;
             } else {
                 const response = await apiService.getOne({model: CUSTOMER_MODEL, customerId:ticket.customerId})
@@ -391,10 +392,10 @@ export default {
         },
 
         onTotalChage(num) {
-            console.log(num)
+            // console.log(num)
             this.ticket.discountAmount = 0
             this.ticket.discountPrecent = 0
-            this.ticket.amount = (num/(1+this.ticket.vat/100)).toLocaleString();
+            this.ticket.amount = (num/(1+this.ticket.vat/100)).toFixed(0);
             this.ticket.discountBefore = this.ticket.amount
             this.yitra = num - this.ticket.prepaid;
             this.$forceUpdate();    

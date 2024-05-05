@@ -46,6 +46,7 @@ exports.getCustomersNewToSave = (data) => {
                 arrivedFrom: item['arrivedFrom'],
                 issueDate: item['issueDate'],
                 hasTicket: item['hasTicket'],  // there is dedicated bach to run after loading
+                ticketExist: item['ticketExist'],  // there is dedicated bach to run after loading
                 remark: item['remark'],
             }
 
