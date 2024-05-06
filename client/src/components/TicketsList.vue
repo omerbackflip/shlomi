@@ -169,7 +169,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .row {
 	cursor: pointer;
 	padding: 0%;

@@ -237,6 +237,10 @@ export default {
 			calsses = isMobile() ? 'width100': 'width49' 
 			return (calsses)
 		},
+
+		custClass(item) {
+			return item.ticketExist;			
+		}
 	},
 
 	mounted() {
@@ -260,14 +264,10 @@ export default {
 }
 
 .search-wrapper{
-	/* width: 20%; */
     margin: 0;
     padding: 0;
     height: 40px;
 }
-/* .header-cell-inner[data-v-55a76cbe] {
-    word-break: normal;
-} */
 .v-toolbar__title {
         white-space: pre-wrap !important;
         font-size: smaller !important;
@@ -279,10 +279,6 @@ export default {
 }
 .v-label {
 	font-size: smaller !important;
-}
-.bg-yellow {
-	background-color: yellow !important;
-	text-align: justify;
 }
 .custRmk{
 	font-size: large;
@@ -315,17 +311,15 @@ export default {
 }
 
 .Open {
-	border-right-width: thick;
-    border-color: red;
+	background-color: red;
+	color: white;
 }
 
 .Fixed {
-	border-right-width: thick;
-    border-color: lightgreen;
+	background-color: lightgreen;
 }
 .Checked {
-	border-right-width: thick;
-    border-color:yellow
+	background-color: yellow;
 }
 .noTicket {
 	color: navajowhite;
