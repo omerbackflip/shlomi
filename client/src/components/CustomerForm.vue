@@ -17,7 +17,7 @@
                 {{message}}
             </div>
             <v-row class="pa-3 overflow-hidden">
-                <v-col cols="4">
+                <v-col cols="2">
                     <v-text-field type="number" v-model="customer.customerId" label="מס' לקוח" readonly reverse></v-text-field>
                 </v-col>
                 <v-col cols="4">
@@ -26,17 +26,17 @@
                 <v-col cols="4">
                     <v-text-field v-model="customer.address" label="כתובת" reverse></v-text-field>
                 </v-col>
-                <v-col cols="4">
+                <v-col cols="2">
                     <v-text-field v-model="customer.city" label="עיר" reverse></v-text-field>
                 </v-col>
                 <v-col cols="4">
                     <v-text-field v-model="customer.phone1" label="בית 1" reverse></v-text-field>
                 </v-col>
                 <v-col cols="4">
-                    <v-text-field v-model="customer.phone3" label="נייד 3" reverse></v-text-field>
+                    <v-text-field v-model="customer.phone2" label="נוסף 2" reverse></v-text-field>
                 </v-col>
                 <v-col cols="4">
-                    <v-text-field v-model="customer.phone2" label="נוסף 2" reverse></v-text-field>
+                    <v-text-field v-model="customer.phone3" label="נייד 3" reverse></v-text-field>
                 </v-col>
                 <v-col cols="4">
                     <v-combobox v-model="customer.arrivedFrom" :items="arrivedFromList" label="הגיע אלינו דרך..." reverse/>
