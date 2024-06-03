@@ -154,7 +154,7 @@
                                     <v-text-field v-model="ticket.amount" label="סופי" disabled reverse></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="4" sm="1">
-                                    <v-text-field v-model="ticket.vat" label="מע'מ" disabled reverse></v-text-field>
+                                    <v-text-field v-model="totalVat" label="מע'מ" disabled reverse></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="4" sm="1">
                                     <v-text-field v-model="ticket.total" @change="onTotalChage" label="סה'כ" reverse @focus="$event.target.select()"></v-text-field>
@@ -262,6 +262,7 @@ export default {
             itemList:[],
             customerId: '',
             customerNameAddress: '',
+            totalVat: '',
         };
     },
 
@@ -332,6 +333,7 @@ export default {
                 this.customerNameAddress = ticket.customerName + " - " + this.customerInfo.address + (this.customerInfo.city ? (" - " +  this.customerInfo.city) : '') ;  // need this !
                 this.yitra = this.ticket.prepaid ? this.ticket.total-this.ticket.prepaid : 0;
             }
+            this.totalVat = (this.ticket.vat*this.ticket.amount/100).toFixed(0);
             this.loading = false;
             return new Promise((resolve) => { // must !! for update the db while 'submitTicket'
                 this.resolve = resolve;

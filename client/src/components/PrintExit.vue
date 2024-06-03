@@ -85,7 +85,7 @@
                                 <tbody style="text-align-last: right; direction: rtl;">
                                     <tr><td>{{ ticket.discountPrecent > 0  ? ticket.discountBefore : ticket.amount }} ש"ח</td><td>מחיר</td></tr>
                                     <tr v-if="ticket.discountPrecent > 0"> <td>{{ ticket.discountAmount }} ש"ח</td><td style="direction: ltr;"> {{ ticket.discountPrecent }}% - הנחה </td></tr>
-                                    <tr><td>{{ ticket.vat }} ש"ח</td><td>מע"מ</td></tr>
+                                    <tr><td>{{ (ticket.vat*ticket.amount/100).toFixed(0) }} ש"ח</td><td>מע"מ  -   % {{ ticket.vat }}</td></tr>
                                     <tr><td>{{ ticket.total ? ticket.total : '' }} ש"ח</td><td>סה"כ לתשלום</td></tr>
                                     <tr><td>{{ ticket.prepaid }} ש"ח</td><td>שולם ע"ח  ({{ ticket.prepaidInvoice }}) </td></tr>
                                     <tr style="font-size: large;">
