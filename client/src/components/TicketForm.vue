@@ -38,10 +38,10 @@
                                     <v-text-field type="text" :value="customerInfo.phone1" disabled hide-details></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="4" sm="2">
-                                    <v-text-field type="text" :value="customerInfo.phone3" disabled hide-details></v-text-field>
+                                    <v-text-field type="text" :value="customerInfo.phone2" disabled hide-details></v-text-field>
                                 </v-col>
                                 <v-col class="px-2" cols="4" sm="2">
-                                    <v-text-field type="text" :value="customerInfo.phone2" disabled hide-details></v-text-field>
+                                    <v-text-field type="text" :value="customerInfo.phone3" disabled hide-details></v-text-field>
                                 </v-col>
                                 <v-col>
                                     <v-btn @click="openExsitingCustomerForm" style="margin-top: 15px;" x-small><v-icon small>mdi-pencil</v-icon></v-btn>
