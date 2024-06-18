@@ -50,7 +50,7 @@
                         class="elevation-3"
                         show-select
                         v-model="pickedInvoices"
-                        item-key="amount"
+                        item-key="invoiceId"
                     >
                     <template v-slot:[`item.date`]="{ item }">
                         <span>{{ item.date ? new Date(item.date).toLocaleDateString('en-GB') : ''}}</span>
