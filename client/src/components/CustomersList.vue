@@ -178,8 +178,8 @@ export default {
 					this.customers = response.data;
 					this.customers = this.customers.map((item) => {
 						let allPhones = (item.phone1 ? item.phone1.replace("-","") : '') + 
-										(item.phone3 ? ' / ' + item.phone3.replace("-","") : '') +
-										(item.phone2 ? ' / ' + item.phone2.replace("-","") : '')
+										(item.phone2 ? ' / ' + item.phone2.replace("-","") : '') +
+										(item.phone3 ? ' / ' + item.phone3.replace("-","") : '')
 						return ({...item, allPhones: allPhones}) 
 					})
 				}
