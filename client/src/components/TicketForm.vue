@@ -269,33 +269,37 @@ export default {
     methods: {
         async submitTicket() {
             this.loading = true
-            this.$forceUpdate();
-			try {
-				if(this.newTicket) {
-                    this.ticket.year = new Date(this.ticket.entryDate).getFullYear() ;
-                    await apiService.create({...this.ticket} , {model:TICKET_MODEL});
-				} else {
-					await apiService.update(this.ticket._id , { ...this.ticket } , {model:TICKET_MODEL});
-				}
-                this.customerInfo.hasTicket = true
-                ////////////////////////////
-                let status;
-                // let findTicket = await Ticket.find({customerId: this.customerInfo.customerId}) 
-                let findTicket = await apiService.getMany({model: TICKET_MODEL , customerId: this.customerInfo.customerId});
-                if (findTicket.data.length > 0){
-                    status = this.ticket.ticketStatus
-                    findTicket.data.map((item) => {
-                        if (item.ticketStatus != 'Closed') status = item.ticketStatus;
-                    })
-                } else status = 'Non'
-                this.customerInfo.ticketExist = status                
-                ////////////////////////////
-                await apiService.update(this.customerInfo._id, {...this.customerInfo}, {model:CUSTOMER_MODEL});
-                this.dialog = false;
-                this.resolve(true); // must !! for update the db while 'open'
-			} catch (error) {
-				console.log(error);
-			}
+            if (this.customerInfo.customerId) {
+                this.$forceUpdate();
+                try {
+                    if(this.newTicket) {
+                        this.ticket.year = new Date(this.ticket.entryDate).getFullYear() ;
+                        await apiService.create({...this.ticket} , {model:TICKET_MODEL});
+                    } else {
+                        await apiService.update(this.ticket._id , { ...this.ticket } , {model:TICKET_MODEL});
+                    }
+                    this.customerInfo.hasTicket = true
+
+                    // now update customer with relevant status
+                    let status;
+                    let findTicket = await apiService.getMany({model: TICKET_MODEL , customerId: this.customerInfo.customerId});
+                    if (findTicket.data.length > 0){
+                        status = this.ticket.ticketStatus
+                        findTicket.data.map((item) => {
+                            if (item.ticketStatus != 'Closed') status = item.ticketStatus;
+                        })
+                    } else status = 'Non'
+                    this.customerInfo.ticketExist = status                
+
+                    await apiService.update(this.customerInfo._id, {...this.customerInfo}, {model:CUSTOMER_MODEL});
+                    this.dialog = false;
+                    this.resolve(true); // must !! for update the db while 'open'
+                } catch (error) {
+                    console.log(error);
+                }
+            } else {
+                window.alert("לא ניתן לשמור כרטיס תיקון ללא שיוך ללקוח")
+            }
             this.loading = false
 		},
 
