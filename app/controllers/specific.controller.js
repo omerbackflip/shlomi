@@ -350,7 +350,8 @@ exports.getWithRemark = async (req, res) => {
 	// if have customer remark, add it to the object
 	let data1 = await Promise.all (data.map(async(item) => {
 		let customer = await Customer.findOne({customerId: item.customerId})
-		return ({...item._doc, customerRemark: customer.remark})
+		let remark = customer ? customer.remark : ''
+		return ({...item._doc, customerRemark: remark})
 	}))
 	return res.send (data1)
 };

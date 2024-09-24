@@ -65,7 +65,7 @@
               <span>{{ item.date ? new Date(item.date).toLocaleDateString('en-GB') : '-'}}</span>
             </template>
             <template v-slot:[`item.amount`]="{ item }">
-              <span>{{ item.amount.toLocaleString() }}</span>
+              <span>{{ item.amount ? item.amount.toLocaleString() : ''}}</span>
             </template>
           </v-data-table>
         </v-card>
@@ -103,7 +103,7 @@
             <span>{{ item.date ? new Date(item.date).toLocaleDateString('en-GB') : '-'}}</span>
           </template>
           <template v-slot:[`item.amount`]="{ item }">
-            <span>{{ item.amount.toLocaleString() }}</span>
+              <span>{{ item.amount ? item.amount.toLocaleString() : ''}}</span>
           </template>
         </v-data-table>
         </v-card>
@@ -190,6 +190,7 @@ export default {
         this.lastPaymentId = 0;
       }
       let response1 = await apiService.getMany({ model: INVOICE_MODEL, supplierId: this.supplier.table_code})
+      console.log(this.supplier.table_code,response1.data)
       this.invoices = response1.data.sort((a, b) => a.paymentId - b.paymentId);
 			this.loading = false
     },

@@ -133,7 +133,27 @@ exports.getTicketsNewToSave = (data) => {
                 fixMin: item['fixMin'],
                 partsCost: item['partsCost'],
             }
-
+            // if (ticket.entryCondition && ticket.entryCondition.includes(',')) {
+            //     ticket.entryCondition = ticket.entryCondition.split(',')
+            // }
+            // if (ticket.accessories && ticket.accessories.includes(',')) {
+            //     ticket.accessories = ticket.accessories.split(',')
+            // } 
+            // if (ticket.defectDescription && ticket.defectDescription.includes(',')) {
+            //     ticket.defectDescription = ticket.defectDescription.split(',')
+            // } 
+            // if (ticket.defectFound && ticket.defectFound.includes(',')) {
+            //     ticket.defectFound = ticket.defectFound.split(',')
+            // } 
+            // if (ticket.defectFixes && ticket.defectFixes.includes(',')) {
+            //     ticket.defectFixes = ticket.defectFixes.split(',')
+            // } 
+            // if (ticket.remarks && ticket.remarks.includes(',')) {
+            //     ticket.remarks = ticket.remarks.split(',')
+            // } 
+            // if (ticket.ticketRemark && ticket.ticketRemark.includes(',')) {
+            //     ticket.ticketRemark = ticket.ticketRemark.split(',')
+            // } 
             tickets.push(ticket);
         });
 
