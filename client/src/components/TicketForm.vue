@@ -123,7 +123,7 @@
                                 <v-row style="justify-content: right;">
                                     <v-col class="px-2" cols="9">
                                         <v-combobox v-model="ticket.ticketRemark" :items="tableList.ticketRemarkList" label="הערה לכרטיס - לא מודפס" multiple 
-                                    :menu-props="{ minWidth: '250', maxHeight: '300' }" dense hide-details></v-combobox>
+                                    :menu-props="{ minWidth: '250', maxHeight: '300' }" dense hide-details :class="{ 'red-background': ticket.ticketRemark.length > 0 }"></v-combobox>
                                     </v-col>
                                 </v-row>
                             </v-row>
@@ -506,5 +506,8 @@ export default {
     }
     .Checked {
         background-color:yellow;
+    }
+    ::v-deep .red-background .v-input__control {
+        background-color: red;
     }
 </style>
