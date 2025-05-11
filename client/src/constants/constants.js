@@ -4,6 +4,7 @@ export const TABLE_MODEL = 'tables';
 export const PHONE_MODEL = 'phones';
 export const PAYMENT_MODEL = 'payments';
 export const INVOICE_MODEL = 'invoices';
+import apiService from "../services/apiService";
 
 export const printTicketTopPadding = '115px';
 export const printTicketRightPadding = '125px';
@@ -142,3 +143,14 @@ export const isMobile = () => {
         return false;
     }
 }
+export const loadTable = async (table_id) => {
+    try {
+        const response = await apiService.getMany({ table_id, model: TABLE_MODEL });
+        if (response.data.length > 0) {
+            return (response.data)
+            // return (response.data.map((code) => code.description))
+        } else return (window.alert("Read Table no - " + table_id + " faild"))
+    } catch (error) {
+        console.log(error);
+    }
+};

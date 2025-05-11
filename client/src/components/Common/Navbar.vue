@@ -20,6 +20,9 @@
                 <v-btn text value="ALL"    elevation='3' small> הכל </v-btn>
             </v-btn-toggle>
             <v-select v-if="isTicketsList" :items="years" v-model="ticketYear" @change="onFilterChange" label="Year"/>
+            <v-btn x-small @click="$emit('logout')" icon>
+                <v-icon small>mdi-logout</v-icon>
+            </v-btn>
         </v-app-bar>
         <v-navigation-drawer app v-model="drawer" class="primary text-left ">
             <v-list class="ml-1">
