@@ -51,7 +51,7 @@
 					<td v-show="isMobile()">{{ item.defectDescription[0] }}</td>
 				</template>
 				<template v-slot:[`item.ticketRemark`]="{ item }">
-					<td :class="{'yellow lighten-3': item.ticketRemark[0] && !item.ticketRemark[0].includes('מאשר')}">
+					<td :class="{'yellow lighten-3': item.ticketRemark[0]}">
 						{{ item.ticketRemark[0] }}
 					</td>
 				</template>

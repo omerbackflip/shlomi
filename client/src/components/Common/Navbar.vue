@@ -42,7 +42,7 @@
 <script>
 
 import SpecificServiceEndPoints from "../../services/specificServiceEndPoints";
-import { isMobile, ROUTE_LIST } from '../../constants/constants';
+import { isMobile, ROUTE_LIST, loadTable } from '../../constants/constants';
 
 export default {
     data() {
@@ -56,9 +56,10 @@ export default {
             dialog: false,
             ticketStatus: 'Open',
             ticketYear: '',
-            years: [2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017,
-                    2016, 2015, 2014, 2013, 2012, 2011, 2010,
-                    2009, 2008, 2007, 2006],
+            // years: [2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017,
+            //         2016, 2015, 2014, 2013, 2012, 2011, 2010,
+            //         2009, 2008, 2007, 2006]
+            years: [],
         }
     },
     methods:{
@@ -100,8 +101,9 @@ export default {
         //     return response.data;
         // },
     },
-    mounted() {
+    async mounted() {
         this.getDatabaseInformation();
+        this.years = (await loadTable(26)).map((code) => code.description).sort((a, b) => parseInt(b) - parseInt(a));
     },
     computed: {
         isTicketsList() {
