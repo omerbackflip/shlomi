@@ -154,3 +154,10 @@ export const loadTable = async (table_id) => {
         console.log(error);
     }
 };
+export const sendWhatsapp = async(phone) => {
+    let fixedPhone = phone
+    if (phone.charAt(0) === '0') fixedPhone = phone.substring(1)
+    // const win = window.open('https://api.whatsapp.com/send?phone=972'+fixedPhone.replace("-", "")+'&text=שלום', '_blank');
+    const win = window.open('https://api.whatsapp.com/send?phone=972' + fixedPhone.replace("-", "") + '&text=' + encodeURIComponent('text'), '_blank');
+    if (win) win.focus();
+};

@@ -228,7 +228,7 @@
 </template>
 
 <script>
-import { TICKET_MODEL, TABLE_MODEL, CUSTOMER_MODEL, NEW_TICKET, messageTemplate, isMobile } from "../constants/constants";
+import { TICKET_MODEL, TABLE_MODEL, CUSTOMER_MODEL, NEW_TICKET, isMobile, sendWhatsapp } from "../constants/constants";
 import apiService from "../services/apiService";
 import specificServiceEndPoints from '../services/specificServiceEndPoints';
 import CustomerForm from './CustomerForm.vue';
@@ -356,13 +356,14 @@ export default {
         async sendMessage() {
             try {
                 if(this.customerInfo && this.customerInfo.phone1) {
-                    const name = this.customerInfo.fullName || this.ticket.customerName;
-                    const itemName = this.ticket.item;
-                    const message = messageTemplate.replace("__name__", name).replace("__itemName__", itemName);
-                    let cutomerPhone = "+972".concat(this.customerInfo.phone1.replace("-","").substring(1))
+                    // const name = this.customerInfo.fullName || this.ticket.customerName;
+                    // const itemName = this.ticket.item;
+                    // const message = messageTemplate.replace("__name__", name).replace("__itemName__", itemName);
+                    // let cutomerPhone = "+972".concat(this.customerInfo.phone1.replace("-","").substring(1))
                     // console.log(cutomerPhone)
-                    await specificServiceEndPoints.sendMessageToUser({message, phone: cutomerPhone});
-                    alert('Message sent successfully to ' + cutomerPhone);
+                    // await specificServiceEndPoints.sendMessageToUser({message, phone: cutomerPhone}); // this use twilio service
+                    sendWhatsapp(this.customerInfo.phone2); // open whatsapp web
+                    // alert('Message sent successfully to ' + this.customerInfo.phone1);
                     this.submitTicket();
                 } else {
                     alert("User has no primary phone number");

@@ -306,7 +306,7 @@ exports.getTables = async (req,res) => {
 
 exports.getDbInfo = (req,res) => {
 	try {
-		const local = url.includes('localhost');
+		const local = url.includes('127.0.0.1');
 		return res.send({ success: true, local , production: !local});
 	} catch (error) {
 		console.log(error)
