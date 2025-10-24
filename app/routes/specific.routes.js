@@ -20,12 +20,15 @@ module.exports = app => {
   router.post("/save-customers-new",upload.single('file'), specific.saveCustomersNewBulk);
   router.post("/save-tables-new",upload.single('file'), specific.saveTablesNewBulk);
 
+
   router.get("/search-customers", specific.searchCustomer);
   router.post("/hasTickets-bulk", specific.hasTicketsBulk);
   router.get("/get-database-info", specific.getDbInfo);
   router.get("/get-no-close",specific.getNoClose);
   router.get("/get-with-remark",specific.getWithRemark);
   router.get("/get-tables",specific.getTables);
+  router.post("/create-excel", specific.createExcel);
+
   // router.get("/get-customers-with-status",specific.getCustomersWithStatus); // not in used
 
   router.post("/send-message", specific.sendMessageToUser);

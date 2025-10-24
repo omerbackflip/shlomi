@@ -7,13 +7,14 @@ const dbService = require("../services/db-service");
 const specificService = require("../services/specific-service");
 const XLSX = require('xlsx');
 const fs = require('fs');
-const { transformCSVData } = require("../util/util");
+const { transformCSVData, createExcelUtil } = require("../util/util");
 const { url } = require("../config/db.config");
-const { cursorTo } = require("readline");
+// const { cursorTo } = require("readline");
 
 const accountSid = process.env.ACCOUNT_SID;
 const authToken = process.env.AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
+const google = require('../../google/drive/upload');
 
 exports.saveCustomersBulk = async (req, res) => {
 	try {
@@ -354,6 +355,26 @@ exports.getWithRemark = async (req, res) => {
 		return ({...item._doc, customerRemark: remark})
 	}))
 	return res.send (data1)
+};
+
+exports.createExcel = async (req, res) => {
+	try {
+		let ticketData = await Ticket.find().lean();
+
+		// Generate Excel file from ticketData
+		let ticketsExcelFile =  createExcelUtil(ticketData);
+		const folderId = process.env.BACKUP_DRIVE_FOLDER_ID; // replace with your Drive folder ID
+
+		const result = await google.uploadFile(ticketsExcelFile.filePath, folderId);
+		unLinkFile(ticketsExcelFile.filePath); // delete the local file after upload
+
+    	const filename = ticketsExcelFile.filePath.split(/[\\/]/).pop(); // ✅ Return filename too
+		res.json({ success: true, link: result.webViewLink, fileId: result.id, file: { filename } });
+
+	} catch (error) {
+		console.log(error);
+		res.status(500).send({ message: "Error creating Excel file", error });
+	}
 };
 
 // exports.getCustomersWithStatus = async (req,res) => {  // not in used...!!!

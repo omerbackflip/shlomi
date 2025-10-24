@@ -21,6 +21,10 @@ class ApiService {
     return http.put(`generic/update/${id}`, data, {params});
   }
 
+  findOneAndUpdate(data, params) {
+    return http.put("generic/find-one-and-update", data, {params});
+  }
+
   deleteOne(params) {
     return http.delete(`generic/delete`,{params});
   }

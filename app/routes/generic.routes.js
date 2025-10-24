@@ -21,6 +21,9 @@ module.exports = app => {
 	// Update a entity with id
 	router.put("/update/:id", generic.update);
 
+	// Update an entity that matches a condition
+	router.put("/find-one-and-update", generic.findOneAndUpdate);
+
 	// Delete all generic
 	router.delete("/delete-all", generic.deleteAll);
 

@@ -6,6 +6,11 @@
                 <div v-if="isMobile()"> {{local ? 'L' : 'P'}}                   </div>
                 <div v-else>            {{local ? 'Local Host' : 'Production'}} </div>
             </div>
+            <v-btn color="primary" dark :loading="loading" @click="createExcel" class="ml-3" small>
+                <v-icon left>mdi-google-drive</v-icon>
+                {{ lastUpdate }}
+            </v-btn>
+
             <v-spacer></v-spacer>
             <v-btn-toggle v-if="isTicketsList" v-model="ticketStatus" @change="onFilterChange" group>
                 <v-btn text value="Open"     elevation='3' small
@@ -42,7 +47,8 @@
 <script>
 
 import SpecificServiceEndPoints from "../../services/specificServiceEndPoints";
-import { isMobile, ROUTE_LIST, loadTable } from '../../constants/constants';
+import apiService from "../../services/apiService";
+import { isMobile, ROUTE_LIST, loadTable, TABLE_MODEL } from '../../constants/constants';
 
 export default {
     data() {
@@ -60,6 +66,7 @@ export default {
             //         2016, 2015, 2014, 2013, 2012, 2011, 2010,
             //         2009, 2008, 2007, 2006]
             years: [],
+            lastUpdate: []
         }
     },
     methods:{
@@ -94,16 +101,30 @@ export default {
                 console.log(error);
             }
         },
-        // async fetchData(){
-        //     this.loading = true;
-        //     const response = await apiService.getMany({model:TICKET_MODEL})
-        //     this.loading = false;
-        //     return response.data;
-        // },
+
+        async createExcel() {
+            this.lastUpdate = "creating excel...";
+            this.loading = true;
+            const response = await SpecificServiceEndPoints.createExcel();
+            console.log(response)
+            if (response && response.data && response.data.file && response.data.file.filename) {
+                const filename = response.data.file.filename;
+                // Extract date part between last '-' and '.xlsx'
+                const match = filename.match(/(\d{2}-\d{2}-\d{4})\.xlsx$/);
+                const dateStr = match ? match[1] : '';
+                this.lastUpdate = "last backup : " + [dateStr];
+                await apiService.findOneAndUpdate({description: this.lastUpdate},{model:TABLE_MODEL, table_id: 110, table_code: 1})
+            }
+            this.loading = false;
+        },
+
     },
+
     async mounted() {
         this.getDatabaseInformation();
         this.years = (await loadTable(26)).map((code) => code.description).sort((a, b) => parseInt(b) - parseInt(a));
+        const lastUpdateArr = (await loadTable(110)).map((code) => code.description);
+        this.lastUpdate = lastUpdateArr.length === 1 ? lastUpdateArr[0] : lastUpdateArr;
     },
     computed: {
         isTicketsList() {

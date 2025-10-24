@@ -67,6 +67,17 @@ exports.update = async (req, res) => {
 	}
 };
 
+// Update a entity that matches a condition
+exports.findOneAndUpdate = async (req, res) => {
+	try {
+		const model = req.query.model;
+		delete req.query.model;
+		return res.send(await dbService.updateItem(db[model], req.query, req.body));
+	} catch (error) {
+		res.status(500).send({message: error.message || "Some error occurred while retrieving entity."});		
+	}
+};
+
 
 //Delete a entity with the specified id:
 exports.delete = async (req, res) => {

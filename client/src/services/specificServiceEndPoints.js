@@ -122,6 +122,10 @@ class SpecificServiceEndPoints {
 	async getTabels() {
 		return await axios.get(`${baseUrl}/specific/get-tables`);
 	}
+
+	async createExcel() {
+		return await axios.post(`${baseUrl}/specific/create-excel`);
+	}
 }
 
 export default new SpecificServiceEndPoints();

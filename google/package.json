@@ -1,0 +1,11 @@
+{
+  "name": "@omerbackflip/google",
+  "version": "1.0.0",
+  "main": "index.js",
+  "description": "Reusable Google Drive OAuth2 module for Node.js apps",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "googleapis": "^144.0.0"
+  }
+}
