@@ -57,35 +57,47 @@ exports.convertToJSON = (array) => {
   
 	}
 	return jsonData;
-  };
+};
 
 exports.createExcelUtil = (data, filename = '') => {
 
-let excelFilename;
+	let excelFilename;
 
-if(filename === ''){
-	excelFilename = 'tickets-data-' + moment(Date.now()).format('DD-MM-YYYY') + '.xlsx';
-}else{
-	excelFilename = filename;
-}
+	if (filename === '') {
+		excelFilename = 'tickets-data-' + moment(Date.now()).format('DD-MM-YYYY') + '.xlsx';
+	} else {
+		excelFilename = filename;
+	}
 
-const ws = xlsx.utils.json_to_sheet(data, {cellDates: true, dateNF: 'dd/mm/yyyy', UTC: true});
-const wb = xlsx.utils.book_new();
-xlsx.utils.book_append_sheet(wb, ws, 'Sheet1');
+	// in case of array fields (convert arrays to multiline strings)
+	const formattedData = data.map(item => {
+		const flattened = { ...item };
+		for (const key in flattened) {
+			if (Array.isArray(flattened[key])) {
+				flattened[key] = flattened[key].join('\n');
+			}
+		}
+		return flattened;
+	});
 
-try{
-	const filePath = ServerApp.uploadFolderPath +  excelFilename;
-	xlsx.writeFile(wb, filePath);
+	const ws = xlsx.utils.json_to_sheet(formattedData, { cellDates: true, dateNF: 'dd/mm/yyyy', UTC: true });
+	const wb = xlsx.utils.book_new();
+	xlsx.utils.book_append_sheet(wb, ws, 'Sheet1');
 
-	let response = {
-		filename: excelFilename,
-		filePath: filePath,
-	};
+	try {
+		const filePath = ServerApp.uploadFolderPath + excelFilename;
+		xlsx.writeFile(wb, filePath);
 
-	return response;
+		let response = {
+			filename: excelFilename,
+			filePath: filePath,
+		};
 
-} catch (error) {
-	return false;
-}
+		return response;
 
-}  
+	} catch (error) {
+		console.error('❌ Error creating Excel file:', error);
+		return false;
+	}
+};
+ 
