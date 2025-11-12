@@ -1,5 +1,6 @@
 const xlsx = require('xlsx');
-const moment = require('moment');
+const path = require('path');
+const fs = require('fs');
 const { ServerApp } = require("../config/constants");
 
 exports.transformCSVData = (sheet_name_list, workbook) => {
@@ -59,45 +60,66 @@ exports.convertToJSON = (array) => {
 	return jsonData;
 };
 
-exports.createExcelUtil = (data, filename = '') => {
+exports.createExcelUtil = (sheetsMap /* object: { sheetName: dataArray, ... } */, filename) => {
+  if (!sheetsMap || typeof sheetsMap !== 'object') {
+    console.error('createExcelUtil: sheetsMap must be an object of sheetName -> array');
+    return false;
+  }
 
-	let excelFilename;
+  try {
+    // Build workbook
+    const wb = xlsx.utils.book_new();
 
-	if (filename === '') {
-		excelFilename = 'tickets-data-' + moment(Date.now()).format('DD-MM-YYYY') + '.xlsx';
-	} else {
-		excelFilename = filename;
-	}
+    // For each sheet, clone & flatten arrays, then append sheet
+    for (const [sheetName, rawData] of Object.entries(sheetsMap)) {
+      const data = Array.isArray(rawData) ? rawData : [];
 
-	// in case of array fields (convert arrays to multiline strings)
-	const formattedData = data.map(item => {
-		const flattened = { ...item };
-		for (const key in flattened) {
-			if (Array.isArray(flattened[key])) {
-				flattened[key] = flattened[key].join('\n');
-			}
-		}
-		return flattened;
-	});
+      // convert arrays to multiline strings and remove Mongo internals if necessary
+      const formattedData = data.map(item => {
+        // If item is a plain object (from .lean()) we can shallow-copy it
+        const flattened = { ...(item || {}) };
+        for (const key in flattened) {
+          if (Array.isArray(flattened[key])) {
+            flattened[key] = flattened[key].join('\n');
+          }
+          // optionally remove _id if you prefer string id
+          if (key === '_id' && flattened[key] && typeof flattened[key] === 'object') {
+            // keep the string representation
+            flattened._id = String(flattened._id);
+          }
+        }
+        return flattened;
+      });
 
-	const ws = xlsx.utils.json_to_sheet(formattedData, { cellDates: true, dateNF: 'dd/mm/yyyy', UTC: true });
-	const wb = xlsx.utils.book_new();
-	xlsx.utils.book_append_sheet(wb, ws, 'Sheet1');
+      // create worksheet (use date handling options you used before)
+      const ws = xlsx.utils.json_to_sheet(formattedData, { cellDates: true, dateNF: 'dd/mm/yyyy', UTC: true });
 
-	try {
-		const filePath = ServerApp.uploadFolderPath + excelFilename;
-		xlsx.writeFile(wb, filePath);
+      // ensure valid sheet name (SheetJS allows up to 31 chars)
+      const safeName = (sheetName || 'Sheet').substring(0, 31);
+      xlsx.utils.book_append_sheet(wb, ws, safeName);
+    }
 
-		let response = {
-			filename: excelFilename,
-			filePath: filePath,
-		};
+    // Ensure filename exists and is safe
+    const excelFilename = filename || `backup-${Date.now()}.xlsx`;
+    const filePath = path.join(ServerApp.uploadFolderPath, excelFilename);
 
-		return response;
+    // make parent directory if needed (best-effort)
+    const dir = path.dirname(filePath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
 
-	} catch (error) {
-		console.error('❌ Error creating Excel file:', error);
-		return false;
-	}
+    // write file
+    xlsx.writeFile(wb, filePath);
+
+    return {
+      filename: excelFilename,
+      filePath
+    };
+
+  } catch (error) {
+    console.error('❌ Error creating Excel workbook:', error);
+    return false;
+  }
 };
  

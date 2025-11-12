@@ -106,12 +106,11 @@ export default {
             this.lastUpdate = "creating excel...";
             this.loading = true;
             const response = await SpecificServiceEndPoints.createExcel();
-            console.log(response)
             if (response && response.data && response.data.file && response.data.file.filename) {
                 const filename = response.data.file.filename;
-                // Extract date part between last '-' and '.xlsx'
-                const match = filename.match(/(\d{2}-\d{2}-\d{4})\.xlsx$/);
-                const dateStr = match ? match[1] : '';
+                // Extract YYYY-MM-DD and convert to DD/MM/YYYY
+                const match = filename.match(/(\d{4})-(\d{2})-(\d{2})/);
+                const dateStr = match ? `${match[3]}/${match[2]}/${match[1]}` : '';
                 this.lastUpdate = "last backup : " + [dateStr];
                 await apiService.findOneAndUpdate({description: this.lastUpdate},{model:TABLE_MODEL, table_id: 110, table_code: 1})
             }

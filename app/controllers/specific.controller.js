@@ -6,15 +6,19 @@ const Phone = db.phones;
 const dbService = require("../services/db-service");
 const specificService = require("../services/specific-service");
 const XLSX = require('xlsx');
-const fs = require('fs');
+const fs = require('fs');            // for existsSync / mkdirSync if used
+const fsp = require('fs').promises;  // use fsp.unlink(...) with await
 const { transformCSVData, createExcelUtil } = require("../util/util");
 const { url } = require("../config/db.config");
 // const { cursorTo } = require("readline");
-
+const moment = require('moment');
 const accountSid = process.env.ACCOUNT_SID;
 const authToken = process.env.AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
 const google = require('../../google/drive/upload');
+const path = require('path');
+const TMP_DIR = path.resolve(__dirname, '../../tmp'); // adjust if you prefer different tmp
+const backupUtils = require('../util/backupUtils');
 
 exports.saveCustomersBulk = async (req, res) => {
 	try {
@@ -358,23 +362,67 @@ exports.getWithRemark = async (req, res) => {
 };
 
 exports.createExcel = async (req, res) => {
-	try {
-		let ticketData = await Ticket.find().lean();
+  const ts = moment().format('YYYY-MM-DD_HH-mm-ss');
+  const folderId = process.env.BACKUP_DRIVE_FOLDER_ID;
+  await fsp.mkdir(TMP_DIR, { recursive: true });
 
-		// Generate Excel file from ticketData
-		let ticketsExcelFile =  createExcelUtil(ticketData);
-		const folderId = process.env.BACKUP_DRIVE_FOLDER_ID; // replace with your Drive folder ID
+  // names and data-fetch promises (keeps order predictable)
+  const tasks = [
+    { key: 'tickets', dataPromise: Ticket.find().lean() },
+    { key: 'customers', dataPromise: Customer.find().lean() },
+    { key: 'tables', dataPromise: Table.find().lean() },
+    { key: 'phones', dataPromise: Phone.find().lean() }
+  ];
 
-		const result = await google.uploadFile(ticketsExcelFile.filePath, folderId);
-		unLinkFile(ticketsExcelFile.filePath); // delete the local file after upload
+  let createdCsvFiles = [];
+  const zipPath = path.join(TMP_DIR, `shlomi-backup-${ts}.zip`);
 
-    	const filename = ticketsExcelFile.filePath.split(/[\\/]/).pop(); // ✅ Return filename too
-		res.json({ success: true, link: result.webViewLink, fileId: result.id, file: { filename } });
+  try {
+    // fetch all data in parallel
+    const datas = await Promise.all(tasks.map(t => t.dataPromise));
 
-	} catch (error) {
-		console.log(error);
-		res.status(500).send({ message: "Error creating Excel file", error });
-	}
+    // write CSV files in parallel
+    const writePromises = tasks.map((t, idx) => {
+      const filename = `${t.key}-${ts}.csv`;
+      const filePath = path.join(TMP_DIR, filename);
+      return backupUtils.writeCsv(filePath, datas[idx])
+        .then(() => ({ path: filePath, name: `${t.key}.csv` }));
+    });
+
+    createdCsvFiles = await Promise.all(writePromises);
+
+    // create zip with the CSV files
+    await backupUtils.zipFiles(zipPath, createdCsvFiles);
+
+    // upload the single zip file
+    const uploadRes = await google.uploadFile(zipPath, folderId);
+
+    // cleanup CSVs + zip (best-effort)
+    const cleanupPaths = createdCsvFiles.map(f => f.path).concat([zipPath]);
+    await Promise.all(cleanupPaths.map(p => fsp.unlink(p).catch(() => {})));
+
+    // respond with the zip filename
+    return res.json({
+      success: true,
+      link: uploadRes.webViewLink,
+      fileId: uploadRes.id,
+      file: { filename: path.basename(zipPath) }
+    });
+
+  } catch (err) {
+    console.error('createExcel (CSV+ZIP) error:', err);
+
+    // best-effort cleanup if anything was created
+    try {
+      const cleanup = (createdCsvFiles || []).map(f => f.path);
+      if (fs.existsSync(zipPath)) cleanup.push(zipPath);
+      await Promise.all(cleanup.map(p => fsp.unlink(p).catch(() => {})));
+    } catch (e) {
+      /* ignore cleanup errors */
+    }
+
+    return res.status(500).send({ message: 'Error creating backup', error: err.message || err });
+  }
 };
 
 // exports.getCustomersWithStatus = async (req,res) => {  // not in used...!!!
