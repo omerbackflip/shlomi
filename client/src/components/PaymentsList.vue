@@ -162,10 +162,10 @@ export default {
       if (window.confirm("אשר מחיקת תשלום")) {
         await apiService.deleteOne({ model: PAYMENT_MODEL, id })
         // now, if any, delete paymentId in Invoice table 
-        let delInvoiceId = await apiService.getMany({ model: INVOICE_MODEL, supplierId: this.supplier.table_code, paymentId: paymentId})
+        let delInvoiceId = await apiService.clientGetEntities(INVOICE_MODEL, {supplierId: this.supplier.table_code, paymentId: paymentId})
         delInvoiceId.data.map (async (item) => {
           item.paymentId = '';
-          await apiService.update(item._id , {...item} , {model:INVOICE_MODEL});
+          await apiService.updateEntity({_id: item._id} , {...item} , {model:INVOICE_MODEL});
           return (item)
         })
         this.refreshList();
@@ -181,7 +181,7 @@ export default {
 
     async retrievePayments() {
 			this.loading = true
-      let response = await apiService.getMany({ model: PAYMENT_MODEL, supplierId: this.supplier.table_code})
+      let response = await apiService.clientGetEntities(PAYMENT_MODEL, {supplierId: this.supplier.table_code})
       if (response.data.length > 0) {
         this.payments = response.data.sort((a, b) => a.paymentId - b.paymentId);
         this.lastPaymentId = this.payments[this.payments.length-1].paymentId;
@@ -189,7 +189,7 @@ export default {
         this.payments = response.data; // this to clear the table if no found
         this.lastPaymentId = 0;
       }
-      let response1 = await apiService.getMany({ model: INVOICE_MODEL, supplierId: this.supplier.table_code})
+      let response1 = await apiService.clientGetEntities(INVOICE_MODEL, {supplierId: this.supplier.table_code})
       // console.log(this.supplier.table_code,response1.data)
       this.invoices = response1.data.sort((a, b) => a.paymentId - b.paymentId);
 			this.loading = false
@@ -198,7 +198,7 @@ export default {
     async retrieveSuppliers() {
 			this.loading = true
       await apiService
-        .getMany({ model: TABLE_MODEL, table_id: 9})
+        .clientGetEntities(TABLE_MODEL, { table_id: 9})
         .then((response) => {
           this.suppliers = response.data;
         })
@@ -210,7 +210,7 @@ export default {
 
     async retrieveInvoices() {
 			this.loading = true
-      let response = await apiService.getMany({ model: INVOICE_MODEL, supplierId: this.payment.supplierId})
+      let response = await apiService.clientGetEntities(INVOICE_MODEL, {supplierId: this.payment.supplierId})
       if (response.data.length > 0) {
         console.log(response.data)
         this.invoices = response.data.sort((a, b) => a.paymentId - b.paymentId);

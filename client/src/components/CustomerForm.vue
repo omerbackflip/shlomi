@@ -102,12 +102,12 @@ export default {
 				if(this.newCustomer) {
 					response = await apiService.create({...this.customer} , {model:CUSTOMER_MODEL});
 				} else {
-					response = await apiService.update(this.customer._id , { ...this.customer } , {model:CUSTOMER_MODEL});
+					response = await apiService.updateEntity({_id: this.customer._id} , {...this.customer} , {model:CUSTOMER_MODEL});
                     // now update the customerName in exsiting tickets.
-                    let response2 = await apiService.getMany({model:TICKET_MODEL , customerId: this.customer.customerId})
+                    let response2 = await apiService.clientGetEntities(TICKET_MODEL , {customerId: this.customer.customerId})
                     response2.data.map(async(item) => {
                         item.customerName = this.customer.fullName
-                        await apiService.update(item._id , { ...item } , {model:TICKET_MODEL});
+                        await apiService.updateEntity({_id: item._id} ,  {...item} , {model:TICKET_MODEL});
                         return (item)
                     })
 				}
@@ -126,7 +126,7 @@ export default {
             this.newCustomer = newCustomer;
             if (newCustomer) {
                 this.customer = {issueDate: new Date().toISOString().substr(0, 10)}
-                let lastCustomer = await apiService.getMany({model: CUSTOMER_MODEL , sort: {customerId: -1 } , limit: 1});
+                let lastCustomer = await apiService.clientGetEntities(CUSTOMER_MODEL , { sort: {customerId: -1 } , limit: 1});
                 this.customer.customerId = lastCustomer.data[0].customerId+1;
                 this.customer.hasTicket = false;
                 this.customer.ticketExist = 'Non';
@@ -161,7 +161,7 @@ export default {
 			}
 		},
         async getArrivedFromList() {
-            let response = await apiService.getMany({model: TABLE_MODEL , table_id: 14} );
+            let response = await apiService.clientGetEntities(TABLE_MODEL , {table_id: 14} );
             this.arrivedFromList = response.data.map((item) => {
                 return (item.description)
             });

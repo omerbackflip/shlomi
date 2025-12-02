@@ -70,7 +70,7 @@ export default {
 			try {
 				let response;
                 if (this.invoice._id) {
-                    response = await apiService.update(this.invoice._id , {...this.invoice} , {model:INVOICE_MODEL});
+                    response = await apiService.updateEntity({_id: this.invoice._id} , {...this.invoice} , {model:INVOICE_MODEL});
                 } else {
                     response = await apiService.create({...this.invoice} , {model:INVOICE_MODEL});
                 }

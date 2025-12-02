@@ -276,13 +276,13 @@ export default {
                         this.ticket.year = new Date(this.ticket.entryDate).getFullYear() ;
                         await apiService.create({...this.ticket} , {model:TICKET_MODEL});
                     } else {
-                        await apiService.update(this.ticket._id , { ...this.ticket } , {model:TICKET_MODEL});
+                        await apiService.updateEntity({_id: this.ticket._id} , { ...this.ticket } , {model:TICKET_MODEL});
                     }
                     this.customerInfo.hasTicket = true
 
                     // now update customer with relevant status
                     let status;
-                    let findTicket = await apiService.getMany({model: TICKET_MODEL , customerId: this.customerInfo.customerId});
+                    let findTicket = await apiService.clientGetEntities(TICKET_MODEL , {customerId: this.customerInfo.customerId});
                     if (findTicket.data.length > 0){
                         status = this.ticket.ticketStatus
                         findTicket.data.map((item) => {
@@ -291,7 +291,7 @@ export default {
                     } else status = 'Non'
                     this.customerInfo.ticketExist = status                
 
-                    await apiService.update(this.customerInfo._id, {...this.customerInfo}, {model:CUSTOMER_MODEL});
+                    await apiService.updateEntity({_id: this.customerInfo._id}, {...this.customerInfo}, {model:CUSTOMER_MODEL});
                     this.dialog = false;
                     this.resolve(true); // must !! for update the db while 'open'
                 } catch (error) {
@@ -321,16 +321,16 @@ export default {
             this.ticket = newTicket ? NEW_TICKET : {...ticket};
             if(newTicket) {
                 this.customerInfo = ''
-                let lastTicket = await apiService.getMany({model: TICKET_MODEL , sort: {ticketId: -1 } , limit: 1});
+                let lastTicket = await apiService.clientGetEntities({model: TICKET_MODEL , sort: {ticketId: -1 } , limit: 1});
                 const { ticketId } = lastTicket.data[0];
                 this.ticket.ticketId = ticketId+1
-                let vatTable = await apiService.getOne({model: TABLE_MODEL, table_id: 102}) // get the current vat %
-                this.ticket.vat = vatTable.data.table_code;
+                let vatTable = await apiService.clientGetEntities(TABLE_MODEL, {table_id: 102}) // get the current vat %
+                this.ticket.vat = vatTable.data[0].table_code;
                 this.customerNameAddress = '' ;
                 this.yitra = 0;
             } else {
-                const response = await apiService.getOne({model: CUSTOMER_MODEL, customerId:ticket.customerId})
-                this.customerInfo = response.data
+                const response = await apiService.clientGetEntities(CUSTOMER_MODEL, {customerId:ticket.customerId})
+                this.customerInfo = response.data[0]
                 this.ticket.exitDate ? this.ticket.exitDate = new Date(this.ticket.exitDate).toISOString().substr(0, 10) : ''
                 this.ticket.entryDate ? this.ticket.entryDate = new Date(this.ticket.entryDate).toISOString().substr(0, 10) : ''
                 this.ticket.fixDate ? this.ticket.fixDate = new Date(this.ticket.fixDate).toISOString().substr(0, 10) : ''
@@ -435,8 +435,8 @@ export default {
         // Whenever the customer is piked - fatch customerInfo
         async 'customerNameAddress' (nameNAddress) {
             if (nameNAddress.value) { // avoide run first time (while open, there is no object)
-                const response = await apiService.getOne({model: CUSTOMER_MODEL, customerId:nameNAddress.value})
-                this.customerInfo = response.data
+                const response = await apiService.clientGetEntities(CUSTOMER_MODEL, {customerId:nameNAddress.value})
+                this.customerInfo = response.data[0]
                 this.ticket.customerId = this.customerInfo.customerId
                 this.ticket.customerName = this.customerInfo.fullName
                 // this.$forceUpdate();            

@@ -3,7 +3,8 @@ const Customer = db.customers;
 const Ticket = db.tickets;
 const Table = db.tables;
 const Phone = db.phones;
-const dbService = require("../services/db-service");
+// const dbService = require("../services/db-service");
+const dbService = require('../shared/mongoose/services/db-service');
 const specificService = require("../services/specific-service");
 const XLSX = require('xlsx');
 const fs = require('fs');            // for existsSync / mkdirSync if used
@@ -144,7 +145,7 @@ exports.saveDefectsBulk = async (req, res) => {
 
         let defectsArray = specificService.getDefectsToSave(data[0]);
 		defectsArray.map(async (item) => {
-			let ticket = await dbService.getSingleItem(Ticket,{ticketId: item.ticketId})
+			let ticket = await dbService.getEntities(Ticket,{ticketId: item.ticketId})
 			ticket.defectFound = item.defectFound
 			ticket.defectFixes = item.defectFixes
 			await dbService.updateItem(Ticket,{ticketId:item.ticketId}, ticket)
@@ -186,7 +187,7 @@ exports.saveFixTimeBulk = async (req, res) => {
 
         let fixTimeArray = specificService.getFixTimeToSave(data[0]);
 		fixTimeArray.map(async (item) => {
-			let ticket = dbService.getSingleItem(Ticket,{ticketId: item.ticketId})
+			let ticket = await dbService.getEntities(Ticket,{ticketId: item.ticketId})
 			ticket.fixHour = item.fixHour
 			ticket.fixMin = item.fixMin
 			await dbService.updateItem(Ticket,{ticketId:item.ticketId}, ticket)

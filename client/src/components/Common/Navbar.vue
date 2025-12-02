@@ -112,7 +112,7 @@ export default {
                 const match = filename.match(/(\d{4})-(\d{2})-(\d{2})/);
                 const dateStr = match ? `${match[3]}/${match[2]}/${match[1]}` : '';
                 this.lastUpdate = "last backup : " + [dateStr];
-                await apiService.findOneAndUpdate({description: this.lastUpdate},{model:TABLE_MODEL, table_id: 110, table_code: 1})
+                await apiService.updateEntity({table_id: 110, table_code: 1},{description: this.lastUpdate},{model:TABLE_MODEL})
             }
             this.loading = false;
         },
@@ -125,6 +125,7 @@ export default {
         const lastUpdateArr = (await loadTable(110)).map((code) => code.description);
         this.lastUpdate = lastUpdateArr.length === 1 ? lastUpdateArr[0] : lastUpdateArr;
     },
+
     computed: {
         isTicketsList() {
             return this.$route.name === 'ticket-list';

@@ -100,12 +100,10 @@ export default {
 			try {
 				switch (this.ticketType) {
 					case 'YEAR':
-						// response = await apiService.getMany({model: TICKET_MODEL, year: this.ticketsFilter });
 						response = await specificServiceEndPoints.getWithRemark({year: this.ticketsFilter});
 						this.header = "סה'כ לשנה " + this.ticketsFilter 
 						break;
 					case 'CUSTOMER':
-						// response = await apiService.getMany({model: TICKET_MODEL, customerId: this.ticketsFilter });
 						response = await specificServiceEndPoints.getWithRemark({customerId: this.ticketsFilter});
 						this.header = "סה'כ ללקוח " + this.ticketsFilter 
 						break;
@@ -120,11 +118,6 @@ export default {
 				if(response.data) {
 					this.tickets = response.data;
 					this.tickets = this.tickets.sort((a,b) => {return (a.ticketId - b.ticketId)})
-					// let customer = '';
-					// this.tickets = await Promise.all(response.data.map(async(item) =>{
-					// 	customer = await apiService.getOne({model: CUSTOMER_MODEL, customerId: item.customerId})
-					// 	return ({...item , customerRemark: customer.data.remark })
-					// }))
 				}
 			} catch (error) {
 				console.log(error);
@@ -148,7 +141,7 @@ export default {
 
 		async fetchData(){
             this.loading = true;
-            const response = await apiService.getMany({model:TICKET_MODEL})
+            const response = await apiService.clientGetEntities(TICKET_MODEL);
             this.loading = false;
             return response.data;
         },

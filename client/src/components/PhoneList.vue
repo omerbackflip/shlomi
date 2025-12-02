@@ -79,7 +79,7 @@ export default {
     async retrievePhones() {
 			this.loading = true
       await apiService
-        .getMany({ model: PHONE_MODEL})
+        .clientGetEntities(PHONE_MODEL)
         .then((response) => {
           this.phones = response.data;
         })

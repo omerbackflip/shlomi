@@ -219,7 +219,7 @@ export default {
     async retrieveTables() {
 			this.loading = true
       await apiService
-        .getMany({ model: TABLE_MODEL})
+        .clientGetEntities(TABLE_MODEL)
         .then((response) => {
           this.tables = response.data;
           this.tableID = response.data.filter((item) => item.table_id === 99);
@@ -249,7 +249,7 @@ export default {
 
     updateOne(item) {
       apiService
-        .update(item._id, item, { model: TABLE_MODEL })
+        .updateEntity({_id: item._id}, {...item}, { model: TABLE_MODEL })
         .then((response) => {
           console.log(response.data);
           this.message = "The updateOne() updated successfully!";

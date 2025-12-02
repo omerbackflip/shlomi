@@ -84,7 +84,7 @@ export default {
 				if(this.newPhone) {
 					await apiService.create({...this.phone} , {model:PHONE_MODEL});
 				} else {
-					await apiService.update(this.phone._id , { ...this.phone } , {model:PHONE_MODEL});
+					await apiService.updateEntity({_id: this.phone._id} , { ...this.phone } , {model:PHONE_MODEL});
 				}
                 this.dialog = false;
                 this.resolve(true);
@@ -101,7 +101,7 @@ export default {
             });
         },
         async getPhoneTypeList() {
-            let response = await apiService.getMany({model: TABLE_MODEL , table_id: 7} );
+            let response = await apiService.clientGetEntities(TABLE_MODEL , { table_id: 7} );
             this.phoneTypeList = response.data.map((item) => {
                 return (item.description)
             });

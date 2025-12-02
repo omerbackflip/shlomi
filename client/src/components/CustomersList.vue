@@ -173,7 +173,7 @@ export default {
 			this.loading = true
 			try {
 				// const response = await specificServiceEndPoints.getCustomersWithStatus();
-				const response = await apiService.getMany({model: CUSTOMER_MODEL});
+				const response = await apiService.clientGetEntities(CUSTOMER_MODEL);
 				if(response.data) {
 					this.customers = response.data;
 					this.customers = this.customers.map((item) => {
@@ -197,7 +197,7 @@ export default {
 
 		async customerTicketsList(item) {
 			this.loading = true;
-			let tickets = await apiService.getMany({model: TICKET_MODEL, customerId:item.customerId})
+			let tickets = await apiService.clientGetEntities(TICKET_MODEL, {customerId:item.customerId})
 			this.tickets = tickets.data
 			if (item.hasTicket) {
 				this.customerName = item.fullName
