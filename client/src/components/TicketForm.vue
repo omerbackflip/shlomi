@@ -321,7 +321,7 @@ export default {
             this.ticket = newTicket ? NEW_TICKET : {...ticket};
             if(newTicket) {
                 this.customerInfo = ''
-                let lastTicket = await apiService.clientGetEntities({model: TICKET_MODEL , sort: {ticketId: -1 } , limit: 1});
+                let lastTicket = await apiService.clientGetEntities(TICKET_MODEL , {sort: {ticketId: -1 } , limit: 1});
                 const { ticketId } = lastTicket.data[0];
                 this.ticket.ticketId = ticketId+1
                 let vatTable = await apiService.clientGetEntities(TABLE_MODEL, {table_id: 102}) // get the current vat %
