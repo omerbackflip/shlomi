@@ -197,7 +197,7 @@ export default {
 
 		async customerTicketsList(item) {
 			this.loading = true;
-			let tickets = await apiService.clientGetEntities(TICKET_MODEL, {customerId:item.customerId})
+			let tickets = await apiService.clientGetEntities(TICKET_MODEL, {filter:{customerId:item.customerId}})
 			this.tickets = tickets.data
 			if (item.hasTicket) {
 				this.customerName = item.fullName

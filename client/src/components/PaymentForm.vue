@@ -135,8 +135,8 @@ export default {
             this.payment = payment;
             this.payment.date ? this.payment.date = new Date(this.payment.date).toISOString().substr(0, 10) : ''
             this.supplierName = supplierName
-            let response = await apiService.clientGetEntities(INVOICE_MODEL, {supplierId:this.payment.supplierId, paymentId:this.payment.paymentId}) 
-            let response1 = await apiService.clientGetEntities(INVOICE_MODEL, {supplierId:this.payment.supplierId, paymentId:""})
+            let response = await apiService.clientGetEntities(INVOICE_MODEL, {filter:{supplierId:this.payment.supplierId, paymentId:this.payment.paymentId}}) 
+            let response1 = await apiService.clientGetEntities(INVOICE_MODEL, {filter:{supplierId:this.payment.supplierId, paymentId:""}})
             this.avilableInvoices = (response.data);
             for (let i=0 ; i < response1.data.length ; i++) {  
                 this.avilableInvoices.push(response1.data[i]);
@@ -155,7 +155,7 @@ export default {
             this.payment._id = null
             this.payment.checkId = null
             this.payment.date = null
-            let response = await apiService.clientGetEntities(PAYMENT_MODEL, {supplierId: this.payment.supplierId})
+            let response = await apiService.clientGetEntities(PAYMENT_MODEL, {filter:{supplierId: this.payment.supplierId}})
             if (response.data.length > 0) {
                 let payments = response.data.sort((b, a) => a.paymentId - b.paymentId);
                 this.payment.paymentId = payments[0].paymentId+1;

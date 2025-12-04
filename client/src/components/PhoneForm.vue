@@ -101,7 +101,7 @@ export default {
             });
         },
         async getPhoneTypeList() {
-            let response = await apiService.clientGetEntities(TABLE_MODEL , { table_id: 7} );
+            let response = await apiService.clientGetEntities(TABLE_MODEL , {filter:{ table_id: 7} });
             this.phoneTypeList = response.data.map((item) => {
                 return (item.description)
             });
