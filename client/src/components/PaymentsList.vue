@@ -180,19 +180,45 @@ export default {
     },
 
     async retrievePayments() {
-			this.loading = true
-      let response = await apiService.clientGetEntities(PAYMENT_MODEL, {filter:{supplierId: this.supplier.table_code}})
-      if (response.data.length > 0) {
-        this.payments = response.data.sort((a, b) => a.paymentId - b.paymentId);
-        this.lastPaymentId = this.payments[this.payments.length-1].paymentId;
-      } else {
-        this.payments = response.data; // this to clear the table if no found
-        this.lastPaymentId = 0;
+      this.loading = true
+      try {
+        // 1) תשלומים
+        const response = await apiService.clientGetEntities(
+          PAYMENT_MODEL,
+          { filter: { supplierId: this.supplier.table_code } }
+        )
+
+        if (response.data.length > 0) {
+          this.payments = response.data.sort((a, b) => a.paymentId - b.paymentId)
+          this.lastPaymentId = this.payments[this.payments.length - 1].paymentId
+        } else {
+          this.payments = response.data // מנקה טבלה
+          this.lastPaymentId = 0
+        }
+
+        // 2) חשבוניות
+        const response1 = await apiService.clientGetEntities(
+          INVOICE_MODEL,
+          { filter: { supplierId: this.supplier.table_code } }
+        )
+
+        this.invoices = response1.data.sort((a, b) => a.invoiceId - b.invoiceId)
+
+      } catch (error) {
+        console.error("retrievePayments error:", error)
+
+        // כאן תראה את ה-message מהשרת
+        if (error.response) {
+          console.log("status:", error.response.status)
+          console.log("server message:", error.response.data?.message)
+        }
+
+        // למשל – אם אין חשבוניות, תנקה את הטבלה:
+        this.invoices = []
+        this.payments = []
+      } finally {
+        this.loading = false
       }
-      let response1 = await apiService.clientGetEntities(INVOICE_MODEL, {filter:{supplierId: this.supplier.table_code}})
-      // console.log(this.supplier.table_code,response1.data)
-      this.invoices = response1.data.sort((a, b) => a.paymentId - b.paymentId);
-			this.loading = false
     },
 
     async retrieveSuppliers() {
@@ -248,7 +274,6 @@ export default {
     },
 
     filterSupplier(key,row) {
-      // console.dir(key)
       this.selectedRow = key;
       this.supplier = row;
       this.payment = {supplierId:row.table_code}

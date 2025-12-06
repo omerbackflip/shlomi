@@ -2,7 +2,7 @@
     <nav class="no-print">
         <v-app-bar app dark>
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-            <div class="db-text">
+            <div class="db-text" :style="{ backgroundColor: local ? 'red' : undefined }">
                 <div v-if="isMobile()"> {{local ? 'L' : 'P'}}                   </div>
                 <div v-else>            {{local ? 'Local Host' : 'Production'}} </div>
             </div>
