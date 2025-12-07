@@ -40,24 +40,24 @@ export default {
 			file: null,
 			message: "this is snackbar message",
 			imports: [{
-				type: 'ticket',
-				title: 'Import Tickets',
-			},{
-				type: 'customer',
-				title: 'Import Customers',
-			},{
-				type: 'table',
-				title: 'Import Tables',
-			},{
-				type: 'defects',	
-				title: 'Import Defects'
-			},{
-				type: 'phones',	
-				title: 'Import Phones'
-			},{
-				type: 'fixTime',	
-				title: 'Import Fix Time'
-			},{
+			// 	type: 'ticket',
+			// 	title: 'Import Tickets',
+			// },{
+			// 	type: 'customer',
+			// 	title: 'Import Customers',
+			// },{
+			// 	type: 'table',
+			// 	title: 'Import Tables',
+			// },{
+			// 	type: 'defects',	
+			// 	title: 'Import Defects'
+			// },{
+			// 	type: 'phones',	
+			// 	title: 'Import Phones'
+			// },{
+			// 	type: 'fixTime',	
+			// 	title: 'Import Fix Time'
+			// },{
 				type: 'ticketNew',	
 				title: 'Import Tickets New'
 			},{

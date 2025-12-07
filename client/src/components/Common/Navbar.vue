@@ -6,7 +6,7 @@
                 <div v-if="isMobile()"> {{local ? 'L' : 'P'}}                   </div>
                 <div v-else>            {{local ? 'Local Host' : 'Production'}} </div>
             </div>
-            <v-btn color="primary" dark :loading="loading" @click="createExcel" class="ml-3" small>
+            <v-btn v-if="!isMobile()" color="primary" dark :loading="loading" @click="createExcel" class="ml-3" small>
                 <v-icon left>mdi-google-drive</v-icon>
                 {{ lastUpdate }}
             </v-btn>
