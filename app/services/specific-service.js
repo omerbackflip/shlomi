@@ -1,298 +1,75 @@
 const moment = require('moment');
 
-exports.getCustomersToSave = (data) => {
-    try {
-        let customers = [];
-        data.forEach(item => {
-            let customer = {
-                customerId: item['ID'],
-                fullName: item['FullName'],
-                // name: item['Name'],
-                // family: item['Famaly'],
-                address: item['Address'],
-                city: item['City'],
-                phone1: item['Phone 1'],				
-                phone2: item['Phone 2'],
-                phone3: item['Phone 3'],
-                arrivedFrom: item['Arrived from'],
-                issueDate: !isNaN(Date.parse(item['issue date'])) ? moment(item['issue date']).add(1,'days') : new Date(),
-                // hasTicket: item['hasTicket'],  // there is dedicated bach to run after loading
-                remark: item['remark'],
-            }
+// Field mapping configuration for each data type
+const FIELD_MAPPING = {
+	customers: {
+		fields: [
+			'customerId', 'fullName', 'address', 'city', 'phone1', 'phone2', 'phone3',
+			'arrivedFrom', 'issueDate', 'hasTicket', 'ticketExist', 'remark'
+		],
+		filter: null // no filter needed
+	},
+	tickets: {
+		fields: [
+			'ticketId', 'ticketStatus', 'customerId', 'customerName', 'item', 
+			'entryCondition', 'accessories', 'defectDescription', 'defectFound', 'defectFixes',
+			'prepaid', 'prepaidInvoice', 'amount', 'vat', 'total', 'invoice', 'year',
+			'entryDate', 'fixDate', 'exitDate', 'remarks', 'ticketRemark', 'fixHour', 'fixMin', 'partsCost'
+		],
+		filter: (item) => item['ticketId'] // filter out items without ticketId
+	},
+	invoices: {
+		fields: ['supplierId', 'invoiceId', 'date', 'amount', 'paymentId', 'remark'],
+		filter: null
+	},
+    payments: {
+		fields: ['supplierId', 'paymentId', 'checkId', 'date', 'amount', 'remark'],
+		filter: null
+	},
+	tables: {
+		fields: ['table_id', 'table_code', 'description', 'numeric'],
+		filter: null
+	},    
+	phones: {
+		fields: ['fullName', 'address', 'phone1', 'phone2', 'phone3', 'phone4', 'phoneType', 'remark'],
+		filter: null
+	}
+};
 
-            customers.push(customer);
-        });
+// Generic function to transform data
+const transformData = (data, config) => {
+	try {
+		let result = [];
+		data.forEach(item => {
+			// Apply filter if exists
+			if (config.filter && !config.filter(item)) return;
 
-        return customers;
+			let obj = {};
+			config.fields.forEach(field => {
+				// Check if there's a field mapping (for different source/target names)
+				const sourceField = config.sourceFieldMap ? config.sourceFieldMap[field] : field;
+				obj[field] = item[sourceField];
+			});
 
-    } catch (error) {
-        console.log(error)
-        throw error;
-    }
-}
+			result.push(obj);
+		});
 
-exports.getCustomersNewToSave = (data) => {
-    try {
-        let customers = [];
-        data.forEach(item => {
-            let customer = {
-                customerId: item['customerId'],
-                fullName: item['fullName'],
-                address: item['address'],
-                city: item['city'],
-                phone1: item['phone1'],				
-                phone2: item['phone2'],
-                phone3: item['phone3'],
-                arrivedFrom: item['arrivedFrom'],
-                issueDate: item['issueDate'],
-                hasTicket: item['hasTicket'],  // there is dedicated bach to run after loading
-                ticketExist: item['ticketExist'],  // there is dedicated bach to run after loading
-                remark: item['remark'],
-            }
+		return result;
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+};
 
-            customers.push(customer);
-        });
+// Public exports - using the generic transformData function
+exports.getCustomersNewToSave = (data) => transformData(data, FIELD_MAPPING.customers);
 
-        return customers;
+exports.getTicketsNewToSave = (data) => transformData(data, FIELD_MAPPING.tickets);
 
-    } catch (error) {
-        console.log(error)
-        throw error;
-    }
-}
+exports.getInvoicesNewToSave = (data) => transformData(data, FIELD_MAPPING.invoices);
 
-exports.getTicketsToSave = (data) => {
-    try {
-        let tickets = [];
-        data.forEach(item => {
-            if(!(item['Ticket ID'])) return;
-            let ticket = {
-                ticketId: item['Ticket ID'],
-                ticketStatus: item['TicketStatus'],
-                customerId: item['customer ID'],                				
-                customerName: item['CustomerName'],                				
-                item: item['item'],
-                entryCondition: item['Entry Condition'],
-                accessories: item['accessories'],
-                defectDescription: item['Defect Description'],
-                prepaid: item['pre-paied'],
-                prepaidInvoice: item['Pre-paied Invoice'],
-                amount: item['amount'],
-                vat: item['vat'],
-                total: item['total'],
-                invoice: item['Invoice'],
-                year: item['Year'],
-                entryDate: !isNaN(Date.parse(item['Entry Date'])) ? moment(item['Entry Date']).add(1,'days') : null,
-                fixDate: !isNaN(Date.parse(item['fix date'])) ? moment(item['fix date']).add(1,'days') : null,
-                exitDate: !isNaN(Date.parse(item['Exit date'])) ? moment(item['Exit date']).add(1,'days') : null,
-                remarks: item['Remarks'],
-                fixTime: item['fixTime'],
-                partsCost: item['partsCost'],
-            }
+exports.getPaymentsNewToSave = (data) => transformData(data, FIELD_MAPPING.payments);
 
-            tickets.push(ticket);
-        });
+exports.getTablesNewToSave = (data) => transformData(data, FIELD_MAPPING.tables);
 
-        return tickets;
-
-    } catch (error) {
-        console.log(error)
-        throw error;
-    }
-}
-
-exports.getTicketsNewToSave = (data) => {
-    try {
-        let tickets = [];
-        data.forEach(item => {
-            if(!(item['ticketId'])) return;
-            let ticket = {
-                ticketId: item['ticketId'],
-                ticketStatus: item['ticketStatus'],
-                customerId: item['customerId'],                				
-                customerName: item['customerName'],                				
-                item: item['item'],
-                entryCondition: item['entryCondition'],
-                accessories: item['accessories'],
-                defectDescription: item['defectDescription'],
-                defectFound: item['defectFound'],
-                defectFixes: item['defectFixes'],
-                prepaid: item['prepaid'],
-                prepaidInvoice: item['prepaidInvoice'],
-                amount: item['amount'],
-                vat: item['vat'],
-                total: item['total'],
-                invoice: item['invoice'],
-                year: item['year'],
-                entryDate: item['entryDate'],
-                fixDate: item['fixDate'],
-                exitDate: item['exitDate'],
-                remarks: item['remarks'],
-                ticketRemark: item['ticketRemark'],
-                fixHour: item['fixHour'],
-                fixMin: item['fixMin'],
-                partsCost: item['partsCost'],
-            }
-            // if (ticket.entryCondition && ticket.entryCondition.includes(',')) {
-            //     ticket.entryCondition = ticket.entryCondition.split(',')
-            // }
-            // if (ticket.accessories && ticket.accessories.includes(',')) {
-            //     ticket.accessories = ticket.accessories.split(',')
-            // } 
-            // if (ticket.defectDescription && ticket.defectDescription.includes(',')) {
-            //     ticket.defectDescription = ticket.defectDescription.split(',')
-            // } 
-            // if (ticket.defectFound && ticket.defectFound.includes(',')) {
-            //     ticket.defectFound = ticket.defectFound.split(',')
-            // } 
-            // if (ticket.defectFixes && ticket.defectFixes.includes(',')) {
-            //     ticket.defectFixes = ticket.defectFixes.split(',')
-            // } 
-            // if (ticket.remarks && ticket.remarks.includes(',')) {
-            //     ticket.remarks = ticket.remarks.split(',')
-            // } 
-            // if (ticket.ticketRemark && ticket.ticketRemark.includes(',')) {
-            //     ticket.ticketRemark = ticket.ticketRemark.split(',')
-            // } 
-            tickets.push(ticket);
-        });
-
-        return tickets;
-
-    } catch (error) {
-        console.log(error)
-        throw error;
-    }
-}
-
-exports.getTablesToSave = (data) => {
-    try {
-        let tables = [];
-        data.forEach(item => {
-            let table = {
-                table_id: item['ID'],
-                table_code: item['CODE'],
-                description: item['description'],
-                numeric: item['numeric'],
-            }
-
-            tables.push(table);
-        });
-
-        return tables;
-
-    } catch (error) {
-        console.log(error)
-        throw error;
-    }
-}
-
-exports.getTablesNewToSave = (data) => {
-    try {
-        let tables = [];
-        data.forEach(item => {
-            let table = {
-                table_id: item['table_id'],
-                table_code: item['table_code'],
-                description: item['description'],
-                numeric: item['numeric'],
-            }
-
-            tables.push(table);
-        });
-
-        return tables;
-
-    } catch (error) {
-        console.log(error)
-        throw error;
-    }
-}
-
-exports.getDefectsToSave = (data) => {
-    try {
-        let allList = [];
-        data.forEach(item => {
-            let table = {
-                ticketId: item['ticketId'],
-                type: item['type'],
-                description: item['description'],
-            }
-
-            allList.push(table);
-        });
-
-        let filteredList = allList.filter((value, index, self) =>
-            index === self.findIndex((t) => ( t.ticketId === value.ticketId))
-        )
-
-        filteredList = filteredList.map((item) => {
-            let defectFound = allList.filter((item1) => {
-                return ((item.ticketId === item1.ticketId) && (item1.type ===1))
-            }).map((item2) => {
-                return(item2.description)
-            })
-
-            let defectFixes = allList.filter((item1) => {
-                return ((item.ticketId === item1.ticketId) && (item1.type ===2))
-            }).map((item2) => {
-                return(item2.description)
-            })
-
-            return ({ticketId:item.ticketId, defectFound, defectFixes})
-        })
-
-        return filteredList;
-
-    } catch (error) {
-        console.log(error)
-        throw error;
-    }
-}
-
-exports.getFixTimeToSave = (data) => {
-    try {
-        let fixTimeArray = [];
-        data.forEach(item => {
-            let fixTime = {
-                ticketId: item['ticketId'],
-                fixHour: item['fixHour'],
-                fixMin: item['fixMin'],
-            }
-
-            fixTimeArray.push(fixTime);
-        });
-
-        return fixTimeArray;
-
-    } catch (error) {
-        console.log(error)
-        throw error;
-    }
-}
-
-exports.getPhonesToSave = (data) => {
-    try {
-        let phones = [];
-        data.forEach(item => {
-            let phone = {
-                fullName: item['FULLNAME'],
-                address: item['ADDRESS'],
-                phone1: item['PHONE1'],				
-                phone2: item['PHONE2'],
-                phone3: item['PHONE3'],
-                phone4: item['PHONE4'],
-                phoneType: item['PHONETYPE'],
-                remark: item['REMARK'],
-            }
-
-            phones.push(phone);
-        });
-
-        return phones;
-
-    } catch (error) {
-        console.log(error)
-        throw error;
-    }
-}
+exports.getPhonesToSave = (data) => transformData(data, FIELD_MAPPING.phones);

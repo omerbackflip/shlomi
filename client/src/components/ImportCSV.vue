@@ -40,32 +40,23 @@ export default {
 			file: null,
 			message: "this is snackbar message",
 			imports: [{
-			// 	type: 'ticket',
-			// 	title: 'Import Tickets',
-			// },{
-			// 	type: 'customer',
-			// 	title: 'Import Customers',
-			// },{
-			// 	type: 'table',
-			// 	title: 'Import Tables',
-			// },{
-			// 	type: 'defects',	
-			// 	title: 'Import Defects'
-			// },{
-			// 	type: 'phones',	
-			// 	title: 'Import Phones'
-			// },{
-			// 	type: 'fixTime',	
-			// 	title: 'Import Fix Time'
-			// },{
 				type: 'ticketNew',	
 				title: 'Import Tickets New'
 			},{
 				type: 'customerNew',
 				title: 'Import Customers New',
 			},{
+				type: 'invoiceNew',
+				title: 'Import Invoices New',
+			},{
+			type: 'paymentNew',
+				title: 'Import Payments New',
+			},{
 				type: 'tableNew',
 				title: 'Import Tables Mew',
+			},{
+				type: 'phoneNew',
+				title: 'Import Phones New',
 			}],
 			loading: false,
 		};
@@ -82,32 +73,23 @@ export default {
 			try {
 				let response = '';
 				switch (type){
-					case "customer" :
-						response = await SpecificServiceEndPoints.saveCustomersImport(this.file)
-						break
-					case "ticket" :
-						response = await SpecificServiceEndPoints.saveTicketsImport(this.file)
-						break
-					case "table" :
-						response = await SpecificServiceEndPoints.saveTablesImport(this.file)
-						break
-					case "defects" :
-						response = await SpecificServiceEndPoints.saveDefectsImport(this.file)
-						break
-					case "phones" :
-						response = await SpecificServiceEndPoints.savePhonesImport(this.file)
-						break
-					case "fixTime" :
-						response = await SpecificServiceEndPoints.saveFixTimeImport(this.file)
-						break
 					case "ticketNew" :
 						response = await SpecificServiceEndPoints.saveTicketsNewImport(this.file)
 						break
 					case "customerNew" :
 						response = await SpecificServiceEndPoints.saveCustomersNewImport(this.file)
 						break
+					case "invoiceNew" :
+						response = await SpecificServiceEndPoints.saveInvoicesNewImport(this.file)
+						break
+					case "paymentNew" :
+						response = await SpecificServiceEndPoints.savePaymentsNewImport(this.file)
+						break
 					case "tableNew" :
 						response = await SpecificServiceEndPoints.saveTablesNewImport(this.file)
+						break
+					case "phoneNew" :
+						response = await SpecificServiceEndPoints.savePhonesImport(this.file)
 						break
 				}
 

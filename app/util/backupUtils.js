@@ -10,14 +10,20 @@ const archiver = require('archiver');
  * Flattens arrays to newline-separated strings and converts _id to string.
  * Resolves when file is fully written.
  */
-async function writeCsv(filePath, rows) {
+async function writeCsv(filePath, rows, headerOrder = null) {
   return new Promise((resolve, reject) => {
     const ws = fs.createWriteStream(filePath);
 
     // Write UTF-8 BOM so Excel (Windows) recognizes UTF-8 and shows Hebrew correctly
     ws.write('\uFEFF', 'utf8');
 
-    const csvStream = csv.format({ headers: true });
+    // Get headers from first row if not explicitly provided
+    let headers = headerOrder;
+    if (!headers && rows && rows.length > 0) {
+      headers = Object.keys(rows[0]);
+    }
+
+    const csvStream = csv.format({ headers: headers || true });
 
     ws.on('finish', () => resolve());
     ws.on('error', err => reject(err));

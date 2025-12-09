@@ -2,30 +2,10 @@ import axios from "axios";
 const baseUrl = process.env.VUE_APP_API_URL;
 class SpecificServiceEndPoints {
 
-	async saveCustomersImport(file) {
-		var formData = new FormData();
-		formData.append("file", file);
-		return await axios.post(`${baseUrl}/specific/save-customers`, formData, {
-			headers: {
-				'Content-Type': 'multipart/form-data'
-			}
-		});
-	}
-
 	async saveCustomersNewImport(file) {
 		var formData = new FormData();
 		formData.append("file", file);
 		return await axios.post(`${baseUrl}/specific/save-customers-new`, formData, {
-			headers: {
-				'Content-Type': 'multipart/form-data'
-			}
-		});
-	}
-
-	async saveTicketsImport(file) {
-		var formData = new FormData();
-		formData.append("file", file);
-		return await axios.post(`${baseUrl}/specific/save-tickets`, formData ,{ 
 			headers: {
 				'Content-Type': 'multipart/form-data'
 			}
@@ -42,10 +22,20 @@ class SpecificServiceEndPoints {
 		});
 	}
 
-	async saveTablesImport(file) {
+	async saveInvoicesNewImport(file) {
 		var formData = new FormData();
 		formData.append("file", file);
-		return await axios.post(`${baseUrl}/specific/save-tables`, formData, {
+		return await axios.post(`${baseUrl}/specific/save-invoices-new`, formData ,{ 
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			}
+		});
+	}
+	
+	async savePaymentsNewImport(file) {
+		var formData = new FormData();
+		formData.append("file", file);
+		return await axios.post(`${baseUrl}/specific/save-payments-new`, formData ,{ 
 			headers: {
 				'Content-Type': 'multipart/form-data'
 			}
@@ -62,16 +52,6 @@ class SpecificServiceEndPoints {
 		});
 	}
 
-	async saveDefectsImport(file) {
-		var formData = new FormData();
-		formData.append("file", file);
-		return await axios.post(`${baseUrl}/specific/save-defects`, formData, {
-			headers: {
-				'Content-Type': 'multipart/form-data'
-			}
-		});
-	}
-
 	async savePhonesImport(file) {
 		var formData = new FormData();
 		formData.append("file", file);
@@ -82,15 +62,6 @@ class SpecificServiceEndPoints {
 		});
 	}
 
-	async saveFixTimeImport(file) {
-		var formData = new FormData();
-		formData.append("file", file);
-		return await axios.post(`${baseUrl}/specific/save-fixTime`, formData, {
-			headers: {
-				'Content-Type': 'multipart/form-data'
-			}
-		});
-	}
 	async searchCustomers(params) {
 		return await axios.get(`${baseUrl}/specific/search-customers`,{params});
 	}
@@ -114,10 +85,6 @@ class SpecificServiceEndPoints {
 	async getWithRemark(params) {
 		return await axios.get(`${baseUrl}/specific/get-with-remark`,{params});
 	}
-
-	// async getCustomersWithStatus() {
-	// 	return await axios.get(`${baseUrl}/specific/get-customers-with-status`);
-	// }
 
 	async getTabels() {
 		return await axios.get(`${baseUrl}/specific/get-tables`);

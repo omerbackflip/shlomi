@@ -1,6 +1,8 @@
 const db = require("../models");
 const Customer = db.customers;
 const Ticket = db.tickets;
+const Invoice = db.invoices;
+const Payment = db.payments;
 const Table = db.tables;
 const Phone = db.phones;
 // const dbService = require("../services/db-service");
@@ -11,7 +13,6 @@ const fs = require('fs');            // for existsSync / mkdirSync if used
 const fsp = require('fs').promises;  // use fsp.unlink(...) with await
 const { transformCSVData, createExcelUtil } = require("../util/util");
 const { url } = require("../config/db.config");
-// const { cursorTo } = require("readline");
 const moment = require('moment');
 const accountSid = process.env.ACCOUNT_SID;
 const authToken = process.env.AUTH_TOKEN;
@@ -21,185 +22,99 @@ const path = require('path');
 const TMP_DIR = path.resolve(__dirname, '../../tmp'); // adjust if you prefer different tmp
 const backupUtils = require('../util/backupUtils');
 
-exports.saveCustomersBulk = async (req, res) => {
-	try {
-        await Customer.deleteMany();
-		var workbook = XLSX.readFile(`uploads/${req.file.filename}`);
-		var sheet_name_list = workbook.SheetNames;
-		const data = transformCSVData(sheet_name_list , workbook);
 
-        let customers = specificService.getCustomersToSave(data[0]);
-        await dbService.insertMany(Customer,customers);
-
-        unLinkFile(`uploads/${req.file.filename}`);
-        return res.send({ success: true, message: `Total ${customers.length} customers successfully Imported`});
-
-	} catch (error) {
-		console.log(error)
-		res.status(500).send({ message: "Error saving customers", error });
+// Configuration for bulk import operations
+const BULK_IMPORT_CONFIG = {
+	customers: {
+		model: Customer,
+		serviceMethod: 'getCustomersNewToSave',
+		options: {}
+	},
+	tickets: {
+		model: Ticket,
+		serviceMethod: 'getTicketsNewToSave',
+		options: { type: 'binary', cellDates: true, dateNF: 'dd/mm/yyyy;@' }
+	},
+	invoices: {
+		model: Invoice,
+		serviceMethod: 'getInvoicesNewToSave',
+		options: { type: 'binary', cellDates: true, dateNF: 'dd/mm/yyyy;@' }
+	},
+	payments: {
+		model: Payment,
+		serviceMethod: 'getPaymentsNewToSave',
+		options: { type: 'binary', cellDates: true, dateNF: 'dd/mm/yyyy;@' }
+	},
+	tables: {
+		model: Table,
+		serviceMethod: 'getTablesNewToSave',
+		options: {}
+	},
+	phones: {
+		model: Phone,
+		serviceMethod: 'getPhonesToSave',
+		options: {}
 	}
 };
 
+exports.saveBulkData = async (req, res) => {
+	try {
+		const { dataType } = req.body;
+		const config = BULK_IMPORT_CONFIG[dataType];
+
+		if (!config) {
+			return res.status(400).send({ success: false, message: 'Invalid data type' });
+		}
+
+		await config.model.deleteMany();
+		const workbook = XLSX.readFile(`uploads/${req.file.filename}`, config.options);
+		const sheetNameList = workbook.SheetNames;
+		const data = transformCSVData(sheetNameList, workbook);
+
+		const items = specificService[config.serviceMethod](data[0]);
+		await dbService.insertMany(config.model, items);
+
+		unLinkFile(`uploads/${req.file.filename}`);
+		return res.send({
+			success: true,
+			message: `Total ${items.length} ${dataType} successfully Imported`
+		});
+
+	} catch (error) {
+		console.log(error);
+		res.status(500).send({ message: 'Error saving data', error });
+	}
+};
+
+// Legacy endpoints - kept for backward compatibility
 exports.saveCustomersNewBulk = async (req, res) => {
-	try {
-        await Customer.deleteMany();
-		var workbook = XLSX.readFile(`uploads/${req.file.filename}`);
-		var sheet_name_list = workbook.SheetNames;
-		const data = transformCSVData(sheet_name_list , workbook);
-
-        let customers = specificService.getCustomersNewToSave(data[0]);
-        await dbService.insertMany(Customer,customers);
-
-        unLinkFile(`uploads/${req.file.filename}`);
-        return res.send({ success: true, message: `Total ${customers.length} customers successfully Imported`});
-
-	} catch (error) {
-		console.log(error)
-		res.status(500).send({ message: "Error saving customers", error });
-	}
-};
-
-exports.saveTicketsBulk = async (req, res) => {
-	try {
-        await Ticket.deleteMany();
-		// var workbook = XLSX.readFile(`uploads/${req.file.filename}`,{type: 'binary', cellDates: true, dateNF: 'yyyy/mm/dd;@'});
-		var workbook = XLSX.readFile(`uploads/${req.file.filename}`,{type: 'binary', cellDates: true, dateNF: 'dd/mm/yyyy;@'});
-		var sheet_name_list = workbook.SheetNames;
-		const data = transformCSVData(sheet_name_list , workbook);
-
-        let tickets = specificService.getTicketsToSave(data[0]);
-        await dbService.insertMany(Ticket,tickets);
-
-        unLinkFile(`uploads/${req.file.filename}`);
-        return res.send({ success: true, message: `Total ${tickets.length} tickets successfully Imported`});
-
-	} catch (error) {
-		console.log(error)
-		res.status(500).send({ message: "Error saving tickets", error });
-	}
+	req.body = { dataType: 'customers' };
+	return exports.saveBulkData(req, res);
 };
 
 exports.saveTicketsNewBulk = async (req, res) => {
-	try {
-        await Ticket.deleteMany();
-		// var workbook = XLSX.readFile(`uploads/${req.file.filename}`,{type: 'binary', cellDates: true, dateNF: 'yyyy/mm/dd;@'});
-		var workbook = XLSX.readFile(`uploads/${req.file.filename}`,{type: 'binary', cellDates: true, dateNF: 'dd/mm/yyyy;@'});
-		var sheet_name_list = workbook.SheetNames;
-		const data = transformCSVData(sheet_name_list , workbook);
-
-        let tickets = specificService.getTicketsNewToSave(data[0]);
-        await dbService.insertMany(Ticket,tickets);
-
-        unLinkFile(`uploads/${req.file.filename}`);
-        return res.send({ success: true, message: `Total ${tickets.length} tickets successfully Imported`});
-
-	} catch (error) {
-		console.log(error)
-		res.status(500).send({ message: "Error saving tickets", error });
-	}
+	req.body = { dataType: 'tickets' };
+	return exports.saveBulkData(req, res);
 };
 
-exports.saveTablesBulk = async (req, res) => {
-	try {
-        await Table.deleteMany();
-		var workbook = XLSX.readFile(`uploads/${req.file.filename}`);
-		var sheet_name_list = workbook.SheetNames;
-		const data = transformCSVData(sheet_name_list , workbook);
+exports.saveInvoicesNewBulk = async (req, res) => {
+	req.body = { dataType: 'invoices' };
+	return exports.saveBulkData(req, res);
+};
 
-        let tables = specificService.getTablesToSave(data[0]);
-        await dbService.insertMany(Table,tables);
-
-        unLinkFile(`uploads/${req.file.filename}`);
-        return res.send({ success: true, message: `Total ${tables.length} tables successfully Imported`});
-
-	} catch (error) {
-		console.log(error)
-		res.status(500).send({ message: "Error saving tables", error });
-	}
+exports.savePaymentsNewBulk = async (req, res) => {
+	req.body = { dataType: 'payments' };
+	return exports.saveBulkData(req, res);
 };
 
 exports.saveTablesNewBulk = async (req, res) => {
-	try {
-        await Table.deleteMany();
-		var workbook = XLSX.readFile(`uploads/${req.file.filename}`);
-		var sheet_name_list = workbook.SheetNames;
-		const data = transformCSVData(sheet_name_list , workbook);
-
-        let tables = specificService.getTablesNewToSave(data[0]);
-        await dbService.insertMany(Table,tables);
-
-        unLinkFile(`uploads/${req.file.filename}`);
-        return res.send({ success: true, message: `Total ${tables.length} tables successfully Imported`});
-
-	} catch (error) {
-		console.log(error)
-		res.status(500).send({ message: "Error saving tables", error });
-	}
-};
-
-exports.saveDefectsBulk = async (req, res) => {
-	try {
-		var workbook = XLSX.readFile(`uploads/${req.file.filename}`);
-		var sheet_name_list = workbook.SheetNames;
-		const data = transformCSVData(sheet_name_list , workbook);
-
-        let defectsArray = specificService.getDefectsToSave(data[0]);
-		defectsArray.map(async (item) => {
-			let ticket = await dbService.getEntities(Ticket,{ticketId: item.ticketId})
-			ticket.defectFound = item.defectFound
-			ticket.defectFixes = item.defectFixes
-			await dbService.updateItem(Ticket,{ticketId:item.ticketId}, ticket)
-		})
-		
-        unLinkFile(`uploads/${req.file.filename}`);
-        return res.send({ success: true, message: `Total ${defectsArray.length} defectsArray successfully Imported`});
-
-	} catch (error) {
-		console.log(error)
-		res.status(500).send({ message: "Error saving defectsArray", error });
-	}
+	req.body = { dataType: 'tables' };
+	return exports.saveBulkData(req, res);
 };
 
 exports.savePhonesBulk = async (req, res) => {
-	try {
-        await Phone.deleteMany();
-		var workbook = XLSX.readFile(`uploads/${req.file.filename}`);
-		var sheet_name_list = workbook.SheetNames;
-		const data = transformCSVData(sheet_name_list , workbook);
-
-        let phones = specificService.getPhonesToSave(data[0]);
-        await dbService.insertMany(Phone,phones);
-
-        unLinkFile(`uploads/${req.file.filename}`);
-        return res.send({ success: true, message: `Total ${phones.length} phones successfully Imported`});
-
-	} catch (error) {
-		console.log(error)
-		res.status(500).send({ message: "Error saving phones", error });
-	}
-};
-
-exports.saveFixTimeBulk = async (req, res) => {
-	try {
-		var workbook = XLSX.readFile(`uploads/${req.file.filename}`);
-		var sheet_name_list = workbook.SheetNames;
-		const data = transformCSVData(sheet_name_list , workbook);
-
-        let fixTimeArray = specificService.getFixTimeToSave(data[0]);
-		fixTimeArray.map(async (item) => {
-			let ticket = await dbService.getEntities(Ticket,{ticketId: item.ticketId})
-			ticket.fixHour = item.fixHour
-			ticket.fixMin = item.fixMin
-			await dbService.updateItem(Ticket,{ticketId:item.ticketId}, ticket)
-		})
-		
-        unLinkFile(`uploads/${req.file.filename}`);
-        return res.send({ success: true, message: `Total ${fixTimeArray.length} fixTimeArray successfully Imported`});
-
-	} catch (error) {
-		console.log(error)
-		res.status(500).send({ message: "Error saving fixTimeArray", error });
-	}
+	req.body = { dataType: 'phones' };
+	return exports.saveBulkData(req, res);
 };
 
 exports.searchCustomer = async (req, res) => {
@@ -367,10 +282,22 @@ exports.createExcel = async (req, res) => {
   const folderId = process.env.BACKUP_DRIVE_FOLDER_ID;
   await fsp.mkdir(TMP_DIR, { recursive: true });
 
+  // Header order for each CSV (ensures all columns appear even if sparse in data)
+  const csvHeaders = {
+    tickets: ['ticketId', 'ticketStatus', 'customerId', 'customerName', 'item', 'entryCondition', 'accessories', 'defectDescription', 'defectFound', 'defectFixes', 'prepaid', 'prepaidInvoice', 'amount', 'vat', 'total', 'invoice', 'year', 'entryDate', 'fixDate', 'exitDate', 'remarks', 'ticketRemark', 'fixHour', 'fixMin', 'partsCost'],
+    customers: ['customerId', 'fullName', 'address', 'city', 'phone1', 'phone2', 'phone3', 'arrivedFrom', 'issueDate', 'hasTicket', 'ticketExist', 'remark'],
+    invoices: ['invoiceId', 'customerId', 'ticketId', 'amount', 'vat', 'total', 'remark'],
+    payments: ['supplierId','paymentId', 'checkId', 'date', 'amount', 'remark'],
+    tables: ['table_id', 'table_code', 'description', 'numeric'],
+    phones: ['fullName', 'address', 'phone1', 'phone2', 'phone3', 'phone4', 'phoneType', 'remark']
+  };
+
   // names and data-fetch promises (keeps order predictable)
   const tasks = [
     { key: 'tickets', dataPromise: Ticket.find().lean() },
     { key: 'customers', dataPromise: Customer.find().lean() },
+    { key: 'invoices', dataPromise: Invoice.find().lean() },
+    { key: 'payments', dataPromise: Payment.find().lean() },
     { key: 'tables', dataPromise: Table.find().lean() },
     { key: 'phones', dataPromise: Phone.find().lean() }
   ];
@@ -386,7 +313,7 @@ exports.createExcel = async (req, res) => {
     const writePromises = tasks.map((t, idx) => {
       const filename = `${t.key}-${ts}.csv`;
       const filePath = path.join(TMP_DIR, filename);
-      return backupUtils.writeCsv(filePath, datas[idx])
+      return backupUtils.writeCsv(filePath, datas[idx], csvHeaders[t.key])
         .then(() => ({ path: filePath, name: `${t.key}.csv` }));
     });
 
@@ -425,26 +352,6 @@ exports.createExcel = async (req, res) => {
     return res.status(500).send({ message: 'Error creating backup', error: err.message || err });
   }
 };
-
-// exports.getCustomersWithStatus = async (req,res) => {  // not in used...!!!
-// 	try {
-// 		let data = await Customer.find().limit(2).lean()
-// 		let findTickets = 'Non'
-// 		data = data.map( (item) => {
-// 			if (item.hasTicket) {
-// 				findTickets = Ticket.find ({customerId: item.customerId})
-// 			}
-// 			// console.log(item.fullName, findTickets.length)
-// 			// return (Object.assign({},item, {status : 'status'}))
-// 			return ({...item, status : 'status'})
-// 		})
-// 		console.log(data)
-// 		return res.send (data)
-// 	} catch (error) {
-// 		console.log(error)
-// 		res.status(500).send({ message: "Error hasTicketsBulk", error });
-// 	}
-// };
 
 function unLinkFile(path) {
 	fs.unlinkSync(path);
