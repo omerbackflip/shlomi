@@ -105,6 +105,28 @@
           <template v-slot:[`item.amount`]="{ item }">
               <span>{{ item.amount ? item.amount.toLocaleString() : ''}}</span>
           </template>
+          <template v-slot:body="{ items }">
+            <tbody>
+              <tr v-for="(item, index) in items" :key="item._id" 
+                  :style="{ borderBottom: isPaymentIdChange(items, index) ? '2px solid black' : 'none' }">
+                <td v-for="header in invoiceHeaders" :key="header.value">
+                  <div v-if="header.value === 'actions'">
+                    <div v-show="supplier.table_code">
+                      <v-icon small @click="addInvoice(item)"> mdi-pencil </v-icon>
+                      <v-icon small @click="deleteInvoice(item._id)"> mdi-delete </v-icon>
+                    </div>
+                  </div>
+                  <div v-else-if="header.value === 'date'">
+                    {{ item.date ? new Date(item.date).toLocaleDateString('en-GB') : '-'}}
+                  </div>
+                  <div v-else-if="header.value === 'amount'">
+                    {{ item.amount ? item.amount.toLocaleString() : ''}}
+                  </div>
+                  <div v-else>{{ item[header.value] }}</div>
+                </td>
+              </tr>
+            </tbody>
+          </template>
         </v-data-table>
         </v-card>
       </v-row>
@@ -157,6 +179,12 @@ export default {
       console.dir(idx)
       this.selectedRow = idx;
     },
+
+    isPaymentIdChange(items, index) {
+      // Add underline after this row if it's the last row or if paymentId changes on next row
+      if (index === items.length - 1) return true; // Last row always has underline
+      return items[index].paymentId !== items[index + 1].paymentId;
+    },
     
     async deletePayment(id, paymentId) {
       if (window.confirm("אשר מחיקת תשלום")) {
@@ -199,11 +227,11 @@ export default {
         // 2) חשבוניות
         const response1 = await apiService.clientGetEntities(
           INVOICE_MODEL,
-          { filter: { supplierId: this.supplier.table_code } }
+          { filter: { supplierId: this.supplier.table_code },
+            sort: { paymentId: 1 } }
         )
 
-        this.invoices = response1.data.sort((a, b) => a.invoiceId - b.invoiceId)
-
+        this.invoices = response1.data
       } catch (error) {
         console.error("retrievePayments error:", error)
 
@@ -224,9 +252,13 @@ export default {
     async retrieveSuppliers() {
 			this.loading = true
       await apiService
-        .clientGetEntities(TABLE_MODEL, {filter:{table_id: 9}})
+        .clientGetEntities(TABLE_MODEL, {filter:{table_id: 9}, sort: { table_code: 1 }})
         .then((response) => {
           this.suppliers = response.data;
+          // Auto-select first supplier on initial load
+          if (this.suppliers.length > 0 && !this.supplier.table_code) {
+            this.filterSupplier(0, this.suppliers[0]);
+          }
         })
         .catch((e) => {
           console.log(e);
