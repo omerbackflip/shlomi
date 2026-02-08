@@ -27,32 +27,32 @@ const backupUtils = require('../util/backupUtils');
 const BULK_IMPORT_CONFIG = {
 	customers: {
 		model: Customer,
-		serviceMethod: 'getCustomersNewToSave',
+		serviceMethod: 'getCustomersToImport',
 		options: {}
 	},
 	tickets: {
 		model: Ticket,
-		serviceMethod: 'getTicketsNewToSave',
+		serviceMethod: 'getTicketsToImport',
 		options: { type: 'binary', cellDates: true, dateNF: 'dd/mm/yyyy;@' }
 	},
 	invoices: {
 		model: Invoice,
-		serviceMethod: 'getInvoicesNewToSave',
+		serviceMethod: 'getInvoicesToImport',
 		options: { type: 'binary', cellDates: true, dateNF: 'dd/mm/yyyy;@' }
 	},
 	payments: {
 		model: Payment,
-		serviceMethod: 'getPaymentsNewToSave',
+		serviceMethod: 'getPaymentsToImport',
 		options: { type: 'binary', cellDates: true, dateNF: 'dd/mm/yyyy;@' }
 	},
 	tables: {
 		model: Table,
-		serviceMethod: 'getTablesNewToSave',
+		serviceMethod: 'getTablesToImport',
 		options: {}
 	},
 	phones: {
 		model: Phone,
-		serviceMethod: 'getPhonesToSave',
+		serviceMethod: 'getPhonestoImport',
 		options: {}
 	}
 };

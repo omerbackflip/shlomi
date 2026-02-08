@@ -34,7 +34,7 @@ async function writeCsv(filePath, rows, headerOrder = null) {
     for (const rawRow of (rows || [])) {
       const row = { ...rawRow };
       for (const k of Object.keys(row)) {
-        if (Array.isArray(row[k])) row[k] = row[k].join('\n');
+        if (Array.isArray(row[k])) row[k] = row[k].join(',');
         if (k === '_id' && typeof row[k] === 'object') row[k] = String(row[k]);
       }
       csvStream.write(row);
