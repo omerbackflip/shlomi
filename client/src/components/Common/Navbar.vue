@@ -12,17 +12,11 @@
             </v-btn>
 
             <v-spacer></v-spacer>
-            <v-btn-toggle v-if="isTicketsList" v-model="ticketStatus" @change="onFilterChange" group>
-                <v-btn text value="Open"     elevation='3' small
-                    style="border-color: red;" class="btn-tgl" :class="ticketStatus === 'Open' ? `${ticketStatus}` : ''"> פתוח 
-                </v-btn>
-                <v-btn text value="Checked"  elevation='3' small
-                    style="border-color: yellow;" class="btn-tgl" :class="ticketStatus === 'Checked' ? `${ticketStatus}` : ''"> נבדק 
-                </v-btn>
-                <v-btn text value="Fixed"    elevation='3' small
-                    style="border-color: lightgreen;" class="btn-tgl" :class="ticketStatus === 'Fixed' ? `${ticketStatus}` : ''"> תוקן 
-                </v-btn>
-                <v-btn text value="ALL"    elevation='3' small> הכל </v-btn>
+            <v-btn-toggle v-if="isTicketsList" v-model="ticketStatus" @change="onFilterChange" group :data-state="ticketStatus">
+                <v-btn value="Open" elevation='3' small class="btn-tgl"> פתוח </v-btn>
+                <v-btn value="Checked" elevation='3' small class="btn-tgl"> נבדק </v-btn>
+                <v-btn value="Fixed" elevation='3' small class="btn-tgl"> תוקן </v-btn>
+                <v-btn value="ALL" elevation='3' small class="btn-tgl"> הכל </v-btn>
             </v-btn-toggle>
             <v-select v-if="isTicketsList" :items="years" v-model="ticketYear" @change="onFilterChange" label="Year"/>
             <v-btn x-small @click="$emit('logout')" icon>
@@ -202,19 +196,39 @@ export default {
     }
 
     .btn-tgl {
-        border-bottom-width: thick !important; 
-        border-inline-color: revert-layer !important; 
-        border-top-width: inherit !important;
+        border: 2px solid transparent !important;
+        border-radius: 6px;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        min-width: 56px;
     }
 
-    .Open {
+    /* default border colors per button value */
+    .btn-tgl[value="Open"] { border-color: red !important; }
+    .btn-tgl[value="Checked"] { border-color: #f1c40f !important; }
+    .btn-tgl[value="Fixed"] { border-color: lightgreen !important; }
+    .btn-tgl[value="ALL"] { border-color: #6c757d !important; }
+
+    /* single centralized rule: style active button based on toggle's data-state */
+    .v-btn-toggle[data-state="Open"] .btn-tgl[value="Open"].v-btn--active {
         background-color: red !important;
+        border: 4px solid red !important;
+        color: white !important;
     }
-    .Checked {
-        background-color: yellow !important;
+    .v-btn-toggle[data-state="Checked"] .btn-tgl[value="Checked"].v-btn--active {
+        background-color: #f1c40f !important;
+        border: 4px solid #f1c40f !important;
+        color: #222 !important;
     }
-    .Fixed {
+    .v-btn-toggle[data-state="Fixed"] .btn-tgl[value="Fixed"].v-btn--active {
         background-color: lightgreen !important;
+        border: 4px solid lightgreen !important;
+        color: #222 !important;
+    }
+    .v-btn-toggle[data-state="ALL"] .btn-tgl[value="ALL"].v-btn--active {
+        background-color: #6c757d !important;
+        border: 4px solid #6c757d !important;
+        color: white !important;
     }
 
 </style>
