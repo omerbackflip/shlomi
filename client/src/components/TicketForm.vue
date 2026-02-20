@@ -269,6 +269,7 @@ export default {
     methods: {
         async submitTicket() {
             this.loading = true
+            console.log(this.ticket)
             if (this.customerInfo.customerId) {
                 this.$forceUpdate();
                 try {

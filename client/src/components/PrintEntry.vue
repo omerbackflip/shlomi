@@ -67,9 +67,9 @@
             <br>
             <br>
 
-
-            <v-card-title class="text-h5 text-center">
-               שובר הזמנת תיקון מס'  - {{ticket.ticketId}}
+            <v-card-title class="text-h5 text-center title-with-generic">
+                <span class="title-text">שובר הזמנת תיקון מס'  - {{ticket.ticketId}}</span>
+                <span class="generic-label">בס"ד</span>
             </v-card-title>
             <v-container class="generic1">
                     <!-- ------------------- Customer Area  ------------------- -->
@@ -252,6 +252,23 @@ export default {
 
     .mr-200{
         margin-right: 0px;
+    }
+
+    .title-with-generic {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+    }
+
+    .title-text {
+        flex: 1;
+        text-align: center;
+    }
+
+    .generic-label {
+        font-size: 14px;
+        font-weight: normal;
+        color: black;
     }
 
 </style>
