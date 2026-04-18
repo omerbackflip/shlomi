@@ -7,3 +7,6 @@
 	path = app/shared/mongoose
 	url = https://github.com/omerbackflip/mongoose.git
 	branch = master
+[submodule "google"]
+	path = google
+	url = C:/Windows.old/Users/Public/VUE/google

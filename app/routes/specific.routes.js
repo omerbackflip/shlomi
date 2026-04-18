@@ -28,5 +28,9 @@ module.exports = app => {
 
   router.post("/send-message", specific.sendMessageToUser);
 
+
+  //Google
+  router.get('/test-google-connection', specific.testGoogleConnection);
+  
   app.use('/api/specific', router);
 };

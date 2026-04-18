@@ -4,3 +4,5 @@ env
 .env
 google_token.json
 tmp
+app/config/token.json
+google_old/

@@ -17,10 +17,11 @@ const moment = require('moment');
 const accountSid = process.env.ACCOUNT_SID;
 const authToken = process.env.AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
-const google = require('../../google/drive/upload');
+// const google = require('../../google/drive/upload');
 const path = require('path');
 const TMP_DIR = path.resolve(__dirname, '../../tmp'); // adjust if you prefer different tmp
 const backupUtils = require('../util/backupUtils');
+const googleSubmoduleService = require('../services/google-submodule-service');
 
 
 // Configuration for bulk import operations
@@ -323,8 +324,9 @@ exports.createExcel = async (req, res) => {
     await backupUtils.zipFiles(zipPath, createdCsvFiles);
 
     // upload the single zip file
-    const uploadRes = await google.uploadFile(zipPath, folderId);
-
+    // const uploadRes = await google.uploadFile(zipPath, folderId);
+	const uploadRes = await googleSubmoduleService.uploadFileToDrive(zipPath, folderId);
+	
     // cleanup CSVs + zip (best-effort)
     const cleanupPaths = createdCsvFiles.map(f => f.path).concat([zipPath]);
     await Promise.all(cleanupPaths.map(p => fsp.unlink(p).catch(() => {})));
@@ -356,3 +358,22 @@ exports.createExcel = async (req, res) => {
 function unLinkFile(path) {
 	fs.unlinkSync(path);
 }
+
+
+exports.testGoogleConnection = async (req, res) => {
+  try {
+    const oAuth2Client = googleSubmoduleService.getOAuthClientFromStoredTokens();
+
+    return res.send({
+      success: true,
+      message: 'Google submodule is connected',
+      hasCredentials: !!oAuth2Client.credentials
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      success: false,
+      message: error.message
+    });
+  }
+};

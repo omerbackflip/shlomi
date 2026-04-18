@@ -1,10 +1,11 @@
-require('dotenv').config(); // Load environment variables from .env file
-
+require('dotenv').config();
+const { createGoogleRouter, createFileTokenStore } = require('./google/backend');
+const path = require('path');
 const express = require("express");
 const cors = require("cors");
-const google = require("./google");              // <-- ADD THIS LINE
 
 const app = express();
+
 app.use(cors());
 
 // parse requests of content-type - application/json
@@ -13,32 +14,18 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ INIT GOOGLE (reads from .env by default)
-google.init({
-  clientId: process.env.GOOGLE_CLIENT_ID,        // <-- ADD (optional: can omit, module reads .env)
+const tokenStore = createFileTokenStore(
+  path.join(__dirname, 'app/config/token.json')
+);
+
+app.use('/api/google', createGoogleRouter({
+  clientId: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  redirectUri: process.env.GOOGLE_REDIRECT_URI
-});
+  redirectUri: process.env.GOOGLE_REDIRECT_URI,
+  scopes: process.env.GOOGLE_SCOPES,
+  tokenStore
+}));
 
-// ✅ GOOGLE AUTH ROUTES
-app.get("/api/google/auth", (req, res) => {
-  const url = google.generateAuthUrl();
-  return res.redirect(url);
-});
-
-app.get("/api/google/callback", async (req, res) => {
-  try {
-    const { code } = req.query;
-    const tokens = await google.getTokens(code);
-    google.saveTokens(tokens); // persist locally (google_token.json in app root)
-    return res.json({ success: true });
-  } catch (err) {
-    console.error("Google OAuth error:", err);
-    return res.status(500).json({ success: false, error: 'OAuth failed' });
-  }
-});
-
-// Don’t forget to call connect() method in server.js (here, this file):
 const db = require("./app/models");
 
 db.mongoose
@@ -60,8 +47,6 @@ app.get("/", (req, res) => {
 });
 
 require("./app/routes/specific.routes")(app);
-// require("./app/routes/generic.routes")(app);
-// ✅ New: Use shared mongoose submodule router
 const mongooseRouter = require("./app/shared/mongoose/routes/generic.routes");
 app.use("/api/generic", mongooseRouter);
 
