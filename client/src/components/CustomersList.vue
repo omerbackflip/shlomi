@@ -23,7 +23,7 @@
 						<v-text-field v-model="fullName" class="mx-4" type="text" label="שם לקוח"  hide-details></v-text-field>
 						<v-text-field v-model="phone" class="mx-4" type="number" label="טלפון" hide-details></v-text-field>
 						<v-spacer></v-spacer>
-						<export-excel :data="customers" type="xlsx" name="customers">
+						<export-excel :data="$formatDataForExport(customers)" type="xlsx" name="customers">
 							<v-btn small class="btn btn-danger mt-1 ml-3" :loading="loading">
 								<v-icon >mdi-download</v-icon>
 							</v-btn>
@@ -120,9 +120,7 @@ import TicketForm from './TicketForm.vue';
 import ConfirmDialog from './Common/ConfirmDialog.vue';
 import specificServiceEndPoints from '../services/specificServiceEndPoints';
 // import VueVirtualTable from 'vue-virtual-table'
-import excel from "vue-excel-export";
-import Vue from "vue";
-Vue.use(excel);
+
 export default {
 	name: "customers-list",
 	// components: { CustomerForm, ConfirmDialog,VueVirtualTable },

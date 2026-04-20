@@ -22,7 +22,7 @@
             <v-toolbar flat>
             <v-toolbar-title>DATA - {{tables.length}}</v-toolbar-title>
               <v-spacer></v-spacer>
-              <export-excel :data="tables" type="xlsx" name="tables">
+              <export-excel :data="$formatDataForExport(tables)" type="xlsx" name="tables">
 								<v-btn small class="btn btn-danger mt-3 ml-3" :loading="loading">
 									<v-icon >mdi-download</v-icon>
 								</v-btn>
@@ -174,9 +174,6 @@
 import { TABLE_MODEL, TABLE_HEADERS } from "../constants/constants";
 import apiService from "../services/apiService";
 import TableForm from './TableForm.vue';
-import excel from "vue-excel-export";
-import Vue from "vue";
-Vue.use(excel);
 export default {
   name: "table-list",
   components: { TableForm },

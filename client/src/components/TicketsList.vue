@@ -27,11 +27,6 @@
 							<v-icon class="nav-icon" small >mdi-plus</v-icon>
 							<div v-if="!isMobile()"> כרטיס חדש </div>
 						</v-btn>
-						<export-excel v-if="!isMobile()" :fetch="fetchData" type="xlsx" name="tickets">
-							<v-btn small class="btn btn-danger mt-1" :loading="loading">
-								<v-icon>mdi-download</v-icon>
-							</v-btn>
-						</export-excel>
 					</v-toolbar>
 				</template>
 				<template v-slot:[`item.entryDate`]="{ item }">
@@ -65,14 +60,10 @@
 
 
 <script>
-import { TICKET_HEADERS, TICKET_MOBILE_HEADERS, TICKET_MODEL, isMobile } from "../constants/constants";
-import apiService from "../services/apiService";
+import { TICKET_HEADERS, TICKET_MOBILE_HEADERS, isMobile } from "../constants/constants";
 import TicketForm from './TicketForm.vue';
 import ConfirmDialog from './Common/ConfirmDialog.vue';
-import excel from "vue-excel-export";
-import Vue from "vue";
 import specificServiceEndPoints from '../services/specificServiceEndPoints';
-Vue.use(excel);
 export default {
 	name: "ticket-list",
 	components: { TicketForm, ConfirmDialog },
@@ -139,12 +130,6 @@ export default {
 			this.getTickets();
 		},
 
-		async fetchData(){
-            this.loading = true;
-            const response = await apiService.clientGetEntities(TICKET_MODEL);
-            this.loading = false;
-            return response.data;
-        },
 	},
 
 	mounted() {
