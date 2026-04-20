@@ -90,8 +90,8 @@ class SpecificServiceEndPoints {
 		return await axios.get(`${baseUrl}/specific/get-tables`);
 	}
 
-	async createExcel() {
-		return await axios.post(`${baseUrl}/specific/create-excel`);
+	async runBackup() {
+		return await axios.post(`${baseUrl}/specific/backup/run`);
 	}
 }
 

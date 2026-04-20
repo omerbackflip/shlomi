@@ -10,3 +10,6 @@
 [submodule "google"]
 	path = google
 	url = C:/Windows.old/Users/Public/VUE/google
+[submodule "backup"]
+	path = backup
+	url = https://github.com/omerbackflip/backup.git

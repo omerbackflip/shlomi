@@ -17,11 +17,13 @@ const moment = require('moment');
 const accountSid = process.env.ACCOUNT_SID;
 const authToken = process.env.AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
-// const google = require('../../google/drive/upload');
 const path = require('path');
 const TMP_DIR = path.resolve(__dirname, '../../tmp'); // adjust if you prefer different tmp
 const backupUtils = require('../util/backupUtils');
+const backupConfig = require('../backup/backup.config');
+const { getModel } = require('../backup/modelResolver');
 const googleSubmoduleService = require('../services/google-submodule-service');
+const backupService = require('../../backup/backend');
 
 
 // Configuration for bulk import operations
@@ -278,87 +280,9 @@ exports.getWithRemark = async (req, res) => {
 	return res.send (data1)
 };
 
-exports.createExcel = async (req, res) => {
-  const ts = moment().format('YYYY-MM-DD_HH-mm-ss');
-  const folderId = process.env.BACKUP_DRIVE_FOLDER_ID;
-  await fsp.mkdir(TMP_DIR, { recursive: true });
-
-  // Header order for each CSV (ensures all columns appear even if sparse in data)
-  const csvHeaders = {
-    tickets: ['ticketId', 'ticketStatus', 'customerId', 'customerName', 'item', 'entryCondition', 'accessories', 'defectDescription', 'defectFound', 'defectFixes', 'prepaid', 'prepaidInvoice', 'amount', 'vat', 'total', 'invoice', 'year', 'entryDate', 'fixDate', 'exitDate', 'remarks', 'ticketRemark', 'fixHour', 'fixMin', 'partsCost'],
-    customers: ['customerId', 'fullName', 'address', 'city', 'phone1', 'phone2', 'phone3', 'arrivedFrom', 'issueDate', 'hasTicket', 'ticketExist', 'remark'],
-    invoices: ['invoiceId', 'customerId', 'ticketId', 'amount', 'vat', 'total', 'remark'],
-    payments: ['supplierId','paymentId', 'checkId', 'date', 'amount', 'remark'],
-    tables: ['table_id', 'table_code', 'description', 'numeric'],
-    phones: ['fullName', 'address', 'phone1', 'phone2', 'phone3', 'phone4', 'phoneType', 'remark']
-  };
-
-  // names and data-fetch promises (keeps order predictable)
-  const tasks = [
-    { key: 'tickets', dataPromise: Ticket.find().lean() },
-    { key: 'customers', dataPromise: Customer.find().lean() },
-    { key: 'invoices', dataPromise: Invoice.find().lean() },
-    { key: 'payments', dataPromise: Payment.find().lean() },
-    { key: 'tables', dataPromise: Table.find().lean() },
-    { key: 'phones', dataPromise: Phone.find().lean() }
-  ];
-
-  let createdCsvFiles = [];
-  const zipPath = path.join(TMP_DIR, `shlomi-backup-${ts}.zip`);
-
-  try {
-    // fetch all data in parallel
-    const datas = await Promise.all(tasks.map(t => t.dataPromise));
-
-    // write CSV files in parallel
-    const writePromises = tasks.map((t, idx) => {
-      const filename = `${t.key}-${ts}.csv`;
-      const filePath = path.join(TMP_DIR, filename);
-      return backupUtils.writeCsv(filePath, datas[idx], csvHeaders[t.key])
-        .then(() => ({ path: filePath, name: `${t.key}.csv` }));
-    });
-
-    createdCsvFiles = await Promise.all(writePromises);
-
-    // create zip with the CSV files
-    await backupUtils.zipFiles(zipPath, createdCsvFiles);
-
-    // upload the single zip file
-    // const uploadRes = await google.uploadFile(zipPath, folderId);
-	const uploadRes = await googleSubmoduleService.uploadFileToDrive(zipPath, folderId);
-	
-    // cleanup CSVs + zip (best-effort)
-    const cleanupPaths = createdCsvFiles.map(f => f.path).concat([zipPath]);
-    await Promise.all(cleanupPaths.map(p => fsp.unlink(p).catch(() => {})));
-
-    // respond with the zip filename
-    return res.json({
-      success: true,
-      link: uploadRes.webViewLink,
-      fileId: uploadRes.id,
-      file: { filename: path.basename(zipPath) }
-    });
-
-  } catch (err) {
-    console.error('createExcel (CSV+ZIP) error:', err);
-
-    // best-effort cleanup if anything was created
-    try {
-      const cleanup = (createdCsvFiles || []).map(f => f.path);
-      if (fs.existsSync(zipPath)) cleanup.push(zipPath);
-      await Promise.all(cleanup.map(p => fsp.unlink(p).catch(() => {})));
-    } catch (e) {
-      /* ignore cleanup errors */
-    }
-
-    return res.status(500).send({ message: 'Error creating backup', error: err.message || err });
-  }
-};
-
 function unLinkFile(path) {
 	fs.unlinkSync(path);
 }
-
 
 exports.testGoogleConnection = async (req, res) => {
   try {
@@ -374,6 +298,26 @@ exports.testGoogleConnection = async (req, res) => {
     return res.status(500).send({
       success: false,
       message: error.message
+    });
+  }
+};
+
+exports.runBackup = async (req, res) => {
+  try {
+    const result = await backupService.runBackup({
+      config: backupConfig,
+      getModel,
+      uploader: googleSubmoduleService.uploadFileToDrive,
+      backupUtils,
+      tmpDir: TMP_DIR
+    });
+
+    return res.json(result);
+  } catch (error) {
+    console.error('runBackup error:', error);
+    return res.status(500).send({
+      message: 'Error creating backup',
+      error: error.message || error
     });
   }
 };

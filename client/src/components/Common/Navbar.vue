@@ -6,7 +6,7 @@
                 <div v-if="isMobile()"> {{local ? 'L' : 'P'}}                   </div>
                 <div v-else>            {{local ? 'Local Host' : 'Production'}} </div>
             </div>
-            <v-btn v-if="!isMobile()" color="primary" dark :loading="loading" @click="createExcel" class="ml-3" small>
+            <v-btn v-if="!isMobile()" color="primary" dark :loading="backupLoading" @click="runBackup" class="ml-3" small>
                 <v-icon left>mdi-google-drive</v-icon>
                 {{ lastUpdate }}
             </v-btn>
@@ -51,7 +51,6 @@ export default {
             drawer: false,
             local: false,
             production: false,
-            loading: false,
             links : ROUTE_LIST,
             dialog: false,
             ticketStatus: 'Open',
@@ -60,7 +59,8 @@ export default {
             //         2016, 2015, 2014, 2013, 2012, 2011, 2010,
             //         2009, 2008, 2007, 2006]
             years: [],
-            lastUpdate: []
+            lastUpdate: [],
+            backupLoading: false,
         }
     },
     methods:{
@@ -96,21 +96,32 @@ export default {
             }
         },
 
-        async createExcel() {
-            this.lastUpdate = "creating excel...";
-            this.loading = true;
-            const response = await SpecificServiceEndPoints.createExcel();
-            if (response && response.data && response.data.file && response.data.file.filename) {
-                const filename = response.data.file.filename;
-                // Extract YYYY-MM-DD and convert to DD/MM/YYYY
-                const match = filename.match(/(\d{4})-(\d{2})-(\d{2})/);
-                const dateStr = match ? `${match[3]}/${match[2]}/${match[1]}` : '';
-                this.lastUpdate = "last backup : " + [dateStr];
-                await apiService.updateEntity({table_id: 110, table_code: 1},{description: this.lastUpdate},{model:TABLE_MODEL})
-            }
-            this.loading = false;
-        },
+        async runBackup() {
+            try {
+                this.backupLoading = true;
+                this.lastUpdate = "creating excel...";
 
+                const response = await SpecificServiceEndPoints.runBackup();
+
+                if (response && response.data && response.data.file && response.data.file.filename) {
+                    const filename = response.data.file.filename;
+                    const match = filename.match(/(\d{4})-(\d{2})-(\d{2})/);
+                    const dateStr = match ? `${match[3]}/${match[2]}/${match[1]}` : '';
+
+                    this.lastUpdate = "last backup : " + dateStr;
+
+                    await apiService.updateEntity(
+                        { table_id: 110, table_code: 1 },
+                        { description: this.lastUpdate },
+                        { model: TABLE_MODEL }
+                    );
+                }
+            } catch (error) {
+                console.error(error);
+            } finally {
+                this.backupLoading = false;
+            }
+        },
     },
 
     async mounted() {

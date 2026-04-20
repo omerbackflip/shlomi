@@ -9,13 +9,12 @@ module.exports = app => {
 
   var router = require("express").Router();
 
-  router.post("/save-phones",upload.single('file'), specific.savePhonesBulk);
-
   router.post("/save-tickets-new",upload.single('file'), specific.saveTicketsNewBulk);
   router.post("/save-customers-new",upload.single('file'), specific.saveCustomersNewBulk);
   router.post("/save-invoices-new",upload.single('file'), specific.saveInvoicesNewBulk);
   router.post("/save-payments-new",upload.single('file'), specific.savePaymentsNewBulk);
   router.post("/save-tables-new",upload.single('file'), specific.saveTablesNewBulk);
+  router.post("/save-phones",upload.single('file'), specific.savePhonesBulk);
 
 
   router.get("/search-customers", specific.searchCustomer);
@@ -24,8 +23,7 @@ module.exports = app => {
   router.get("/get-no-close",specific.getNoClose);
   router.get("/get-with-remark",specific.getWithRemark);
   router.get("/get-tables",specific.getTables);
-  router.post("/create-excel", specific.createExcel);
-
+  router.post("/backup/run", specific.runBackup);
   router.post("/send-message", specific.sendMessageToUser);
 
 
