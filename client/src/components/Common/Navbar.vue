@@ -43,6 +43,7 @@
 import SpecificServiceEndPoints from "../../services/specificServiceEndPoints";
 import apiService from "../../services/apiService";
 import { isMobile, ROUTE_LIST, loadTable, TABLE_MODEL } from '../../constants/constants';
+import { initializeGoogleOnAppLoad } from "../../../../google/frontend";
 
 export default {
     data() {
@@ -61,6 +62,7 @@ export default {
             years: [],
             lastUpdate: [],
             backupLoading: false,
+            googleConnectMenuItem: '',
         }
     },
     methods:{
@@ -122,6 +124,13 @@ export default {
                 this.backupLoading = false;
             }
         },
+
+        async checkGoogleConnection() {
+            await initializeGoogleOnAppLoad( SpecificServiceEndPoints.getGoogleConnectionStatus, (menuItem) => {
+                    this.googleConnectMenuItem = menuItem;
+                }
+            );
+        },
     },
 
     async mounted() {
@@ -129,6 +138,7 @@ export default {
         this.years = (await loadTable(26)).map((code) => code.description).sort((a, b) => parseInt(b) - parseInt(a));
         const lastUpdateArr = (await loadTable(110)).map((code) => code.description);
         this.lastUpdate = lastUpdateArr.length === 1 ? lastUpdateArr[0] : lastUpdateArr;
+        await this.checkGoogleConnection();
     },
 
     computed: {
