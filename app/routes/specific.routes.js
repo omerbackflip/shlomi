@@ -28,7 +28,6 @@ module.exports = app => {
 
 
   //Google
-  router.get('/test-google-connection', specific.testGoogleConnection);
-  
+  router.get("/get-google-connection-status", specific.googleConnectionStatus);
   app.use('/api/specific', router);
 };

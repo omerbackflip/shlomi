@@ -8,6 +8,7 @@ const Phone = db.phones;
 // const dbService = require("../services/db-service");
 const dbService = require('../shared/mongoose/services/db-service');
 const specificService = require("../services/specific-service");
+const { ServerApp } = require("../config/constants");
 const XLSX = require('xlsx');
 const fs = require('fs');            // for existsSync / mkdirSync if used
 const fsp = require('fs').promises;  // use fsp.unlink(...) with await
@@ -18,13 +19,10 @@ const accountSid = process.env.ACCOUNT_SID;
 const authToken = process.env.AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
 const path = require('path');
-const TMP_DIR = path.resolve(__dirname, '../../tmp'); // adjust if you prefer different tmp
-const backupUtils = require('../util/backupUtils');
 const backupConfig = require('../backup/backup.config');
 const { getModel } = require('../backup/modelResolver');
-const googleSubmoduleService = require('../services/google-submodule-service');
+const googleSubmoduleService = require('../../google/backend/services/google-submodule-service');
 const backupService = require('../../backup/backend');
-
 
 // Configuration for bulk import operations
 const BULK_IMPORT_CONFIG = {
@@ -284,20 +282,30 @@ function unLinkFile(path) {
 	fs.unlinkSync(path);
 }
 
-exports.testGoogleConnection = async (req, res) => {
+exports.googleConnectionStatus = async (req, res) => {
   try {
-    const oAuth2Client = googleSubmoduleService.getOAuthClientFromStoredTokens();
+    const tokens = googleSubmoduleService.getStoredTokens();
+
+    if (!tokens) {
+      return res.send({
+        connected: false,
+        authUrl: '/api/google/auth'
+      });
+    }
 
     return res.send({
-      success: true,
-      message: 'Google submodule is connected',
-      hasCredentials: !!oAuth2Client.credentials
+      connected: true,
+      username: null,
+      client_id: process.env.VUE_APP_GOOGLE_CLIENT_ID || process.env.GOOGLE_CLIENT_ID,
+      developerKey: process.env.VUE_APP_GOOGLE_API_KEY || null,
+      locale: process.env.VUE_APP_GOOGLE_PICKER_LOCALE || 'en',
+      access_token: tokens.access_token || null,
+      folderId: ServerApp.google.pickerRootFolder
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).send({
-      success: false,
-      message: error.message
+    res.status(500).send({
+      message: "Error while checking google connection."
     });
   }
 };
@@ -308,8 +316,7 @@ exports.runBackup = async (req, res) => {
       config: backupConfig,
       getModel,
       uploader: googleSubmoduleService.uploadFileToDrive,
-      backupUtils,
-      tmpDir: TMP_DIR
+      tmpDir: path.resolve(__dirname, '../../tmp')
     });
 
     return res.json(result);
