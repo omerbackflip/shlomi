@@ -6,11 +6,13 @@
                 <div v-if="isMobile()"> {{local ? 'L' : 'P'}}                   </div>
                 <div v-else>            {{local ? 'Local Host' : 'Production'}} </div>
             </div>
-            <v-btn v-if="!isMobile()" color="primary" dark :loading="backupLoading" @click="runBackup" class="ml-3" small>
+            <v-btn v-if="!isMobile()" color="primary" dark :loading="loading" @click="runBackup" class="ml-3" small>
                 <v-icon left>mdi-google-drive</v-icon>
                 {{ lastUpdate }}
             </v-btn>
-
+            <!-- <v-btn small class="ml-2" :loading="loading" @click="triggerRestore">
+                <v-icon left>mdi-restore</v-icon> Restore
+            </v-btn> -->
             <v-spacer></v-spacer>
             <v-btn-toggle v-if="isTicketsList" v-model="ticketStatus" @change="onFilterChange" group :data-state="ticketStatus">
                 <v-btn value="Open" elevation='3' small class="btn-tgl"> פתוח </v-btn>
@@ -61,7 +63,7 @@ export default {
             //         2009, 2008, 2007, 2006]
             years: [],
             lastUpdate: [],
-            backupLoading: false,
+            loading: false,
             googleConnectMenuItem: '',
         }
     },
@@ -100,7 +102,7 @@ export default {
 
         async runBackup() {
             try {
-                this.backupLoading = true;
+                this.loading = true;
                 this.lastUpdate = "creating excel...";
 
                 const response = await SpecificServiceEndPoints.runBackup();
@@ -121,7 +123,7 @@ export default {
             } catch (error) {
                 console.error(error);
             } finally {
-                this.backupLoading = false;
+                this.loading = false;
             }
         },
 
@@ -131,6 +133,41 @@ export default {
                 }
             );
         },
+
+        triggerRestore() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.zip';
+
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                this.runRestore(file);
+            };
+
+            input.click();
+        },
+
+        async runRestore(file) {
+            try {
+                if (!confirm('This will overwrite ALL data. Continue?')) return;
+
+                this.loading = true;
+
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('confirm', 'YES');
+
+                const response = await SpecificServiceEndPoints.restoreBackup(formData);
+
+                alert('Restore completed');
+                console.log(response.data);
+            } catch (err) {
+                console.error(err);
+                alert(err?.response?.data?.message || 'Restore failed');
+            } finally {
+                this.loading = false;
+            }
+        }
     },
 
     async mounted() {

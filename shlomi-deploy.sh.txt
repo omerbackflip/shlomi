@@ -1,0 +1,27 @@
+#!/bin/bash
+set -e
+
+cd /home/shlomi
+
+echo "Pulling latest Shlomi code..."
+git pull origin master
+
+echo "Syncing submodules..."
+git submodule sync --recursive
+git submodule update --init --recursive
+
+echo "Building frontend..."
+cd client
+rm -rf dist
+npm run build:production
+
+echo "Restarting frontend PM2: Shlomi..."
+pm2 delete Shlomi || true
+pm2 serve ./dist --name Shlomi --port 8083
+
+echo "Restarting backend PM2: ShlomiServer..."
+cd ..
+pm2 delete ShlomiServer || true
+pm2 start server.js --name ShlomiServer
+
+echo "Shlomi Deployment completed."
