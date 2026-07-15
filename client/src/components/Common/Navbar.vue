@@ -10,9 +10,9 @@
                 <v-icon left>mdi-google-drive</v-icon>
                 {{ lastUpdate }}
             </v-btn>
-            <!-- <v-btn small class="ml-2" :loading="loading" @click="triggerRestore">
+            <v-btn small class="ml-2" :loading="loading" @click="triggerRestore">
                 <v-icon left>mdi-restore</v-icon> Restore
-            </v-btn> -->
+            </v-btn>
             <v-spacer></v-spacer>
             <v-btn-toggle v-if="isTicketsList" v-model="ticketStatus" @change="onFilterChange" group :data-state="ticketStatus">
                 <v-btn value="Open" elevation='3' small class="btn-tgl"> פתוח </v-btn>
