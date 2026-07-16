@@ -13,3 +13,7 @@
 [submodule "backup"]
 	path = backup
 	url = https://github.com/omerbackflip/backup.git
+[submodule "client/src/components/shared/whatsapp"]
+	path = client/src/components/shared/whatsapp
+	url = https://github.com/omerbackflip/whatsapp.git
+	branch = master
