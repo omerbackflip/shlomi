@@ -34,14 +34,14 @@
                                         :item-text="customers.text"
                                     ></v-combobox>
                                 </v-col>
-                                <v-col class="px-2" cols="4" sm="2">
-                                    <v-text-field type="text" :value="customerInfo.phone1" disabled hide-details></v-text-field>
-                                </v-col>
-                                <v-col class="px-2" cols="4" sm="2">
-                                    <v-text-field type="text" :value="customerInfo.phone2" disabled hide-details></v-text-field>
-                                </v-col>
-                                <v-col class="px-2" cols="4" sm="2">
-                                    <v-text-field type="text" :value="customerInfo.phone3" disabled hide-details></v-text-field>
+                                <v-col v-for="phone in customerPhones" :key="phone.key" class="px-2" cols="4" sm="2">
+                                    <div class="d-flex align-center">
+                                        <v-text-field class="customer-phone-field" type="text" :value="phone.value" disabled hide-details></v-text-field>
+
+                                        <WhatsappMessageMenu v-if="phone.isWhatsappValid" :phone="phone.value" :loading="whatsappTemplatesLoading"
+                                                                :templates="whatsappTemplates" :template-variables="whatsappTemplateVariables" icon/>
+
+                                    </div>
                                 </v-col>
                                 <v-col>
                                     <v-btn @click="openExsitingCustomerForm" style="margin-top: 15px;" x-small><v-icon small>mdi-pencil</v-icon></v-btn>
@@ -202,7 +202,6 @@
                                     <v-btn @click="printForm(printExit = true)" small>הדפס יציאה</v-btn>
                                 </div>
                                 <v-spacer></v-spacer>
-                                <v-btn @click="sendMessage()" small color=success> <v-icon small class="pr-2"> mdi-whatsapp </v-icon> הודעה </v-btn>
                                 <v-btn @click="submitTicket()" :loading="loading" small> שמור </v-btn>
                                 <v-btn @click="dialog = false" small> בטל</v-btn>
                             </v-layout>
@@ -222,20 +221,23 @@
 </template>
 
 <script>
-import { TICKET_MODEL, TABLE_MODEL, CUSTOMER_MODEL, NEW_TICKET, isMobile, sendWhatsapp } from "../constants/constants";
+import { TICKET_MODEL, TABLE_MODEL, CUSTOMER_MODEL, NEW_TICKET, isMobile } from "../constants/constants";
 import apiService from "../services/apiService";
 import specificServiceEndPoints from '../services/specificServiceEndPoints';
 import CustomerForm from './CustomerForm.vue';
 import debounce from 'debounce';
 import PrintEntryVue from './PrintEntry.vue';
 import PrintExitVue from './PrintExit.vue';
+import { WhatsappMessageMenu, validateIsraeliPhone } from './shared/whatsapp'
 
 export default {
     name: "ticket-form",
-    components: { CustomerForm, PrintEntryVue, PrintExitVue },
+    components: { CustomerForm, PrintEntryVue, PrintExitVue, WhatsappMessageMenu },
     data() {
         return {
             isMobile,
+            whatsappTemplates: {},
+            whatsappTemplatesLoading: false,
             ticket: {customerName:'', ticketStatus:''},
 			dialog: false,
             dateModal : false,
@@ -354,27 +356,6 @@ export default {
             }, 10);
         },
 
-        async sendMessage() {
-            try {
-                if(this.customerInfo && this.customerInfo.phone1) {
-                    // const name = this.customerInfo.fullName || this.ticket.customerName;
-                    // const itemName = this.ticket.item;
-                    // const message = messageTemplate.replace("__name__", name).replace("__itemName__", itemName);
-                    // let cutomerPhone = "+972".concat(this.customerInfo.phone1.replace("-","").substring(1))
-                    // console.log(cutomerPhone)
-                    // await specificServiceEndPoints.sendMessageToUser({message, phone: cutomerPhone}); // this use twilio service
-                    sendWhatsapp(this.customerInfo.phone2); // open whatsapp web
-                    // alert('Message sent successfully to ' + this.customerInfo.phone1);
-                    this.submitTicket();
-                } else {
-                    alert("User has no primary phone number");
-                }
-            } catch (error) {
-                console.log(error);
-                alert("Can't send message to user!");
-            }
-        },
-
         async openNewCustomerForm(){
 			let newCustomer = await this.$refs.customerForm.open(null, true);
             this.customerNameAddress = newCustomer.fullName + " - " + newCustomer.address + (newCustomer.city ? (" - " +  newCustomer.city) : '') ;
@@ -397,6 +378,61 @@ export default {
             this.tableList = response.data;
             this.itemList = response.data.itemList.map((item) => item.item);
             // console.log(this.tableList)
+        },
+
+        async loadWhatsappTemplates() {
+            this.whatsappTemplatesLoading = true;
+            try {
+                const [messagesResponse, labelsResponse] = await Promise.all([
+                    apiService.clientGetEntities(
+                        TABLE_MODEL,
+                        {
+                            filter: { table_id: 27 },
+                            sort: { table_code: 1 },
+                        }
+                    ),
+
+                    apiService.clientGetEntities(
+                        TABLE_MODEL,
+                        {
+                            filter: { table_id: 28 },
+                            sort: { table_code: 1 },
+                        }
+                    ),
+                ]);
+
+                const messages = messagesResponse.data || [];
+                const labels = labelsResponse.data || [];
+
+                const labelsByCode = labels.reduce((result, record) => {
+                    const label = String(record.description || '').trim();
+
+                    if (label) {
+                        result[String(record.table_code)] = label;
+                    }
+
+                    return result;
+                }, {});
+
+                this.whatsappTemplates = messages.reduce((templates, record) => {
+                    const code = String(record.table_code);
+                    const text = String(record.description || '').trim();
+
+                    if (text) {
+                        templates[`whatsapp_${code}`] = {
+                            label: labelsByCode[code] || `הודעה ${code}`,
+                            text,
+                        };
+                    }
+
+                    return templates;
+                }, {});
+            } catch (error) {
+                console.error('Failed to load WhatsApp templates', error);
+                this.whatsappTemplates = {};
+            } finally {
+                this.whatsappTemplatesLoading = false;
+            }
         },
 
         onTotalChage(num) {
@@ -462,13 +498,40 @@ export default {
         },
     },
 
-    // computed: {
-    // },
+    computed: {
+        customerPhones() {
+            const customer = this.customerInfo || {};
+
+            return ['phone1', 'phone2', 'phone3'].map((key) => {
+                const value = customer[key] || '';
+
+                return {
+                    key,
+                    value,
+                    isWhatsappValid: validateIsraeliPhone(value).valid,
+                };
+            });
+        },
+
+        whatsappTemplateVariables() {
+            const customer = this.customerInfo || {};
+            const ticket = this.ticket || {};
+
+            return {
+                name: customer.fullName || ticket.customerName || '',
+                item: ticket.item || '',
+                ticketId: ticket.ticketId || '',
+                total: ticket.total || '',
+                balance: this.yitra || '',
+            };
+        },
+    },
 
     mounted() {
         this.yitra = 0;
         this.getTableLists();
-	},
+        this.loadWhatsappTemplates();
+    },
 };
 </script>
 
