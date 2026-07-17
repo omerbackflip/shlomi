@@ -38,9 +38,15 @@
                                     <div class="d-flex align-center">
                                         <v-text-field class="customer-phone-field" type="text" :value="phone.value" disabled hide-details></v-text-field>
 
-                                        <WhatsappMessageMenu v-if="phone.isWhatsappValid" :phone="phone.value" :loading="whatsappTemplatesLoading"
-                                                                :templates="whatsappTemplates" :template-variables="whatsappTemplateVariables" icon/>
-
+                                        <WhatsappMessageMenu
+                                            v-if="phone.isWhatsappValid"
+                                            :phone="phone.value"
+                                            :templates="whatsappTemplates"
+                                            :template-variables="whatsappTemplateVariables"
+                                            :loading="whatsappTemplatesLoading"
+                                            allow-free-message
+                                            icon
+                                        />
                                     </div>
                                 </v-col>
                                 <v-col>
