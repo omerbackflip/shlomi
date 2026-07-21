@@ -8,7 +8,6 @@ const Phone = db.phones;
 // const dbService = require("../services/db-service");
 const dbService = require('../shared/mongoose/services/db-service');
 const specificService = require("../services/specific-service");
-const { ServerApp } = require("../config/constants");
 const XLSX = require('xlsx');
 const fs = require('fs');            // for existsSync / mkdirSync if used
 const fsp = require('fs').promises;  // use fsp.unlink(...) with await
@@ -295,12 +294,7 @@ exports.googleConnectionStatus = async (req, res) => {
 
     return res.send({
       connected: true,
-      username: null,
-      client_id: process.env.VUE_APP_GOOGLE_CLIENT_ID || process.env.GOOGLE_CLIENT_ID,
-      developerKey: process.env.VUE_APP_GOOGLE_API_KEY || null,
-      locale: process.env.VUE_APP_GOOGLE_PICKER_LOCALE || 'en',
-      access_token: tokens.access_token || null,
-      folderId: ServerApp.google.pickerRootFolder
+      username: null
     });
   } catch (error) {
     console.log(error);
