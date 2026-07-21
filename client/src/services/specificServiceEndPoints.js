@@ -74,6 +74,10 @@ class SpecificServiceEndPoints {
 		return await axios.get(`${baseUrl}/specific/get-database-info`);
 	}
 
+	async getGoogleConnectionStatus() {
+		return await axios.get(`${baseUrl}/specific/get-google-connection-status`);
+	}
+
 	async sendMessageToUser(body) {
 		return await axios.post(`${baseUrl}/specific/send-message`,body);
 	}
