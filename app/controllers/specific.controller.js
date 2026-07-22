@@ -20,7 +20,7 @@ const client = require('twilio')(accountSid, authToken);
 const path = require('path');
 const backupConfig = require('../backup/backup.config');
 const { getModel } = require('../backup/modelResolver');
-const googleSubmoduleService = require('../../google/backend/services/google-submodule-service');
+const googleSubmoduleService = require('../services/google-submodule-service');
 const backupService = require('../../backup/backend');
 
 // Configuration for bulk import operations
