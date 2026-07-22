@@ -19,10 +19,10 @@ const googleService = createGoogleService({
 
 async function uploadBackupExcelToDrive(filename) {
   const filePath = path.join(ServerApp.uploadFolderPath, filename);
-  const folderId = process.env.BACKUP_DRIVE_FOLDER_ID;
+  const folderId = process.env.GOOGLE_BACKUP_FOLDER_ID || process.env.BACKUP_DRIVE_FOLDER_ID;
 
   if (!folderId) {
-    throw new Error('BACKUP_DRIVE_FOLDER_ID is missing in .env');
+    throw new Error('GOOGLE_BACKUP_FOLDER_ID is missing in .env');
   }
 
   return googleService.uploadFileToDrive(filePath, folderId);
