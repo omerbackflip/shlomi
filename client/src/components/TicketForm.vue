@@ -227,7 +227,7 @@
 </template>
 
 <script>
-import { TICKET_MODEL, TABLE_MODEL, CUSTOMER_MODEL, NEW_TICKET, isMobile } from "../constants/constants";
+import { TICKET_MODEL, TABLE_IDS, TABLE_MODEL, CUSTOMER_MODEL, NEW_TICKET, isMobile } from "../constants/constants";
 import apiService from "../services/apiService";
 import specificServiceEndPoints from '../services/specificServiceEndPoints';
 import CustomerForm from './CustomerForm.vue';
@@ -333,7 +333,7 @@ export default {
                 const lastTicket = Array.isArray(data) ? data[0] : data;
                 const { ticketId } = lastTicket
                 this.ticket.ticketId = ticketId+1
-                let vatTable = await apiService.clientGetEntities(TABLE_MODEL, {filter:{table_id: 102}}) // get the current vat %
+                let vatTable = await apiService.clientGetEntities(TABLE_MODEL, {filter:{table_id: TABLE_IDS.VAT_RATE}}) // get the current vat %
                 this.ticket.vat = vatTable.data[0].table_code;
                 this.customerNameAddress = '' ;
                 this.yitra = 0;
@@ -393,7 +393,7 @@ export default {
                     apiService.clientGetEntities(
                         TABLE_MODEL,
                         {
-                            filter: { table_id: 27 },
+                            filter: { table_id: TABLE_IDS.WHATSAPP_MESSAGE_TEMPLATES },
                             sort: { table_code: 1 },
                         }
                     ),
@@ -401,7 +401,7 @@ export default {
                     apiService.clientGetEntities(
                         TABLE_MODEL,
                         {
-                            filter: { table_id: 28 },
+                            filter: { table_id: TABLE_IDS.WHATSAPP_TEMPLATE_LABELS },
                             sort: { table_code: 1 },
                         }
                     ),

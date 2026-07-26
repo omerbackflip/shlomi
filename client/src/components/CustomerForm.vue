@@ -71,7 +71,7 @@
 </template>
 
 <script>
-import { CUSTOMER_MODEL,TABLE_MODEL, TICKET_MODEL } from "../constants/constants";
+import { CUSTOMER_MODEL, TABLE_IDS, TABLE_MODEL, TICKET_MODEL } from "../constants/constants";
 import apiService from "../services/apiService";
 import ConfirmDialog from './Common/ConfirmDialog.vue';
 
@@ -161,7 +161,7 @@ export default {
 			}
 		},
         async getArrivedFromList() {
-            let response = await apiService.clientGetEntities(TABLE_MODEL , {filter:{table_id: 14}} );
+            let response = await apiService.clientGetEntities(TABLE_MODEL , {filter:{table_id: TABLE_IDS.ARRIVED_FROM}} );
             this.arrivedFromList = response.data.map((item) => {
                 return (item.description)
             });

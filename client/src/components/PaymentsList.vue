@@ -2,7 +2,7 @@
   <div class="list row">
 		<v-layout class="mt-1" row wrap>
 			<v-row no-gutters>
-        <!-- Main table_id = 9 -->
+        <!-- Business suppliers lookup -->
         <v-card class="p-0 m-0" max-width="15%">
           <v-data-table
             :headers="suppliersHeaders"
@@ -139,7 +139,7 @@
 
 
 <script>
-import { PAYMENT_MODEL, PAYMENT_HEADERS, INVOICE_HEADERS, INVOICE_MODEL, TABLE_MODEL } from "../constants/constants";
+import { PAYMENT_MODEL, PAYMENT_HEADERS, INVOICE_HEADERS, INVOICE_MODEL, TABLE_IDS, TABLE_MODEL } from "../constants/constants";
 import apiService from "../services/apiService";
 import excel from "vue-excel-export";
 import Vue from "vue";
@@ -252,7 +252,7 @@ export default {
     async retrieveSuppliers() {
 			this.loading = true
       await apiService
-        .clientGetEntities(TABLE_MODEL, {filter:{table_id: 9}, sort: { table_code: 1 }})
+        .clientGetEntities(TABLE_MODEL, {filter:{table_id: TABLE_IDS.BUSINESS_SUPPLIERS}, sort: { table_code: 1 }})
         .then((response) => {
           this.suppliers = response.data;
           // Auto-select first supplier on initial load

@@ -2,7 +2,7 @@
   <div class="list row">
 		<v-container class="bg-surface-variant">
 			<v-row no-gutters>
-        <!-- Main table_id = 99 -->
+        <!-- Lookup-table catalogue -->
         <v-card class="p-3 m-3" max-width="40%">
         <v-data-table
           :headers="headers"
@@ -171,7 +171,7 @@
 
 
 <script>
-import { TABLE_MODEL, TABLE_HEADERS } from "../constants/constants";
+import { TABLE_IDS, TABLE_MODEL, TABLE_HEADERS } from "../constants/constants";
 import apiService from "../services/apiService";
 import TableForm from './TableForm.vue';
 export default {
@@ -219,7 +219,7 @@ export default {
         .clientGetEntities(TABLE_MODEL)
         .then((response) => {
           this.tables = response.data;
-          this.tableID = response.data.filter((item) => item.table_id === 99);
+          this.tableID = response.data.filter((item) => item.table_id === TABLE_IDS.CATALOG);
           this.tableID.sort((a,b) => {
             return (a.table_code - b.table_code)
           })  
@@ -264,7 +264,7 @@ export default {
       }, 1);
     },
     async addToTable(type) {
-			if (type === 'new') {this.newTable_id = 99}
+			if (type === 'new') {this.newTable_id = TABLE_IDS.CATALOG}
 			await this.$refs.tableForm.open(this.newTable_id);
       this.newTable_id = '';
 			this.retrieveTables();    

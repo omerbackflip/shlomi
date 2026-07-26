@@ -1,6 +1,19 @@
 export const CUSTOMER_MODEL = 'customers';
 export const TICKET_MODEL = 'tickets';
 export const TABLE_MODEL = 'tables';
+export const TABLE_IDS = Object.freeze({
+    CATALOG: 99,
+    USERS: 90,
+    YEARS: 26,
+    LAST_BACKUP: 110,
+    ARRIVED_FROM: 14,
+    PHONE_TYPES: 7,
+    BUSINESS_SUPPLIERS: 9,
+    VAT_RATE: 102,
+    WHATSAPP_MESSAGE_TEMPLATES: 27,
+    WHATSAPP_TEMPLATE_LABELS: 28,
+    ITEM_LIST: 3,
+});
 export const PHONE_MODEL = 'phones';
 export const PAYMENT_MODEL = 'payments';
 export const INVOICE_MODEL = 'invoices';

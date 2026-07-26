@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { PHONE_MODEL, TABLE_MODEL } from "../constants/constants";
+import { PHONE_MODEL, TABLE_IDS, TABLE_MODEL } from "../constants/constants";
 import apiService from "../services/apiService";
 
 export default {
@@ -101,7 +101,7 @@ export default {
             });
         },
         async getPhoneTypeList() {
-            let response = await apiService.clientGetEntities(TABLE_MODEL , {filter:{ table_id: 7} });
+            let response = await apiService.clientGetEntities(TABLE_MODEL , {filter:{ table_id: TABLE_IDS.PHONE_TYPES} });
             this.phoneTypeList = response.data.map((item) => {
                 return (item.description)
             });
