@@ -149,6 +149,11 @@ export default {
 
         async runRestore(file) {
             try {
+                if (!file || !file.name || !file.name.toLowerCase().startsWith('shlomi')) {
+                    alert("Restore file must start with 'shlomi'.");
+                    return;
+                }
+
                 if (!confirm('This will overwrite ALL data. Continue?')) return;
 
                 this.loading = true;
