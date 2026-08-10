@@ -43,8 +43,7 @@
 <script>
 
 import SpecificServiceEndPoints from "../../services/specificServiceEndPoints";
-import apiService from "../../services/apiService";
-import { isMobile, ROUTE_LIST, loadTable, TABLE_IDS, TABLE_MODEL } from '../../constants/constants';
+import { isMobile, ROUTE_LIST, loadTable, TABLE_IDS } from '../../constants/constants';
 import { initializeGoogleOnAppLoad } from "../../../../google/frontend";
 
 export default {
@@ -114,11 +113,6 @@ export default {
 
                     this.lastUpdate = "last backup : " + dateStr;
 
-                    await apiService.updateEntity(
-                        { table_id: TABLE_IDS.LAST_BACKUP, table_code: 1 },
-                        { description: this.lastUpdate },
-                        { model: TABLE_MODEL }
-                    );
                 }
             } catch (error) {
                 console.error(error);
