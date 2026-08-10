@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "test:price-list-parts": "node test/priceListParts.test.js",
     "start": "nodemon server.js",
     "dev": "nodemon server.js",
     "prod": "concurrently \"npm run dev \" \"cd ./client && npm run serve"

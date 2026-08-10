@@ -17,6 +17,7 @@ export const TABLE_IDS = Object.freeze({
 export const PHONE_MODEL = 'phones';
 export const PAYMENT_MODEL = 'payments';
 export const INVOICE_MODEL = 'invoices';
+export const PRICE_LIST_PARTS_MODEL = 'priceListParts';
 import apiService from "../services/apiService";
 
 export const printTicketTopPadding = '115px';
@@ -33,6 +34,7 @@ export const ROUTE_LIST = [
     {icon: 'mdi-cash-multiple', text: 'יבוא נתונים', route: '/import'},
     {icon: 'mdi-cash-multiple', text: 'ספר טלפונים', route: '/phones'},
     {icon: 'mdi-cash-multiple', text: 'תשלומים לספקים', route: '/payments'},
+    {icon: 'mdi-tools', text: 'מחירון חלפים', route: '/price-list-parts'},
 ]
 
 export const TICKET_HEADERS = [

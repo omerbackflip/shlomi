@@ -12,5 +12,6 @@ db.customers = require("./customer.model.js")(mongoose);
 db.phones = require("./phone.model.js")(mongoose);
 db.invoices = require("./invoice.model.js")(mongoose);
 db.payments = require("./payment.model.js")(mongoose);
+db.priceListParts = require("./priceListParts.model.js")(mongoose);
 
-module.exports = db; 
+module.exports = db;

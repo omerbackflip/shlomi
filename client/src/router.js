@@ -41,5 +41,10 @@ export default new Router({
       name: "payment-list",
       component: () => import("./components/PaymentsList")
     },
+    {
+      path: "/price-list-parts",
+      name: "price-list-parts",
+      component: () => import("./components/PriceListParts")
+    },
   ]
 });

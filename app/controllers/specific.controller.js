@@ -5,6 +5,7 @@ const Invoice = db.invoices;
 const Payment = db.payments;
 const Table = db.tables;
 const Phone = db.phones;
+const PriceListPart = db.priceListParts;
 // const dbService = require("../services/db-service");
 const dbService = require('../shared/mongoose/services/db-service');
 const specificService = require("../services/specific-service");
@@ -54,6 +55,12 @@ const BULK_IMPORT_CONFIG = {
 		model: Phone,
 		serviceMethod: 'getPhonestoImport',
 		options: {}
+	},
+	priceListParts: {
+		model: PriceListPart,
+		serviceMethod: 'getPriceListPartsToImport',
+		options: {},
+		mode: 'upsert'
 	}
 };
 
@@ -66,23 +73,56 @@ exports.saveBulkData = async (req, res) => {
 			return res.status(400).send({ success: false, message: 'Invalid data type' });
 		}
 
-		await config.model.deleteMany();
-		const workbook = XLSX.readFile(`uploads/${req.file.filename}`, config.options);
+		if (!req.file || !req.file.path) {
+			return res.status(400).send({ success: false, message: 'Import file is required' });
+		}
+
+		const workbook = XLSX.readFile(req.file.path, config.options);
 		const sheetNameList = workbook.SheetNames;
 		const data = transformCSVData(sheetNameList, workbook);
 
 		const items = specificService[config.serviceMethod](data[0]);
-		await dbService.insertMany(config.model, items);
+		let importResult;
 
-		unLinkFile(`uploads/${req.file.filename}`);
+		if (config.mode === 'upsert') {
+			const operations = items.map(item => ({
+				updateOne: {
+					filter: { itemCode: item.itemCode, partId: item.partId },
+					update: { $set: item },
+					upsert: true
+				}
+			}));
+			importResult = operations.length
+				? await config.model.bulkWrite(operations, { ordered: false })
+				: { upsertedCount: 0, modifiedCount: 0, matchedCount: 0 };
+		} else {
+			await config.model.deleteMany();
+			await dbService.insertMany(config.model, items);
+		}
+
+		unLinkFile(req.file.path);
+		const resultSummary = importResult
+			? ` (${importResult.upsertedCount || 0} inserted, ${importResult.modifiedCount || 0} updated, ${importResult.matchedCount || 0} matched)`
+			: '';
 		return res.send({
 			success: true,
-			message: `Total ${items.length} ${dataType} successfully Imported`
+			message: `Total ${items.length} ${dataType} successfully imported${resultSummary}`,
+			processed: items.length,
+			inserted: importResult ? importResult.upsertedCount || 0 : items.length,
+			updated: importResult ? importResult.modifiedCount || 0 : 0,
+			matched: importResult ? importResult.matchedCount || 0 : 0
 		});
 
 	} catch (error) {
 		console.log(error);
-		res.status(500).send({ message: 'Error saving data', error });
+		if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+			unLinkFile(req.file.path);
+		}
+		res.status(error.statusCode || 500).send({
+			success: false,
+			message: error.message || 'Error saving data',
+			validationErrors: error.validationErrors
+		});
 	}
 };
 
@@ -114,6 +154,11 @@ exports.saveTablesNewBulk = async (req, res) => {
 
 exports.savePhonesBulk = async (req, res) => {
 	req.body = { dataType: 'phones' };
+	return exports.saveBulkData(req, res);
+};
+
+exports.savePriceListPartsBulk = async (req, res) => {
+	req.body = { dataType: 'priceListParts' };
 	return exports.saveBulkData(req, res);
 };
 

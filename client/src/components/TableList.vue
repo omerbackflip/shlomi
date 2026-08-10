@@ -7,6 +7,7 @@
         <v-data-table
           :headers="headers"
           :items="tableID"
+          :sort-by="['table_code']"
           disable-pagination
           hide-default-footer
           fixed-header
@@ -90,6 +91,7 @@
         <v-data-table
           :headers="headers"
           :items="tableCode"
+          :sort-by="['table_code']"
           disable-pagination
           dense
           hide-default-footer

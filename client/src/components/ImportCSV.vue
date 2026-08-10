@@ -8,7 +8,7 @@
 						<v-card-title class="text-h5 primary">
 							{{ item.title }}
 						</v-card-title>
-						<v-card-text> Year data will be overwritten </v-card-text>
+						<v-card-text>{{ item.note || 'Year data will be overwritten' }}</v-card-text>
 						<v-file-input truncate-length="50" @change="setFile"></v-file-input>
 						<v-divider></v-divider>
 						<v-card-actions>
@@ -57,6 +57,10 @@ export default {
 			},{
 				type: 'phoneNew',
 				title: 'Import Phones New',
+			},{
+				type: 'priceListParts',
+				title: 'Import Price List Parts',
+				note: 'Existing parts will be updated; new parts will be added.',
 			}],
 			loading: false,
 		};
@@ -91,6 +95,9 @@ export default {
 					case "phoneNew" :
 						response = await SpecificServiceEndPoints.savePhonesImport(this.file)
 						break
+					case "priceListParts" :
+						response = await SpecificServiceEndPoints.savePriceListPartsImport(this.file)
+						break
 				}
 
 				if (response.data && response.data.success) {
@@ -103,7 +110,10 @@ export default {
 				}
 			} catch (error) {
 				console.log(error);
-				this.message = "Something went wrong! Please try again later!";
+				this.message = error.response && error.response.data && error.response.data.message
+					? error.response.data.message
+					: "Something went wrong! Please try again later!";
+				alert(this.message);
 			}
 			this.loading = false;
 		},

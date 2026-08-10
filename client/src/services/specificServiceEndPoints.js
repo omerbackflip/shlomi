@@ -62,6 +62,16 @@ class SpecificServiceEndPoints {
 		});
 	}
 
+	async savePriceListPartsImport(file) {
+		var formData = new FormData();
+		formData.append("file", file);
+		return await axios.post(`${baseUrl}/specific/save-price-list-parts`, formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			}
+		});
+	}
+
 	async searchCustomers(params) {
 		return await axios.get(`${baseUrl}/specific/search-customers`,{params});
 	}
