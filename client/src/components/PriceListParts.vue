@@ -79,6 +79,9 @@
               <template v-slot:[`item.customerPrice`]="{ item }">
                 {{ formatPrice(item.customerPrice) }}
               </template>
+              <template v-slot:[`item.customerPriceWithVat`]="{ item }">
+                {{ formatPriceWithVat(item.customerPrice) }}
+              </template>
               <template v-slot:[`item.companyPrice`]="{ item }">
                 {{ formatPrice(item.companyPrice) }}
               </template>
@@ -179,7 +182,7 @@
 
 <script>
 import apiService from '../services/apiService';
-import { PRICE_LIST_PARTS_MODEL, TABLE_MODEL } from '../constants/constants';
+import { PRICE_LIST_PARTS_MODEL, TABLE_IDS, TABLE_MODEL } from '../constants/constants';
 
 const emptyPart = () => ({
   itemCode: null,
@@ -197,6 +200,7 @@ export default {
       deviceGroups: [],
       selectedGroup: null,
       parts: [],
+      vatRate: null,
       search: '',
       groupsLoading: false,
       partsLoading: false,
@@ -217,6 +221,7 @@ export default {
         { text: 'מספר חלק', value: 'partId', class: 'primary white--text' },
         { text: 'תיאור', value: 'description', class: 'primary white--text' },
         { text: 'מחיר ללקוח', value: 'customerPrice', class: 'primary white--text' },
+        { text: 'כולל מע"מ', value: 'customerPriceWithVat', sortable: false, class: 'primary white--text' },
         { text: 'מחיר חברה', value: 'companyPrice', class: 'primary white--text' },
         { text: 'הערה', value: 'remark', class: 'primary white--text' },
         { text: 'פעולות', value: 'actions', sortable: false, class: 'primary white--text' },
@@ -229,6 +234,20 @@ export default {
     };
   },
   methods: {
+    async loadVatRate() {
+      try {
+        const response = await apiService.clientGetEntities(TABLE_MODEL, {
+          filter: { table_id: TABLE_IDS.VAT_RATE },
+        });
+        const vatRecord = response.data && response.data[0];
+        const vatRate = vatRecord && Number(vatRecord.table_code);
+        if (!Number.isFinite(vatRate)) throw new Error('VAT rate was not found');
+        this.vatRate = vatRate;
+      } catch (error) {
+        this.vatRate = null;
+        this.showMessage(this.getErrorMessage(error, 'טעינת המע"מ נכשלה'));
+      }
+    },
     async loadDeviceGroups() {
       this.groupsLoading = true;
       try {
@@ -339,7 +358,15 @@ export default {
     },
     formatPrice(value) {
       if (value === null || value === undefined || value === '') return '';
-      return new Intl.NumberFormat('he-IL', { maximumFractionDigits: 2 }).format(value);
+      const price = Number(value);
+      if (!Number.isFinite(price) || price === 0) return '';
+      return new Intl.NumberFormat('he-IL', { maximumFractionDigits: 2 }).format(price);
+    },
+    formatPriceWithVat(customerPrice) {
+      const price = Number(customerPrice);
+      if (!Number.isFinite(price) || price === 0 || !Number.isFinite(this.vatRate)) return '';
+      return new Intl.NumberFormat('he-IL', { maximumFractionDigits: 0 })
+        .format(price * (1 + this.vatRate / 100));
     },
     getErrorMessage(error, fallback) {
       if (error && error.response && error.response.data && error.response.data.message) {
@@ -354,6 +381,7 @@ export default {
     },
   },
   mounted() {
+    this.loadVatRate();
     this.loadDeviceGroups();
   },
 };
