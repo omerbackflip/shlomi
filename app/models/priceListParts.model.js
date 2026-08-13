@@ -5,6 +5,7 @@ module.exports = mongoose => {
       partId: { type: Number, required: true },
       description: { type: String, required: true, trim: true },
       customerPrice: { type: Number, required: true, min: 0 },
+      labPrice: { type: Number, required: true, min: 0 },
       companyPrice: { type: Number, required: true, min: 0 },
       remark: { type: String, default: "", trim: true },
     },

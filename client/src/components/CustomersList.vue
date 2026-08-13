@@ -3,25 +3,24 @@
 		<v-layout class="mt-1" row wrap>
 			<v-data-table
 				:headers="headers"
-				:items="customers"
+				:items="filteredCustomers"
 				disable-pagination
 				hide-default-footer
 				fixed-header
 				height="75vh"
 				item-key="customerId"
 				mobile-breakpoint="0"
-				:search="search"
 				:loading = "loading"
 				loader-height = "30"
 				@click:row="customerTicketsList"
 				dense
 				class="elevation-3 hebrew"
-				:class="getSize()"
+				:class="isMobile() ? 'width100' : 'width49'"
 			>
 				<template v-slot:top>
 					<v-toolbar flat>
-						<v-text-field v-model="fullName" class="mx-4" type="text" label="שם לקוח"  hide-details></v-text-field>
-						<v-text-field v-model="phone" class="mx-4" type="number" label="טלפון" hide-details></v-text-field>
+						<v-text-field v-model="fullName" class="mx-4" type="text" label="שם לקוח"  hide-details clearable></v-text-field>
+						<v-text-field v-model="phone" class="mx-4" label="טלפון" hide-details clearable></v-text-field>
 						<v-spacer></v-spacer>
 						<export-excel :data="$formatDataForExport(customers)" type="xlsx" name="customers">
 							<v-btn small class="btn btn-danger mt-1 ml-3" :loading="loading">
@@ -48,34 +47,6 @@
 					</td>
 				</template>
 			</v-data-table>
-			<!-- <vue-virtual-table
-				:config="headersVD"
-				:data="customers"
-				:height="800"			
-				:itemHeight="55"
-				:minWidth="1000"
-				:enableExport="true"
-				class="mt-2"
-				language = 'en'
-			>
-
-				<template slot-scope="item" slot="issueDate">
-					<span>{{ item.row.issueDate ? new Date(item.row.issueDate).toDateString() : ''}}</span>
-				</template>
-				<template slot-scope="scope" slot="name">
-					<div>{{ scope.row.name + ' ' + scope.row.family}}</div>
-				</template>
-
-				<template slot-scope="scope" slot="actionCommon">
-					<v-btn @click="customerForm(scope.row)" x-small>
-						<v-icon small>mdi-pencil</v-icon>
-					</v-btn>
-					<v-btn  @click="deleteCustomer(scope.row._id)" x-small>
-						<v-icon small>mdi-delete</v-icon>
-					</v-btn>
-				</template>
-			</vue-virtual-table> -->
-			<!-- <v-btn @click="updateHasTickets" :loading="loading">Run HasTicket Script</v-btn> -->
 			<v-data-table v-if="!isMobile()"
 				:headers="ticketHeaders"
 				:items="tickets"
@@ -105,7 +76,6 @@
 			</v-data-table>
 		</v-layout>
 		<customer-form ref="customerForm"/>
-		<confirm-dialog ref="confirm"/>
 		<ticket-form ref="ticketForm"/>
 	</div>
 </template>
@@ -117,29 +87,18 @@ import { CUSTOMER_MODEL, isMobile, TICKET_MODEL, TICKET_SHORT_HEADERS} from "../
 import apiService from "../services/apiService";
 import CustomerForm from './CustomerForm.vue';
 import TicketForm from './TicketForm.vue';
-import ConfirmDialog from './Common/ConfirmDialog.vue';
-import specificServiceEndPoints from '../services/specificServiceEndPoints';
-// import VueVirtualTable from 'vue-virtual-table'
 
 export default {
 	name: "customers-list",
-	// components: { CustomerForm, ConfirmDialog,VueVirtualTable },
-	components: { CustomerForm, ConfirmDialog, TicketForm },
+	components: { CustomerForm, TicketForm },
 	data() {
 		return {
 			isMobile,
 			customers: [],
 			tickets: [],
-			showMessage: false,
-			message: '',
-			// headers: CUSTOMER_HEADERS,
-			// headersVD: CUSTOMER_HEADERS,
-			search: '',
 			loading: false,
-			// hasTicket: 2, // 0=hasTicket   1=noTicket   2=all
 			ticketHeaders: TICKET_SHORT_HEADERS,
 			customerName: '',
-			customerRemark: '',
 			fullName: '',
 			phone: '',
 		}
@@ -149,20 +108,23 @@ export default {
 		headers() { 
 			if (isMobile()) {
 				return [
-				{ text: 'שם לקוח', value: 'fullName', align:'end', class: 'primary white--text', width: '50%', 
-					filter: f => { return ( f + '' ).includes( this.fullName ) }},
-				{ text: 'טלפונים', value: 'allPhones' , align:'start', class: 'primary white--text', width: '50%',
-					filter: f => { return ( f + '' ).includes( this.phone ) }},
+				{ text: 'שם לקוח', value: 'fullName', align:'end', class: 'primary white--text', width: '50%' },
+				{ text: 'טלפונים', value: 'allPhones' , align:'start', class: 'primary white--text', width: '50%'},
 				];
 			} else {
 				return [
-				{ text: 'שם לקוח', value: 'fullName', align:'end', class: 'primary white--text', width: '20%', 
-					filter: f => { return ( f + '' ).includes( this.fullName ) }},
+				{ text: 'שם לקוח', value: 'fullName', align:'end', class: 'primary white--text', width: '20%' },
 				{ text: 'כתובת', value: 'address' ,align:'end', class: 'primary white--text', width: '20%'},
-				{ text: 'טלפונים', value: 'allPhones' , align:'end', class: 'primary white--text', width: '60%',
-					filter: f => { return ( f + '' ).includes( this.phone ) }},
+				{ text: 'טלפונים', value: 'allPhones' , align:'end', class: 'primary white--text', width: '60%'},
 				];				
 			}
+		},
+		filteredCustomers() {
+			return this.customers.filter(customer => {
+				const matchesName = this.fullName ? (customer.fullName + '').includes(this.fullName) : true;
+				const matchesPhone = this.phone ? (customer.allPhones + '').includes(this.phone) : true;
+				return matchesName && matchesPhone;
+			});
 		}
 	},	
 
@@ -170,21 +132,16 @@ export default {
 		async getCustomers() {
 			this.loading = true
 			try {
-				// const response = await specificServiceEndPoints.getCustomersWithStatus();
 				const response = await apiService.clientGetEntities(CUSTOMER_MODEL);
-				if(response.data) {
-					this.customers = response.data;
-					this.customers = this.customers.map((item) => {
-						let allPhones = (item.phone1 ? item.phone1.replace("-","") : '') + 
-										(item.phone2 ? ' / ' + item.phone2.replace("-","") : '') +
-										(item.phone3 ? ' / ' + item.phone3.replace("-","") : '')
-						return ({...item, allPhones: allPhones}) 
-					})
-				}
+				this.customers = (response.data || []).map((item) => ({
+					...item,
+					allPhones: [item.phone1, item.phone2, item.phone3].filter(Boolean).join(' / '),
+				}));
 			} catch (error) {
 				console.log(error);
+			} finally {
+				this.loading = false
 			}
-			this.loading = false
 		},
 
 		async customerForm(item) {
@@ -199,54 +156,21 @@ export default {
 			this.tickets = tickets.data
 			if (item.hasTicket) {
 				this.customerName = item.fullName
-				this.customerRemark = item.remark
 			} else {
 				this.customerName = '';
-				this.customerRemark = '';
 			}
 			if (this.tickets.length === 1) this.updateTicket(this.tickets[0])
 			this.loading = false;
 		},
 
-		async deleteCustomer(id) {
-			try {
-				if(id) {
-					if(await this.$refs.confirm.open( "Confirm", "בטוח שאתה רוצה למחוק את הלקוח הזה")){
-						let params = {model:CUSTOMER_MODEL, id:id}
-						await apiService.deleteOne(params)
-						this.getCustomers();
-					}
-				}
-			} catch (error) {
-				console.log(error);		
-			}
-		},
-
-		async updateHasTickets() {
-			await specificServiceEndPoints.hasTicketsBulk()
-		},
-
 		async updateTicket(item) {
 			await this.$refs.ticketForm.open(item, false);
-		},
-
-		getSize() {
-			let calsses 
-			calsses = isMobile() ? 'width100': 'width49' 
-			return (calsses)
-		},
-
-		custClass(item) {
-			return item.ticketExist;			
 		}
 	},
 
 	mounted() {
 		this.getCustomers();
-	},
-
-	watch: {
-	},
+	}
 };
 </script>
 
@@ -256,15 +180,6 @@ export default {
 	cursor: pointer;
 	direction: rtl;
 	padding: 0%;
-}
-.field-margin{
-	margin: 12px;
-}
-
-.search-wrapper{
-    margin: 0;
-    padding: 0;
-    height: 40px;
 }
 .v-toolbar__title {
         white-space: pre-wrap !important;
@@ -292,10 +207,6 @@ export default {
         display: none;
     }
 }
-/* td {     this td was remarked becasue it's influance the size of the printExit.vue font-size
-	font-size: larger;
-} */
-
 .width49 {
 	max-width: 49%;
 	padding: 0%;

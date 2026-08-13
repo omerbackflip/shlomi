@@ -2,7 +2,7 @@
   <div class="price-list-page" dir="rtl">
     <v-container fluid>
       <v-row>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2">
           <v-card class="elevation-3">
             <v-data-table
               :headers="groupHeaders"
@@ -33,7 +33,7 @@
           </v-card>
         </v-col>
 
-        <v-col cols="12" md="9">
+        <v-col cols="12" md="10">
           <v-card class="elevation-3">
             <v-data-table
               :headers="partHeaders"
@@ -78,6 +78,9 @@
 
               <template v-slot:[`item.customerPrice`]="{ item }">
                 {{ formatPrice(item.customerPrice) }}
+              </template>
+              <template v-slot:[`item.labPrice`]="{ item }">
+                {{ formatPrice(item.labPrice) }}
               </template>
               <template v-slot:[`item.customerPriceWithVat`]="{ item }">
                 {{ formatPriceWithVat(item.customerPrice) }}
@@ -131,7 +134,7 @@
                   :rules="[rules.required]"
                 />
               </v-col>
-              <v-col cols="12" sm="6">
+              <v-col cols="12" sm="4">
                 <v-text-field
                   v-model="partForm.customerPrice"
                   label="מחיר ללקוח"
@@ -140,7 +143,16 @@
                   :rules="[rules.required, rules.nonNegative]"
                 />
               </v-col>
-              <v-col cols="12" sm="6">
+              <v-col cols="12" sm="4">
+                <v-text-field
+                  v-model="partForm.labPrice"
+                  label="מחיר מעבדה"
+                  type="number"
+                  step="0.01"
+                  :rules="[rules.required, rules.nonNegative]"
+                />
+              </v-col>
+              <v-col cols="12" sm="4">
                 <v-text-field
                   v-model="partForm.companyPrice"
                   label="מחיר חברה"
@@ -189,6 +201,7 @@ const emptyPart = () => ({
   partId: '',
   description: '',
   customerPrice: '',
+  labPrice: '',
   companyPrice: '',
   remark: '',
 });
@@ -218,13 +231,13 @@ export default {
         { text: 'קבוצת מכשירים', value: 'description', class: 'primary white--text' },
       ],
       partHeaders: [
-        { text: 'מספר חלק', value: 'partId', class: 'primary white--text' },
-        { text: 'תיאור', value: 'description', class: 'primary white--text' },
-        { text: 'מחיר ללקוח', value: 'customerPrice', class: 'primary white--text' },
-        { text: 'כולל מע"מ', value: 'customerPriceWithVat', sortable: false, class: 'primary white--text' },
-        { text: 'מחיר חברה', value: 'companyPrice', class: 'primary white--text' },
-        { text: 'הערה', value: 'remark', class: 'primary white--text' },
-        { text: 'פעולות', value: 'actions', sortable: false, class: 'primary white--text' },
+        { text: 'מספר חלק', value: 'partId', width: '3%', class: 'primary white--text' },
+        { text: 'תיאור', value: 'description', width: '28%', class: 'primary white--text' },
+        { text: 'מחיר ללקוח', value: 'customerPriceWithVat', width: '5%', class: 'primary white--text' },
+        { text: 'מעבדה', value: 'labPrice', width: '5%', sortable: false, class: 'primary white--text' },
+        { text: 'חברה', value: 'companyPrice', width: '5%', class: 'primary white--text' },
+        { text: 'הערה', value: 'remark', width: '48%', class: 'primary white--text' },
+        { text: 'פעולות', value: 'actions', width: '6%', sortable: false, class: 'primary white--text' },
       ],
       rules: {
         required: value => (value !== null && value !== undefined && value !== '') || 'שדה חובה',
@@ -302,6 +315,7 @@ export default {
         partId: part.partId,
         description: part.description,
         customerPrice: part.customerPrice,
+        labPrice: part.labPrice,
         companyPrice: part.companyPrice,
         remark: part.remark || '',
       };
@@ -327,6 +341,7 @@ export default {
         partId: Number(this.partForm.partId),
         description: this.partForm.description.trim(),
         customerPrice: Number(this.partForm.customerPrice),
+        labPrice: Number(this.partForm.labPrice),
         companyPrice: Number(this.partForm.companyPrice),
         remark: (this.partForm.remark || '').trim(),
       };

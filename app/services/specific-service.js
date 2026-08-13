@@ -41,9 +41,10 @@ const FIELD_MAPPING = {
 		filter: null
 	},
 	priceListParts: {
-		fields: ['itemCode', 'partId', 'description', 'customerPrice', 'companyPrice', 'remark'],
+		fields: ['itemCode', 'partId', 'description', 'customerPrice', 'labPrice', 'companyPrice', 'remark'],
 		sourceFieldMap: {
 			itemCode: 'ItemCode',
+			labPrice: 'LabPrice',
 			remark: 'Remark'
 		},
 		arrayFields: [],
@@ -137,6 +138,7 @@ exports.getPriceListPartsToImport = (data) => {
 		const itemCode = toRequiredNumber(item.itemCode);
 		const partId = toRequiredNumber(item.partId);
 		const customerPrice = toRequiredNumber(item.customerPrice);
+		const labPrice = toRequiredNumber(item.labPrice);
 		const companyPrice = toRequiredNumber(item.companyPrice);
 		const description = typeof item.description === 'string' ? item.description.trim() : '';
 
@@ -145,6 +147,9 @@ exports.getPriceListPartsToImport = (data) => {
 		if (!description) errors.push(`Row ${rowNumber}: description is required`);
 		if (!Number.isFinite(customerPrice) || customerPrice < 0) {
 			errors.push(`Row ${rowNumber}: customerPrice must be a non-negative number`);
+		}
+		if (!Number.isFinite(labPrice) || labPrice < 0) {
+			errors.push(`Row ${rowNumber}: labPrice must be a non-negative number`);
 		}
 		if (!Number.isFinite(companyPrice) || companyPrice < 0) {
 			errors.push(`Row ${rowNumber}: companyPrice must be a non-negative number`);
@@ -163,6 +168,7 @@ exports.getPriceListPartsToImport = (data) => {
 			partId,
 			description,
 			customerPrice,
+			labPrice,
 			companyPrice,
 			remark: item.remark == null ? '' : String(item.remark).trim()
 		};

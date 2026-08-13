@@ -12,6 +12,7 @@ const validPart = new PriceListPart({
   partId: 1,
   description: 'Test part',
   customerPrice: 68,
+  labPrice: 60,
   companyPrice: 50,
   remark: ''
 });
@@ -22,6 +23,7 @@ const invalidPart = new PriceListPart({
   partId: 2,
   description: '',
   customerPrice: -1,
+  labPrice: 10,
   companyPrice: 10
 });
 const validationError = invalidPart.validateSync();
@@ -33,6 +35,7 @@ const imported = specificService.getPriceListPartsToImport([{
   partId: 3,
   description: ' Imported part ',
   customerPrice: 77,
+  LabPrice: 70,
   companyPrice: 79,
   Remark: 123
 }]);
@@ -41,6 +44,7 @@ assert.deepStrictEqual(imported, [{
   partId: 3,
   description: 'Imported part',
   customerPrice: 77,
+  labPrice: 70,
   companyPrice: 79,
   remark: '123'
 }]);
