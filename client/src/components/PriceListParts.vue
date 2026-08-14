@@ -76,17 +76,33 @@
                 </v-toolbar>
               </template>
 
-              <template v-slot:[`item.customerPrice`]="{ item }">
-                {{ formatPrice(item.customerPrice) }}
+              <template v-slot:[`header.customerPriceWithVat`]="{ header }">
+                <div class="price-column-header">
+                  <span>{{ header.text }}</span>
+                  <small>כולל מעמ</small>
+                </div>
               </template>
+              <template v-slot:[`header.labPrice`]="{ header }">
+                <div class="price-column-header">
+                  <span>{{ header.text }}</span>
+                  <small>כולל מעמ</small>
+                </div>
+              </template>
+              <template v-slot:[`header.companyPrice`]="{ header }">
+                <div class="price-column-header">
+                  <span>{{ header.text }}</span>
+                  <small>כולל מעמ</small>
+                </div>
+              </template>
+
               <template v-slot:[`item.labPrice`]="{ item }">
-                {{ formatPrice(item.labPrice) }}
+                {{ formatPriceWithVat(item.labPrice) }}
               </template>
               <template v-slot:[`item.customerPriceWithVat`]="{ item }">
                 {{ formatPriceWithVat(item.customerPrice) }}
               </template>
               <template v-slot:[`item.companyPrice`]="{ item }">
-                {{ formatPrice(item.companyPrice) }}
+                {{ formatPriceWithVat(item.companyPrice) }}
               </template>
               <template v-slot:[`item.actions`]="{ item }">
                 <v-icon small class="ml-2" @click.stop="openEditDialog(item)">mdi-pencil</v-icon>
@@ -103,62 +119,91 @@
 
     <v-dialog v-model="dialogOpen" max-width="650px" persistent>
       <v-card dir="rtl">
-        <v-card-title>{{ editingPartId ? 'עריכת חלק' : 'הוספת חלק' }}</v-card-title>
-        <v-card-subtitle v-if="selectedGroup" class="text-right pt-2">
-          קבוצת מכשירים: {{ selectedGroup.description }}
-        </v-card-subtitle>
-
+        <v-card-title>קבוצת מכשירים:  {{partForm.itemCode}} - {{ selectedGroup.description }} </v-card-title>
         <v-card-text>
           <v-alert v-if="formError" type="error" dense text>{{ formError }}</v-alert>
-          <v-form ref="partForm" v-model="formValid">
+          <v-form>
             <v-row>
-              <v-col cols="12" sm="4">
+              <v-col cols="3">
                 <v-text-field
                   :value="partForm.itemCode"
                   label="קוד קבוצה"
                   disabled
                 />
               </v-col>
-              <v-col cols="12" sm="8">
+              <v-col cols="6"></v-col>
+              <v-col cols="3">
                 <v-text-field
                   v-model="partForm.partId"
+                  @focus="$event.target.select()"
+                  @mouseup.prevent
                   label="מספר חלק"
-                  type="number"
-                  :rules="[rules.required, rules.integer]"
                 />
               </v-col>
               <v-col cols="12">
                 <v-text-field
                   v-model="partForm.description"
+                  @focus="$event.target.select()"
+                  @mouseup.prevent
                   label="תיאור"
-                  :rules="[rules.required]"
                 />
               </v-col>
-              <v-col cols="12" sm="4">
+              <v-col cols="12" sm="3">
                 <v-text-field
                   v-model="partForm.customerPrice"
-                  label="מחיר ללקוח"
-                  type="number"
-                  step="0.01"
-                  :rules="[rules.required, rules.nonNegative]"
+                  @input="updatePriceIncludingVat('customerPrice', 'customerPriceWithVat')"
+                  @focus="$event.target.select()"
+                  @mouseup.prevent
+                  label="מחיר ללקוח לפני מעמ"
                 />
               </v-col>
-              <v-col cols="12" sm="4">
+              <v-col cols="1"></v-col>
+              <v-col cols="12" sm="3">
                 <v-text-field
                   v-model="partForm.labPrice"
-                  label="מחיר מעבדה"
-                  type="number"
-                  step="0.01"
-                  :rules="[rules.required, rules.nonNegative]"
+                  @input="updatePriceIncludingVat('labPrice', 'labPriceWithVat')"
+                  @focus="$event.target.select()"
+                  @mouseup.prevent
+                  label="מחיר מעבדה לפני מעמ"
                 />
               </v-col>
-              <v-col cols="12" sm="4">
+              <v-col cols="1"></v-col>
+              <v-col cols="12" sm="3">
                 <v-text-field
                   v-model="partForm.companyPrice"
-                  label="מחיר חברה"
-                  type="number"
-                  step="0.01"
-                  :rules="[rules.required, rules.nonNegative]"
+                  @input="updatePriceIncludingVat('companyPrice', 'companyPriceWithVat')"
+                  @focus="$event.target.select()"
+                  @mouseup.prevent
+                  label="מחיר חברה לפני מעמ"
+                />
+              </v-col>
+              <v-col cols="12" sm="3" class="pt-0">
+                <v-text-field
+                  v-model="partForm.customerPriceWithVat"
+                  label="מחיר ללקוח כולל מעמ"
+                  @input="updatePriceBeforeVat('customerPriceWithVat', 'customerPrice')"
+                  @focus="$event.target.select()"
+                  @mouseup.prevent
+                />
+              </v-col>
+              <v-col cols="1"></v-col>
+              <v-col cols="12" sm="3" class="pt-0">
+                <v-text-field
+                  v-model="partForm.labPriceWithVat"
+                  label="מחיר מעבדה כולל מעמ"
+                  @input="updatePriceBeforeVat('labPriceWithVat', 'labPrice')"
+                  @focus="$event.target.select()"
+                  @mouseup.prevent
+                />
+              </v-col>
+              <v-col cols="1"></v-col>
+              <v-col cols="12" sm="3" class="pt-0">
+                <v-text-field
+                  v-model="partForm.companyPriceWithVat"
+                  label="מחיר חברה כולל מעמ"
+                  @input="updatePriceBeforeVat('companyPriceWithVat', 'companyPrice')"
+                  @focus="$event.target.select()"
+                  @mouseup.prevent
                 />
               </v-col>
               <v-col cols="12">
@@ -176,7 +221,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn text :disabled="saving" @click="closeDialog">ביטול</v-btn>
-          <v-btn color="primary" :loading="saving" :disabled="!formValid" @click="savePart">
+          <v-btn color="primary" :loading="saving" @click="savePart">
             שמור
           </v-btn>
         </v-card-actions>
@@ -201,8 +246,11 @@ const emptyPart = () => ({
   partId: '',
   description: '',
   customerPrice: '',
+  customerPriceWithVat: '',
   labPrice: '',
+  labPriceWithVat: '',
   companyPrice: '',
+  companyPriceWithVat: '',
   remark: '',
 });
 
@@ -221,7 +269,6 @@ export default {
       dialogOpen: false,
       editingPartId: null,
       partForm: emptyPart(),
-      formValid: false,
       formError: '',
       saving: false,
       message: '',
@@ -233,17 +280,12 @@ export default {
       partHeaders: [
         { text: 'מספר חלק', value: 'partId', width: '3%', class: 'primary white--text' },
         { text: 'תיאור', value: 'description', width: '28%', class: 'primary white--text' },
-        { text: 'מחיר ללקוח', value: 'customerPriceWithVat', width: '5%', class: 'primary white--text' },
+        { text: 'לקוח', value: 'customerPriceWithVat', width: '5%', sortable: false, class: 'primary white--text' },
         { text: 'מעבדה', value: 'labPrice', width: '5%', sortable: false, class: 'primary white--text' },
-        { text: 'חברה', value: 'companyPrice', width: '5%', class: 'primary white--text' },
+        { text: 'חברה', value: 'companyPrice', width: '5%', sortable: false, class: 'primary white--text' },
         { text: 'הערה', value: 'remark', width: '48%', class: 'primary white--text' },
         { text: 'פעולות', value: 'actions', width: '6%', sortable: false, class: 'primary white--text' },
       ],
-      rules: {
-        required: value => (value !== null && value !== undefined && value !== '') || 'שדה חובה',
-        integer: value => Number.isInteger(Number(value)) || 'יש להזין מספר שלם',
-        nonNegative: value => (Number.isFinite(Number(value)) && Number(value) >= 0) || 'יש להזין מספר שאינו שלילי',
-      },
     };
   },
   methods: {
@@ -256,6 +298,7 @@ export default {
         const vatRate = vatRecord && Number(vatRecord.table_code);
         if (!Number.isFinite(vatRate)) throw new Error('VAT rate was not found');
         this.vatRate = vatRate;
+        if (this.dialogOpen) this.updateAllPricesIncludingVat();
       } catch (error) {
         this.vatRate = null;
         this.showMessage(this.getErrorMessage(error, 'טעינת המע"מ נכשלה'));
@@ -315,25 +358,25 @@ export default {
         partId: part.partId,
         description: part.description,
         customerPrice: part.customerPrice,
+        customerPriceWithVat: '',
         labPrice: part.labPrice,
+        labPriceWithVat: '',
         companyPrice: part.companyPrice,
+        companyPriceWithVat: '',
         remark: part.remark || '',
       };
+      this.updateAllPricesIncludingVat();
       this.openDialog();
     },
     openDialog() {
       this.formError = '';
       this.dialogOpen = true;
-      this.$nextTick(() => {
-        if (this.$refs.partForm) this.$refs.partForm.resetValidation();
-      });
     },
     closeDialog() {
       this.dialogOpen = false;
       this.formError = '';
     },
     async savePart() {
-      if (!this.$refs.partForm.validate()) return;
       this.saving = true;
       this.formError = '';
       const payload = {
@@ -377,11 +420,45 @@ export default {
       if (!Number.isFinite(price) || price === 0) return '';
       return new Intl.NumberFormat('he-IL', { maximumFractionDigits: 2 }).format(price);
     },
-    formatPriceWithVat(customerPrice) {
-      const price = Number(customerPrice);
+    formatPriceWithVat(priceBeforeVat) {
+      const price = Number(priceBeforeVat);
       if (!Number.isFinite(price) || price === 0 || !Number.isFinite(this.vatRate)) return '';
       return new Intl.NumberFormat('he-IL', { maximumFractionDigits: 0 })
         .format(price * (1 + this.vatRate / 100));
+    },
+    updatePriceIncludingVat(priceField, priceWithVatField) {
+      const price = this.partForm[priceField];
+      if (price === null || price === undefined || price === '') {
+        this.partForm[priceWithVatField] = '';
+        return;
+      }
+
+      const numericPrice = Number(price);
+      if (!Number.isFinite(numericPrice) || !Number.isFinite(this.vatRate)) return;
+      this.partForm[priceWithVatField] = this.roundPrice(
+        numericPrice * (1 + this.vatRate / 100)
+      );
+    },
+    updatePriceBeforeVat(priceWithVatField, priceField) {
+      const priceWithVat = this.partForm[priceWithVatField];
+      if (priceWithVat === null || priceWithVat === undefined || priceWithVat === '') {
+        this.partForm[priceField] = '';
+        return;
+      }
+
+      const numericPrice = Number(priceWithVat);
+      if (!Number.isFinite(numericPrice) || !Number.isFinite(this.vatRate)) return;
+      this.partForm[priceField] = this.roundPrice(
+        numericPrice / (1 + this.vatRate / 100)
+      );
+    },
+    updateAllPricesIncludingVat() {
+      this.updatePriceIncludingVat('customerPrice', 'customerPriceWithVat');
+      this.updatePriceIncludingVat('labPrice', 'labPriceWithVat');
+      this.updatePriceIncludingVat('companyPrice', 'companyPriceWithVat');
+    },
+    roundPrice(value) {
+      return Math.round((value + Number.EPSILON) * 100) / 100;
     },
     getErrorMessage(error, fallback) {
       if (error && error.response && error.response.data && error.response.data.message) {
@@ -413,6 +490,20 @@ export default {
 
 .parts-search {
   max-width: 240px;
+}
+
+.price-column-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.15;
+}
+
+.price-column-header small {
+  display: block;
+  margin-top: 3px;
+  font-size: 10px;
+  font-weight: 400;
 }
 
 ::v-deep .selected-group {
