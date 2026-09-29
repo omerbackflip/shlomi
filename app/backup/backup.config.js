@@ -29,7 +29,7 @@ module.exports = {
       modelName: 'Invoice',
       archiveName: 'invoices.csv',
       headers: [
-        'invoiceId', 'customerId', 'ticketId', 'amount', 'vat', 'total', 'remark'
+        'supplierId', 'invoiceId', 'date', 'amount', 'paymentId', 'remark'
       ]
     },
     {

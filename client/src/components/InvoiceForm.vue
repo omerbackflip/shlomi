@@ -5,18 +5,18 @@
         :style="{ zIndex: options.zIndex }"
         @keydown.esc="dialog = false"
     >
-        <v-card class="center">
-            <v-card-title class="text-h5 grey lighten-2">
+        <v-card class="center mobile-form-card">
+            <v-card-title class="text-h5 grey lighten-2 mobile-form-title">
                 הוספה/עדכון חשבונית/ת.משלוח לספק
             </v-card-title>
             <div class="field-margin" v-show="showMessage">
                 {{message}}
             </div>
-                <v-row class="overflow-hidden">
-                    <v-col cols="2">
+                <v-row class="overflow-hidden form-row">
+                    <v-col cols="6" md="2">
                         <v-text-field v-model="invoice.invoiceId" label="חשבונית/ת.משלוח" hide-details></v-text-field>
                     </v-col>
-                    <v-col cols="2">
+                    <v-col cols="6" md="2">
                         <v-menu v-model="dateMenu" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="auto">
                             <template v-slot:activator="{ on, attrs }">
                                 <v-text-field v-model="invoice.date" v-bind="attrs" v-on="on" label="תאריך" reverse readonly hide-details></v-text-field>
@@ -24,17 +24,15 @@
                             <v-date-picker v-model="invoice.date" @input="dateMenu = false"></v-date-picker>
                         </v-menu>
                     </v-col>
-                    <v-col cols="2">
+                    <v-col cols="6" md="2">
                         <v-text-field v-model="invoice.amount" label="סכום" hide-details></v-text-field>
-                    </v-col>          
-                </v-row>
-                <v-row class="overflow-hidden">
-                    <v-col cols="8">
+                    </v-col>
+                    <v-col cols="6" md="8">
                         <v-text-field v-model="invoice.remark" label="הערה" hide-details></v-text-field>
                     </v-col>
-                </v-row> 
+                </v-row>
             <v-divider></v-divider>
-            <v-card-actions>
+            <v-card-actions class="form-actions">
                 <v-spacer></v-spacer>
                 <v-btn color="primary" text @click="dialog = false"> בטל </v-btn>
                 <v-btn :disabled = "!invoice" color="primary" text @click="submitTable()"> שמור </v-btn>
@@ -111,5 +109,43 @@ export default {
 .center {
     direction: rtl; 
     text-align: -webkit-center;
+}
+
+@media (max-width: 959px) {
+    .mobile-form-card {
+        display: flex;
+        flex-direction: column;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .mobile-form-title {
+        flex: none;
+        min-height: 58px;
+        padding: 12px 16px;
+        font-size: 1.15rem !important;
+        line-height: 1.35;
+        text-align: right;
+        overflow-wrap: anywhere;
+    }
+
+    .form-row {
+        width: 100%;
+        padding: 4px 16px;
+    }
+
+    .form-row > .col {
+        padding: 8px;
+    }
+
+    .form-actions {
+        position: sticky;
+        bottom: 0;
+        z-index: 1;
+        margin-top: auto;
+        padding: 10px 16px;
+        background-color: #ffffff;
+        box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.12);
+    }
 }
 </style>

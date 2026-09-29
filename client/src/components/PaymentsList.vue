@@ -1,6 +1,6 @@
 <template>
   <div class="list row">
-		<v-layout class="mt-1" row wrap>
+		<v-layout class="mt-1 hidden-sm-and-down" row wrap>
 			<v-row no-gutters>
         <!-- Business suppliers lookup -->
         <v-card class="p-0 m-0" max-width="15%">
@@ -131,6 +131,132 @@
         </v-card>
       </v-row>
 		</v-layout>
+
+    <!-- Mobile lookup -->
+    <div class="payments-mobile hidden-md-and-up">
+      <v-card class="mb-3">
+        <v-card-text>
+          <v-select
+            v-model="supplier"
+            :items="suppliers"
+            item-text="description"
+            item-value="table_code"
+            label="בחירת ספק"
+            return-object
+            outlined
+            dense
+            hide-details
+            :loading="loading"
+            @change="selectMobileSupplier"
+          />
+        </v-card-text>
+      </v-card>
+
+      <v-card>
+        <v-tabs
+          v-model="mobileTab"
+          grow
+          hide-slider
+          class="mobile-lookup-tabs"
+        >
+          <v-tab>
+            <v-icon small class="ml-2">mdi-cash-multiple</v-icon>
+            תשלומים
+          </v-tab>
+          <v-tab>
+            <v-icon small class="ml-2">mdi-receipt</v-icon>
+            חשבוניות
+          </v-tab>
+        </v-tabs>
+
+        <v-tabs-items v-model="mobileTab">
+          <v-tab-item>
+            <v-toolbar flat dense class="mobile-table-toolbar">
+              <v-toolbar-title>תשלומים - {{ supplier.description }}</v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-btn v-show="supplier.table_code" @click="addPayment()" small>
+                <v-icon small>mdi-plus</v-icon>
+                תשלום חדש
+              </v-btn>
+            </v-toolbar>
+            <div class="mobile-table-scroll">
+              <v-data-table
+                :headers="paymentHeaders"
+                :items="payments"
+                disable-pagination
+                hide-default-footer
+                fixed-header
+                height="60vh"
+                dense
+                class="elevation-1 mobile-data-table"
+                :loading="loading"
+                loader-height="30"
+                mobile-breakpoint="0"
+              >
+                <template v-slot:[`item.actions`]="{ item }">
+                  <div v-show="supplier.table_code" class="mobile-actions">
+                    <v-icon small @click="addPayment(item)">mdi-pencil</v-icon>
+                    <v-icon small @click="deletePayment(item._id, item.paymentId)">mdi-delete</v-icon>
+                  </div>
+                </template>
+                <template v-slot:[`item.date`]="{ item }">
+                  <span>{{ item.date ? new Date(item.date).toLocaleDateString('en-GB') : '-' }}</span>
+                </template>
+                <template v-slot:[`item.amount`]="{ item }">
+                  <span>{{ item.amount ? item.amount.toLocaleString() : '' }}</span>
+                </template>
+              </v-data-table>
+            </div>
+          </v-tab-item>
+
+          <v-tab-item>
+            <v-toolbar flat dense class="mobile-table-toolbar">
+              <v-toolbar-title>חשבוניות - {{ supplier.description }}</v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-btn v-show="supplier.table_code" @click="addInvoice()" small>
+                <v-icon small>mdi-plus</v-icon>
+                הוסף חשבונית
+              </v-btn>
+            </v-toolbar>
+            <div class="mobile-table-scroll">
+              <v-data-table
+                :headers="invoiceHeaders"
+                :items="invoices"
+                disable-pagination
+                hide-default-footer
+                fixed-header
+                height="60vh"
+                dense
+                class="elevation-1 mobile-data-table"
+                mobile-breakpoint="0"
+                :search="search"
+              >
+                <template v-slot:body="{ items }">
+                  <tbody>
+                    <tr v-for="(item, index) in items" :key="item._id"
+                        :style="{ borderBottom: isPaymentIdChange(items, index) ? '2px solid black' : 'none' }">
+                      <td v-for="header in invoiceHeaders" :key="header.value">
+                        <div v-if="header.value === 'actions'" class="mobile-actions">
+                          <v-icon small @click="addInvoice(item)">mdi-pencil</v-icon>
+                          <v-icon small @click="deleteInvoice(item._id)">mdi-delete</v-icon>
+                        </div>
+                        <div v-else-if="header.value === 'date'">
+                          {{ item.date ? new Date(item.date).toLocaleDateString('en-GB') : '-' }}
+                        </div>
+                        <div v-else-if="header.value === 'amount'">
+                          {{ item.amount ? item.amount.toLocaleString() : '' }}
+                        </div>
+                        <div v-else>{{ item[header.value] }}</div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </template>
+              </v-data-table>
+            </div>
+          </v-tab-item>
+        </v-tabs-items>
+      </v-card>
+    </div>
     <payment-form ref="paymentForm"/>
     <invoice-form ref="invoiceForm"/>
   </div>
@@ -171,6 +297,7 @@ export default {
       newTable_id: "",
       lastPaymentId: 0,
       selectedRow: null,
+      mobileTab: 0,
     };
   },
 
@@ -311,6 +438,11 @@ export default {
       this.payment = {supplierId:row.table_code}
 			this.retrievePayments();    
     },
+
+    selectMobileSupplier(row) {
+      const index = this.suppliers.findIndex((item) => item.table_code === row.table_code);
+      this.filterSupplier(index, row);
+    },
   },
 
   computed: {},
@@ -342,5 +474,85 @@ export default {
 }
 .custom-highlight-row{
   background-color: lightgreen;
+}
+
+.payments-mobile {
+  width: 100%;
+  direction: rtl;
+}
+
+.mobile-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mobile-data-table {
+  min-width: 720px;
+}
+
+.mobile-actions {
+  display: flex;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.mobile-lookup-tabs {
+  padding: 8px;
+  background-color: #f2f4f7;
+}
+
+.mobile-lookup-tabs ::v-deep .v-tabs-bar {
+  height: 50px;
+  background-color: transparent !important;
+}
+
+.mobile-lookup-tabs ::v-deep .v-tab {
+  margin: 0 4px;
+  border: 1px solid #b0bec5;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #37474f !important;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.12);
+  transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.mobile-lookup-tabs ::v-deep .v-tab:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+.mobile-lookup-tabs ::v-deep .v-tab--active {
+  border-color: #1976d2;
+  background-color: #e3f2fd;
+  color: #0d47a1 !important;
+  box-shadow: inset 0 -3px 0 #1976d2, 0 2px 4px rgba(25, 118, 210, 0.18);
+}
+
+.mobile-lookup-tabs ::v-deep .v-tab--active::before {
+  opacity: 0;
+}
+
+@media (max-width: 959px) {
+  .list {
+    display: block;
+    width: 100%;
+    margin: 0;
+  }
+
+  .mobile-table-toolbar ::v-deep .v-toolbar__content {
+    padding-right: 8px;
+    padding-left: 8px;
+  }
+
+  .mobile-table-toolbar ::v-deep .v-toolbar__title {
+    max-width: 52%;
+    font-size: 1rem;
+    line-height: 1.25;
+    white-space: normal;
+  }
 }
 </style>
