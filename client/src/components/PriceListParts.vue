@@ -2,7 +2,27 @@
   <div class="price-list-page" dir="rtl">
     <v-container fluid>
       <v-row>
-        <v-col cols="12" md="2">
+        <v-col cols="12" class="hidden-md-and-up mobile-group-selector">
+          <v-card class="elevation-2">
+            <v-card-text>
+              <v-select
+                :value="selectedGroup"
+                :items="deviceGroups"
+                item-text="description"
+                item-value="_id"
+                label="בחירת קבוצת מכשירים"
+                return-object
+                outlined
+                dense
+                hide-details
+                :loading="groupsLoading"
+                @change="selectGroup"
+              />
+            </v-card-text>
+          </v-card>
+        </v-col>
+
+        <v-col cols="12" md="2" class="hidden-sm-and-down">
           <v-card class="elevation-3">
             <v-data-table
               :headers="groupHeaders"
@@ -47,10 +67,11 @@
               height="72vh"
               dense
               mobile-breakpoint="0"
+              class="parts-data-table"
             >
               <template v-slot:top>
-                <v-toolbar flat>
-                  <v-toolbar-title>
+                <v-toolbar flat class="parts-toolbar">
+                  <v-toolbar-title class="parts-group-title">
                     {{ selectedGroup ? selectedGroup.description : 'בחר קבוצת מכשירים' }}
                   </v-toolbar-title>
                   <v-chip v-if="selectedGroup" small class="mr-2">{{ parts.length }}</v-chip>
@@ -118,21 +139,21 @@
     </v-container>
 
     <v-dialog v-model="dialogOpen" max-width="650px" persistent>
-      <v-card dir="rtl">
-        <v-card-title>קבוצת מכשירים:  {{partForm.itemCode}} - {{ selectedGroup.description }} </v-card-title>
-        <v-card-text>
+      <v-card dir="rtl" class="part-form-card">
+        <v-card-title class="part-form-title">קבוצת מכשירים:  {{partForm.itemCode}} - {{ selectedGroup.description }} </v-card-title>
+        <v-card-text class="part-form-body">
           <v-alert v-if="formError" type="error" dense text>{{ formError }}</v-alert>
           <v-form>
             <v-row>
-              <v-col cols="3">
+              <v-col cols="6" sm="3">
                 <v-text-field
                   :value="partForm.itemCode"
                   label="קוד קבוצה"
                   disabled
                 />
               </v-col>
-              <v-col cols="6"></v-col>
-              <v-col cols="3">
+              <v-col cols="6" class="hidden-xs-only"></v-col>
+              <v-col cols="6" sm="3">
                 <v-text-field
                   v-model="partForm.partId"
                   @focus="$event.target.select()"
@@ -148,7 +169,7 @@
                   label="תיאור"
                 />
               </v-col>
-              <v-col cols="12" sm="3">
+              <v-col cols="6" sm="3" class="price-customer-before">
                 <v-text-field
                   v-model="partForm.customerPrice"
                   @input="updatePriceIncludingVat('customerPrice', 'customerPriceWithVat')"
@@ -157,8 +178,8 @@
                   label="מחיר ללקוח לפני מעמ"
                 />
               </v-col>
-              <v-col cols="1"></v-col>
-              <v-col cols="12" sm="3">
+              <v-col cols="1" class="hidden-xs-only"></v-col>
+              <v-col cols="6" sm="3" class="price-lab-before">
                 <v-text-field
                   v-model="partForm.labPrice"
                   @input="updatePriceIncludingVat('labPrice', 'labPriceWithVat')"
@@ -167,8 +188,8 @@
                   label="מחיר מעבדה לפני מעמ"
                 />
               </v-col>
-              <v-col cols="1"></v-col>
-              <v-col cols="12" sm="3">
+              <v-col cols="1" class="hidden-xs-only"></v-col>
+              <v-col cols="6" sm="3" class="price-company-before">
                 <v-text-field
                   v-model="partForm.companyPrice"
                   @input="updatePriceIncludingVat('companyPrice', 'companyPriceWithVat')"
@@ -177,7 +198,7 @@
                   label="מחיר חברה לפני מעמ"
                 />
               </v-col>
-              <v-col cols="12" sm="3" class="pt-0">
+              <v-col cols="6" sm="3" class="pt-0 price-customer-vat">
                 <v-text-field
                   v-model="partForm.customerPriceWithVat"
                   label="מחיר ללקוח כולל מעמ"
@@ -186,8 +207,8 @@
                   @mouseup.prevent
                 />
               </v-col>
-              <v-col cols="1"></v-col>
-              <v-col cols="12" sm="3" class="pt-0">
+              <v-col cols="1" class="hidden-xs-only"></v-col>
+              <v-col cols="6" sm="3" class="pt-0 price-lab-vat">
                 <v-text-field
                   v-model="partForm.labPriceWithVat"
                   label="מחיר מעבדה כולל מעמ"
@@ -196,8 +217,8 @@
                   @mouseup.prevent
                 />
               </v-col>
-              <v-col cols="1"></v-col>
-              <v-col cols="12" sm="3" class="pt-0">
+              <v-col cols="1" class="hidden-xs-only"></v-col>
+              <v-col cols="6" sm="3" class="pt-0 price-company-vat">
                 <v-text-field
                   v-model="partForm.companyPriceWithVat"
                   label="מחיר חברה כולל מעמ"
@@ -206,7 +227,7 @@
                   @mouseup.prevent
                 />
               </v-col>
-              <v-col cols="12">
+              <v-col cols="12" class="part-remark">
                 <v-textarea
                   v-model="partForm.remark"
                   label="הערה"
@@ -218,7 +239,7 @@
           </v-form>
         </v-card-text>
 
-        <v-card-actions>
+        <v-card-actions class="part-form-actions">
           <v-spacer></v-spacer>
           <v-btn text :disabled="saving" @click="closeDialog">ביטול</v-btn>
           <v-btn color="primary" :loading="saving" @click="savePart">
@@ -517,8 +538,118 @@ export default {
 }
 
 @media (max-width: 959px) {
+  .price-list-page ::v-deep .container {
+    padding: 8px;
+  }
+
+  .mobile-group-selector {
+    padding-bottom: 4px;
+  }
+
+  .parts-toolbar ::v-deep .v-toolbar__content {
+    height: auto !important;
+    min-height: 64px;
+    padding: 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .parts-toolbar ::v-deep .v-toolbar__title {
+    flex: 1 1 auto;
+    max-width: calc(100% - 58px);
+    font-size: 1rem;
+    line-height: 1.25;
+    white-space: normal;
+  }
+
+  .parts-group-title {
+    display: none;
+  }
+
+  .parts-toolbar ::v-deep .v-spacer {
+    display: none;
+  }
+
   .parts-search {
-    max-width: 160px;
+    flex: 1 1 180px;
+    max-width: none;
+    order: 3;
+  }
+
+  .parts-toolbar ::v-deep .v-btn {
+    order: 4;
+    margin-right: 0 !important;
+  }
+
+  .parts-data-table ::v-deep .v-data-table__wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .parts-data-table ::v-deep table {
+    min-width: 860px;
+  }
+
+  .part-form-card {
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+  }
+
+  .part-form-title {
+    flex: none;
+    padding: 12px 16px;
+    font-size: 1.1rem;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+  }
+
+  .part-form-body {
+    overflow-y: auto;
+    padding: 8px 16px 0;
+  }
+
+  .part-form-body ::v-deep .col-6,
+  .part-form-body ::v-deep .col-12 {
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+
+  .part-form-actions {
+    flex: none;
+    padding: 10px 16px;
+    background-color: #ffffff;
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.12);
+  }
+}
+
+@media (max-width: 599px) {
+  .price-customer-before {
+    order: 1;
+  }
+
+  .price-customer-vat {
+    order: 2;
+  }
+
+  .price-lab-before {
+    order: 3;
+  }
+
+  .price-lab-vat {
+    order: 4;
+  }
+
+  .price-company-before {
+    order: 5;
+  }
+
+  .price-company-vat {
+    order: 6;
+  }
+
+  .part-remark {
+    order: 7;
   }
 }
 </style>
