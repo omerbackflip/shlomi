@@ -204,8 +204,9 @@
                                 </v-btn-toggle>
                                 <v-spacer></v-spacer>
                                 <div v-if="!isMobile()">
-                                    <v-btn @click="printForm(printExit = false)" small>הדפס כניסה</v-btn>
-                                    <v-btn @click="printForm(printExit = true)" small>הדפס יציאה</v-btn>
+                                    <v-btn @click="printForm('entry')" small>הדפס כניסה</v-btn>
+                                    <v-btn @click="printForm('exit')" small>הדפס יציאה</v-btn>
+                                    <v-btn v-if="ticket.ticketStatus === 'Fixed'" @click="printForm('preforma')" small>הדפס חשבון עסקה</v-btn>
                                 </div>
                                 <v-spacer></v-spacer>
                                 <v-btn @click="submitTicket()" :loading="loading" small> שמור </v-btn>
@@ -223,6 +224,7 @@
         <div>
             <PrintExitVue :customerInfo="customerInfo" :ticket="ticket" ref="printExitVue"/>
         </div>
+        <PrintPreformaVue ref="printPreformaVue"/>
     </v-dialog>
 </template>
 
@@ -234,11 +236,12 @@ import CustomerForm from './CustomerForm.vue';
 import debounce from 'debounce';
 import PrintEntryVue from './PrintEntry.vue';
 import PrintExitVue from './PrintExit.vue';
+import PrintPreformaVue from './PrintPreforma.vue';
 import { WhatsappMessageMenu, validateIsraeliPhone } from './shared/whatsapp'
 
 export default {
     name: "ticket-form",
-    components: { CustomerForm, PrintEntryVue, PrintExitVue, WhatsappMessageMenu },
+    components: { CustomerForm, PrintEntryVue, PrintExitVue, PrintPreformaVue, WhatsappMessageMenu },
     data() {
         return {
             isMobile,
@@ -258,7 +261,6 @@ export default {
             menu: false,
             menu1: false,
             menu2: false,
-            printExit: false,
             yitra: 0,
             tableList:[],
             itemList:[],
@@ -271,6 +273,7 @@ export default {
     methods: {
         async submitTicket() {
             this.loading = true
+            let saved = false;
             console.log(this.ticket)
             if (this.customerInfo.customerId) {
                 this.$forceUpdate();
@@ -297,6 +300,7 @@ export default {
                     await apiService.updateEntity({_id: this.customerInfo._id}, {...this.customerInfo}, {model:CUSTOMER_MODEL});
                     this.dialog = false;
                     this.resolve(true); // must !! for update the db while 'open'
+                    saved = true;
                 } catch (error) {
                     console.log(error);
                 }
@@ -304,6 +308,7 @@ export default {
                 window.alert("לא ניתן לשמור כרטיס תיקון ללא שיוך ללקוח")
             }
             this.loading = false
+            return saved;
 		},
 
         debounceInput: debounce(async function (value) {
@@ -353,12 +358,16 @@ export default {
             });
         },
 
-        async printForm(printExit) {
-            this.dialog = false;  // need to close this dialog so no print it in background
-            await this.submitTicket()
+        async printForm(documentType) {
+            const saved = await this.submitTicket();
+            if (!saved) return;
             setTimeout(() => {  
-                printExit   ? this.$refs.printExitVue.print({ticket: this.ticket, customerInfo: this.customerInfo, printExit}) 
-                            : this.$refs.printEntryVue.print({ticket: this.ticket, customerInfo: this.customerInfo, printExit});
+                const printRefs = {
+                    entry: 'printEntryVue',
+                    exit: 'printExitVue',
+                    preforma: 'printPreformaVue',
+                };
+                this.$refs[printRefs[documentType]].print({ticket: this.ticket, customerInfo: this.customerInfo});
             }, 10);
         },
 
