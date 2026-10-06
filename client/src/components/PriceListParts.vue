@@ -106,7 +106,7 @@
               <template v-slot:[`header.labPrice`]="{ header }">
                 <div class="price-column-header">
                   <span>{{ header.text }}</span>
-                  <small>כולל מעמ</small>
+                  <small>כולל</small>
                 </div>
               </template>
               <template v-slot:[`header.companyPrice`]="{ header }">
@@ -302,7 +302,7 @@ export default {
         { text: 'מספר חלק', value: 'partId', width: '3%', class: 'primary white--text' },
         { text: 'תיאור', value: 'description', width: '28%', class: 'primary white--text' },
         { text: 'לקוח', value: 'customerPriceWithVat', width: '5%', sortable: false, class: 'primary white--text' },
-        { text: 'מעבדה', value: 'labPrice', width: '5%', sortable: false, class: 'primary white--text' },
+        { text: 'קוד ישראל', value: 'labPrice', width: '5%', sortable: false, class: 'primary white--text' },
         { text: 'חברה', value: 'companyPrice', width: '5%', sortable: false, class: 'primary white--text' },
         { text: 'הערה', value: 'remark', width: '48%', class: 'primary white--text' },
         { text: 'פעולות', value: 'actions', width: '6%', sortable: false, class: 'primary white--text' },
