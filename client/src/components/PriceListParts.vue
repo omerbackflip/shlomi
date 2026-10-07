@@ -112,7 +112,7 @@
               <template v-slot:[`header.companyPrice`]="{ header }">
                 <div class="price-column-header">
                   <span>{{ header.text }}</span>
-                  <small>כולל מעמ</small>
+                  <small>כולל</small>
                 </div>
               </template>
 
@@ -303,7 +303,7 @@ export default {
         { text: 'תיאור', value: 'description', width: '28%', class: 'primary white--text' },
         { text: 'לקוח', value: 'customerPriceWithVat', width: '5%', sortable: false, class: 'primary white--text' },
         { text: 'קוד ישראל', value: 'labPrice', width: '5%', sortable: false, class: 'primary white--text' },
-        { text: 'חברה', value: 'companyPrice', width: '5%', sortable: false, class: 'primary white--text' },
+        { text: 'קוד חברה', value: 'companyPrice', width: '5%', sortable: false, class: 'primary white--text' },
         { text: 'הערה', value: 'remark', width: '48%', class: 'primary white--text' },
         { text: 'פעולות', value: 'actions', width: '6%', sortable: false, class: 'primary white--text' },
       ],
@@ -516,7 +516,7 @@ export default {
 .price-column-header {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   line-height: 1.15;
 }
 
@@ -525,6 +525,7 @@ export default {
   margin-top: 3px;
   font-size: 10px;
   font-weight: 400;
+  text-align: right;
 }
 
 ::v-deep .selected-group {
