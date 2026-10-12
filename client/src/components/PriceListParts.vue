@@ -369,7 +369,15 @@ export default {
     },
     openCreateDialog() {
       this.editingPartId = null;
-      this.partForm = { ...emptyPart(), itemCode: this.selectedGroup.table_code };
+      const lastPartId = this.parts.reduce((max, part) => {
+        const value = Number(part.partId);
+        return Number.isFinite(value) && value > max ? value : max;
+      }, 0);
+      this.partForm = {
+        ...emptyPart(),
+        itemCode: this.selectedGroup.table_code,
+        partId: String(lastPartId + 1),
+      };
       this.openDialog();
     },
     openEditDialog(part) {
