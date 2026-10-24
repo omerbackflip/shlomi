@@ -31,7 +31,7 @@ const FIELD_MAPPING = {
 		filter: null
 	},
 	tables: {
-		fields: ['table_id', 'table_code', 'description', 'numeric'],
+		fields: ['table_id', 'table_code', 'description', 'textValue', 'numeric'],
 		arrayFields: [], // specifies which fields should be arrays
 		filter: null
 	},    

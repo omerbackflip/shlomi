@@ -45,7 +45,7 @@ module.exports = {
       modelName: 'Table',
       archiveName: 'tables.csv',
       headers: [
-        'table_id', 'table_code', 'description', 'numeric'
+        'table_id', 'table_code', 'description', 'textValue', 'numeric'
       ]
     },
     {
