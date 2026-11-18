@@ -39,11 +39,11 @@
                         <span><b>נכנס לתיקון : </b>{{new Date(ticket.entryDate).toLocaleDateString('en-GB')}}</span>
                     </p>    
                     <br>
-                    <p class="field-text"><b>אביזר נוסף : </b>{{ticket.accessories && ticket.accessories.join('')}}</p>
+                    <p class="field-text"><b>אביזר נוסף : </b>{{ticket.accessories && ticket.accessories.join(', ')}}</p>
                     <br>
-                    <p class="field-text"><b>תאור התקלה ע"פ הלקוח : </b>{{ticket.defectDescription && ticket.defectDescription.join('')}}</p>
+                    <p class="field-text"><b>תאור התקלה ע"פ הלקוח : </b>{{formattedDefectDescription}}</p>
                     <br>
-                    <p class="field-text" v-if="ticket.entryCondition != ''"><b>מצב המכשיר : </b>{{ticket.entryCondition && ticket.entryCondition.join('')}}</p>
+                    <p class="field-text" v-if="ticket.entryCondition != ''"><b>מצב המכשיר : </b>{{ticket.entryCondition && ticket.entryCondition.join(', ')}}</p>
                     <br>
                     <p class="field-text">
                         <span><b>מחיר בדיקה (במידה ולא יתוקן) : </b> {{ticket.fixPrice}}  ש"ח</span>
@@ -106,11 +106,11 @@
                         <span><b>נכנס לתיקון : </b>{{new Date(ticket.entryDate).toLocaleDateString('en-GB')}}</span>
                     </p>    
                     <br>
-                    <p class="field-text"><b>אביזר נוסף : </b>{{ticket.accessories && ticket.accessories.join('')}}</p>
+                    <p class="field-text"><b>אביזר נוסף : </b>{{ticket.accessories && ticket.accessories.join(', ')}}</p>
                     <br>
-                    <p class="field-text"><b>תאור התקלה ע"פ הלקוח : </b>{{ticket.defectDescription && ticket.defectDescription.join('')}}</p>
+                    <p class="field-text"><b>תאור התקלה ע"פ הלקוח : </b>{{formattedDefectDescription}}</p>
                     <br>
-                    <p class="field-text" v-if="ticket.entryCondition != ''"><b>מצב המכשיר : </b>{{ticket.entryCondition && ticket.entryCondition.join('')}}</p>
+                    <p class="field-text" v-if="ticket.entryCondition != ''"><b>מצב המכשיר : </b>{{ticket.entryCondition && ticket.entryCondition.join(', ')}}</p>
                     <br>
                     <p class="field-text">
                         <span><b>מחיר בדיקה (במידה ולא יתוקן) : </b> {{ticket.fixPrice}}  ש"ח</span>
@@ -162,6 +162,9 @@ export default {
     watch: {
     },
     computed: {
+        formattedDefectDescription() {
+            return (this.ticket.defectDescription || []).join(', ').replace(/,\s*/g, ',\u00a0');
+        },
     },
     mounted() {
 	},
